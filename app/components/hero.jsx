@@ -49,7 +49,7 @@ export default function Hero() {
           >
             Automotive Intelligence
             <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-red-600">
               Powered by Data
             </span>
           </motion.h1>
@@ -72,7 +72,7 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.5 }}
             className="flex flex-wrap gap-4"
           >
-            <button className="group px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium flex items-center gap-2 transition-all hover:scale-105">
+            <button className="group px-8 py-4 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium flex items-center gap-2 transition-all hover:scale-105">
               Explore Data
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>

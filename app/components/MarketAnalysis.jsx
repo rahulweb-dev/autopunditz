@@ -6,29 +6,29 @@ import Image from "next/image";
 
 const analyses = [
   {
-    title: "Q1 2026 Global Market Report",
+    title: "Electric, Hybrid, Petrol and Diesel Cars Sales for February 2021",
     description:
-      "Comprehensive analysis of worldwide automotive sales, trends, and regional performance.",
+      "We were as always first and were 100% accurate with the wholesale car Data of February'21.We thank our readers for their patronage and feedback, which is the sole reason for doing this article on fuel type analysis. ",
     image:
-      "https://images.unsplash.com/photo-1768796370479-dc98ad26c6f6?w=800&q=80",
+      "https://static.wixstatic.com/media/eb3040_e82b753a661b4ddab809d732ef36ab6f~mv2.jpeg/v1/fill/w_846,h_265,al_c,lg_1,q_80,enc_avif,quality_auto/eb3040_e82b753a661b4ddab809d732ef36ab6f~mv2.jpeg",
     icon: Globe,
     stats: "+12.5% YoY Growth",
   },
   {
-    title: "Electric Vehicle Adoption Forecast",
+    title: "World’s Top 10 Most Valuable Automobile Brands of 2021!",
     description:
-      "Five-year projection of EV market penetration across major global markets.",
+      "Toyota overtakes Mercedes-Benz claiming the Numero Uno position as the world’s most valuable automobile brand with a brand value of US$59.5 billion. ",
     image:
-      "https://images.unsplash.com/photo-1775259928405-d3d76549cb08?w=800&q=80",
+      "https://static.wixstatic.com/media/eb3040_ba126d31a04a4b028bea79342ad20c62~mv2.jpeg/v1/fill/w_846,h_265,al_c,lg_1,q_80,enc_avif,quality_auto/eb3040_ba126d31a04a4b028bea79342ad20c62~mv2.jpeg",
     icon: TrendingUp,
     stats: "18.2% Market Share",
   },
   {
-    title: "OEM Financial Performance",
+    title: "Petrol v/s Diesel Cars Sales in India for Feb'21",
     description:
-      "Quarterly earnings analysis and profitability metrics for top manufacturers.",
+      "Maruti Suzuki which is now a predominantly Petrol-only car manufacturer was the No.1 Petrol Car OEM and Mahindra emerged as the No.1 Diesel Car OEM for February 2021. ",
     image:
-      "https://images.unsplash.com/photo-1672072141517-43e8e1ee4c14?w=800&q=80",
+      "https://static.wixstatic.com/media/eb3040_20c2b85fed164c348a024664a8cfd088~mv2.jpeg/v1/fill/w_846,h_265,al_c,lg_1,q_80,enc_avif,quality_auto/eb3040_20c2b85fed164c348a024664a8cfd088~mv2.jpeg",
     icon: DollarSign,
     stats: "$240B Revenue",
   },

@@ -12,58 +12,57 @@ const posts = [
     date: "Apr 7, 2026",
     readTime: "6 min",
     category: "Regulation",
-    image:
-      "https://images.unsplash.com/photo-1619767886558-efdc7b9e0473?w=800&q=80",
+    image: "https://static.wixstatic.com/media/1da610_5461451e916542b9846eccc35a589408~mv2.jpg/v1/fill/w_138,h_244,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/1da610_5461451e916542b9846eccc35a589408~mv2.jpg"
   },
   {
-    title: "Battery Technology Breakthroughs in 2026",
+    title: "Discounts and Offers on Tata Motors Cars for April 2026",
     excerpt:
-      "Solid-state batteries and fast-charging innovations changing the EV landscape.",
+      "April 2026 marks a significant push for Tata Motors as they rollout a comprehensive suite of benefits across their Internal Combustion Engine (ICE) and Electric Vehicle (EV) portfolios. With the fiscal year in full swing, the homegrown automaker is targeting aggressive growth through high-value Green Bonuses for EVs and tiered consumer discounts for their popular New Forever range.",
     date: "Apr 7, 2026",
     readTime: "5 min",
     category: "Technology",
     image:
-      "https://images.unsplash.com/photo-1558981403-c5f9891c74f5?w=800&q=80",
+      "https://static.wixstatic.com/media/eb34fb_ebad4c6cf19a43449010597e3b7c2d80~mv2.png/v1/fill/w_1110,h_617,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/eb34fb_ebad4c6cf19a43449010597e3b7c2d80~mv2.png",
   },
   {
     title: "How AI is Transforming Vehicle Design",
     excerpt:
-      "Machine learning algorithms optimize aerodynamics and material selection.",
+      "In March 2026, the Czech automaker recorded total sales of 7,928 units, achieving a 7% Year-on-Year (YoY) growth and a substantial 25% Month-on-Month (MoM) jump compared to February. The data reveals a brand successfully navigating a transitional phase, with its India 2.0 models continuing to bear the brunt of the volume requirements..",
     date: "Apr 6, 2026",
     readTime: "7 min",
     category: "Innovation",
     image:
-      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80",
+      "https://static.wixstatic.com/media/1da610_7f4eb9124ae4470fa008e3d5c7d5c210~mv2.png/v1/fill/w_1110,h_251,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/1da610_7f4eb9124ae4470fa008e3d5c7d5c210~mv2.png ",
   },
   {
-    title: "Consumer Trends: Shift Toward Smaller EVs",
+    title: "Renault India Sales March 2026: 77% YoY Growth, Duster Relaunch Boosts Volumes",
     excerpt:
-      "Compact electric vehicles gain popularity in urban markets worldwide.",
+      "Renault India posted a robust performance in March 2026, registering total sales of 5,046 units, marking a strong 77% year-on-year (YoY) growth compared to 2,846 units in March 2025. However, on a month-on-month (MoM) basis, sales declined by 15%, indicating some cooling after February’s momentum.",
     date: "Apr 6, 2026",
     readTime: "4 min",
     category: "Market",
     image:
-      "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&q=80",
+      "https://static.wixstatic.com/media/1da610_bdfdb767c68a4521a9c0a9f55e3de7b2~mv2.jpg/v1/fill/w_276,h_276,fp_0.50_0.50,lg_1,q_90,enc_avif,quality_auto/1da610_bdfdb767c68a4521a9c0a9f55e3de7b2~mv2.jpg",
   },
   {
-    title: "Supply Chain Resilience in Automotive",
+    title: "Discounts and Offers on Volkswagen Cars for April 2026",
     excerpt:
-      "Strategies automakers are using to prevent future disruptions.",
+      "April 2026 brings a wave of aggressive promotional schemes from Volkswagen India, aimed at stimulating the premium mid-size SUV and sedan segments. As part of the Customer Benefit Program-April 2026, the German automaker has rolled out a multi-tiered discount structure involving cash supports, liquidation bonuses for 2025 inventory, and enhanced loyalty perks.",
     date: "Apr 5, 2026",
     readTime: "8 min",
     category: "Business",
     image:
-      "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?w=800&q=80",
+      "https://static.wixstatic.com/media/eb34fb_2a57fb9c243a4d2f9733365b7368eee1~mv2.png/v1/fill/w_1110,h_608,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/eb34fb_2a57fb9c243a4d2f9733365b7368eee1~mv2.png",
   },
   {
-    title: "Hydrogen Fuel Cells: The Comeback Story",
+    title: "Skoda India Sales Analysis: March 2026",
     excerpt:
-      "Why some manufacturers are betting on hydrogen over batteries.",
+      "In March 2026, the Czech automaker recorded total sales of 7,928 units, achieving a 7% Year-on-Year (YoY) growth and a substantial 25% Month-on-Month (MoM) jump compared to February. The data reveals a brand successfully navigating a transitional phase, with its India 2.0 models continuing to bear the brunt of the volume requirements.",
     date: "Apr 5, 2026",
     readTime: "6 min",
     category: "Alternative Fuel",
     image:
-      "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=800&q=80",
+      "https://static.wixstatic.com/media/1da610_7f4eb9124ae4470fa008e3d5c7d5c210~mv2.png/v1/fill/w_1110,h_251,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/1da610_7f4eb9124ae4470fa008e3d5c7d5c210~mv2.png",
   },
 ];
 

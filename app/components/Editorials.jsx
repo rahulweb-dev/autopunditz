@@ -6,34 +6,34 @@ import Image from "next/image";
 
 const editorials = [
   {
-    title: "The Future of Autonomous Driving: Reality vs. Hype",
+    title: "2025: Indian mass-market passenger vehicle Brand analysis",
     excerpt:
-      "Separating fact from fiction in the autonomous vehicle revolution and what it means for the industry.",
-    author: "Sarah Mitchell",
+      "Mahindra became the second-largest carmaker in India.",
+    author: "Rahul",
     date: "Apr 7, 2026",
     category: "Opinion",
     image:
-      "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&q=80",
+      "https://static.wixstatic.com/media/1da610_73ad1d21253249cbb9b77cb417c80fbb~mv2.jpg/v1/fill/w_1110,h_606,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/1da610_73ad1d21253249cbb9b77cb417c80fbb~mv2.jpg",
   },
   {
-    title: "Why Legacy Automakers Are Winning the EV Race",
+    title: "Best Selling Cars of 2025",
     excerpt:
-      "Traditional manufacturers leverage scale, distribution, and brand trust to compete with Tesla.",
+      "Maruti Dzire became the best-selling car in 2025, followed by the Hyundai Creta Tata Punch dropped to No.10 in 2025, from its No.1 position in 2024 SUV and crossover body-style products are now the majority in the top 10 rankingMahindra Scorpio is the most expensive product in the top 10 ranking",
     author: "David Chen",
     date: "Apr 6, 2026",
     category: "Analysis",
     image:
-      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80",
+      "https://static.wixstatic.com/media/1da610_fb6ed218ead34b948263020a61e06b66~mv2.jpg/v1/fill/w_1110,h_455,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/1da610_fb6ed218ead34b948263020a61e06b66~mv2.jpg",
   },
   {
-    title: "The Hidden Cost of the Battery Supply Chain",
+    title: "Indian Car Sales Analysis for CY2025",
     excerpt:
-      "Examining environmental and geopolitical challenges in lithium and rare earth mineral sourcing.",
+      "2025 registered the highest-ever wholesale of 45,29,913 vehicles, with improvement in growth rate to 5.7% 3% to 13% GST reduction across various PV categories in September 2025 is the major growth driver in 2025,4,66,318 vehicle sales made October 2025 the best sales month in history,The Maruti Dzire became the best-selling car in 2025,Mahindra became the second-largest carmaker in 2025 ,All manufacturers offered discounts to prop up sales in 2025",
     author: "Emma Rodriguez",
     date: "Apr 5, 2026",
     category: "Deep Dive",
     image:
-      "https://images.unsplash.com/photo-1493238792000-8113da705763?w=800&q=80",
+      "https://static.wixstatic.com/media/1da610_d3f60af0b01e477cab339065c48312f9~mv2.jpg",
   },
 ];
 

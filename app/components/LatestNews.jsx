@@ -6,39 +6,39 @@ import Image from "next/image";
 
 const news = [
   {
-    title: "Electric Vehicle Sales Surge 45% in Q1 2026",
+    title: "Safest Cars in India 2026: EVs Dominate, Perfect Scores Emerge — Kia Seltos Leads ICE Safety Revolution",
     excerpt:
-      "Market data reveals unprecedented growth in EV adoption across major markets, driven by new model launches and improved charging infrastructure.",
+      "India’s automotive safety landscape underwent a dramatic transformation in 2026. With the rise of the Bharat NCAP, safety is no longer a premium feature—it is becoming a baseline expectation.",
     image:
-      "https://images.unsplash.com/photo-1760538961281-b4619503cc1d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800",
+      "https://static.wixstatic.com/media/1da610_5461451e916542b9846eccc35a589408~mv2.jpg/v1/fill/w_264,h_264,fp_0.50_0.50,q_90,enc_avif,quality_auto/1da610_5461451e916542b9846eccc35a589408~mv2.jpg",
     date: "Apr 7, 2026",
     readTime: "5 min read",
     featured: true,
   },
   {
-    title: "Toyota Maintains Global Leadership Position",
+    title: "Renault India Sales March 2026: 77% YoY Growth, Duster Relaunch Boosts Volumes",
     excerpt:
-      "Latest sales figures show Toyota leading with 2.1M units sold in March 2026.",
+      "Renault India posted a robust performance in March 2026, registering total sales of 5,046 units, marking a strong 77% year-on-year (YoY) growth compared to 2,846 units in March 2025. However, on a month-on-month (MoM) basis, sales declined by 15%, indicating some cooling after February’s momentum.",
     image:
-      "https://images.unsplash.com/photo-1765285037939-673641e49b04?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600",
+      "https://static.wixstatic.com/media/1da610_bdfdb767c68a4521a9c0a9f55e3de7b2~mv2.jpg/v1/fill/w_1110,h_222,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/1da610_bdfdb767c68a4521a9c0a9f55e3de7b2~mv2.jpg",
     date: "Apr 6, 2026",
     readTime: "3 min read",
   },
   {
-    title: "Chinese Automakers Expand European Presence",
+    title: "Discounts and Offers on Skoda Cars for April 2026",
     excerpt:
-      "New data shows significant market share gains in key European markets.",
+      "Skoda India has rolled out a strong set of offers for April 2026, targeting both MY25 stock clearance and selective MY26 push. The benefits vary significantly across models and model years, with the highest discounts clearly focused on clearing older inventory. Here’s a detailed breakdown.",
     image:
-      "https://images.unsplash.com/photo-1770319942638-a5989632f2ad?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600",
+      "https://static.wixstatic.com/media/eb34fb_1e02107d30274267b49116288e0de731~mv2.png/v1/fill/w_1110,h_632,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/eb34fb_1e02107d30274267b49116288e0de731~mv2.png",
     date: "Apr 5, 2026",
     readTime: "4 min read",
   },
   {
-    title: "Toyota Maintains Global Leadership Position",
+    title: "Skoda India Sales Analysis: March 2026",
     excerpt:
-      "Latest sales figures show Toyota leading with 2.1M units sold in March 2026.",
+      "In March 2026, the Czech automaker recorded total sales of 7,928 units, achieving a 7% Year-on-Year (YoY) growth and a substantial 25% Month-on-Month (MoM) jump compared to February. The data reveals a brand successfully navigating a transitional phase, with its India 2.0 models continuing to bear the brunt of the volume requirements.",
     image:
-      "https://images.unsplash.com/photo-1765285037939-673641e49b04?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600",
+      "https://static.wixstatic.com/media/1da610_7f4eb9124ae4470fa008e3d5c7d5c210~mv2.png/v1/fill/w_1110,h_251,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/1da610_7f4eb9124ae4470fa008e3d5c7d5c210~mv2.png",
     date: "Apr 6, 2026",
     readTime: "3 min read",
   },
@@ -66,7 +66,7 @@ export default function LatestNews() {
           </p>
         </div>
 
-        <button className="hidden md:flex items-center gap-2 px-6 py-3 text-blue-600 hover:text-blue-700 font-medium group">
+        <button className="hidden md:flex items-center gap-2 px-6 py-3 text-red-600 hover:text-red-700 font-medium group">
           View All
           <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
         </button>
@@ -91,7 +91,7 @@ export default function LatestNews() {
               className="object-cover"
             />
 
-            <div className="absolute top-4 left-4 px-3 py-1 bg-blue-600 text-white text-sm rounded-full">
+            <div className="absolute top-4 left-4 px-3 py-1 bg-red-600 text-white text-sm rounded-full">
               Featured
             </div>
           </div>

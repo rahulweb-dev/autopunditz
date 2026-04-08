@@ -21,20 +21,15 @@ export default function Footer() {
           {/* Logo + About */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
-                <BarChart3 className="w-6 h-6 text-white" />
-              </div>
+          
 
               <div>
                 <Image
                   src="/logo.avif"
                   alt="AutoPunditz Logo"
-                  width={120}
+                  width={190}
                   height={40}
                 />
-                <p className="text-xs text-neutral-400">
-                  Automotive Analytics
-                </p>
               </div>
             </div>
 

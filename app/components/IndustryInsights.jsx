@@ -11,21 +11,21 @@ const insights = [
   {
     title: "Most Valuable Tyre Brands",
     image:
-      "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=1600",
+      "https://static.wixstatic.com/media/eb3040_c9074aa03ccb4eb384668253d5b43eca~mv2.jpg/v1/fill/w_846,h_265,al_c,lg_1,q_80,enc_avif,quality_auto/eb3040_c9074aa03ccb4eb384668253d5b43eca~mv2.jpg",
     link: "#",
   },
   {
     title: "Electric Vehicle Market Growth",
     image:
-      "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?q=80&w=1600",
+      "https://static.wixstatic.com/media/eb3040_4f2f9ae0a1f64e00b2de8f344c706ff8~mv2.jpg/v1/fill/w_846,h_265,al_c,lg_1,q_80,enc_avif,quality_auto/eb3040_4f2f9ae0a1f64e00b2de8f344c706ff8~mv2.jpg",
     link: "#",
   },
-  {
-    title: "Top SUV Trends 2026",
-    image:
-      "https://images.unsplash.com/photo-1553440569-bcc63803a83d?q=80&w=1600",
-    link: "#",
-  },
+  // {
+  //   title: "Top SUV Trends 2026",
+  //   image:
+  //     "https://images.unsplash.com/photo-1553440569-bcc63803a83d?q=80&w=1600",
+  //   link: "#",
+  // },
 ];
 
 export default function IndustryInsights() {
@@ -62,7 +62,7 @@ export default function IndustryInsights() {
                 />
 
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-r from-red-600/90 to-red-600/60 flex items-center justify-between px-8">
+                <div className="absolute inset-0  flex items-center justify-between px-8">
 
                   <div className="text-white">
                     <h3 className="text-3xl font-bold mb-3 uppercase">
