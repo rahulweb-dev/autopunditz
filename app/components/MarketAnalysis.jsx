@@ -30,34 +30,45 @@ export default function MarketAnalysis() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
 
         {/* Featured */}
-
         <Link
           href={`/market-analysis/${analyses[0].slug}`}
-          className="lg:col-span-2"
+          className="lg:col-span-2 block group"
         >
 
-          <div className="relative h-48 sm:h-56 md:h-72 lg:h-[360px] rounded-xl overflow-hidden group">
+          <div className="bg-white rounded-xl overflow-hidden hover:shadow-lg transition duration-300">
 
-            <Image
-              src={analyses[0].image}
-              fill
-              alt={analyses[0].title}
-              className="object-cover group-hover:scale-105 transition duration-500"
-            />
+            {/* Image */}
+            <div className="relative w-full h-56 sm:h-54 md:h-72 lg:h-[290px]">
 
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+              <Image
+                src={analyses[0].image}
+                fill
+                alt={analyses[0].title}
+                className="object-cover group-hover:scale-105 transition duration-500"
+              />
 
-            <div className="absolute bottom-0 p-3 sm:p-4 md:p-6 text-white">
+            </div>
 
-              <h3 className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold mb-1">
+            {/* Content */}
+            <div className="p-4 md:p-5">
+
+              <h3 className="text-lg sm:text-xl md:text-2xl font-semibold leading-snug mb-2">
                 {analyses[0].title}
               </h3>
 
-              <p className="text-xs sm:text-sm text-white/90">
-                {analyses[0].date}
-              </p>
+              <div className="text-sm text-gray-600 mb-2">
+                <span className="font-semibold">
+                  {analyses[0].author}
+                </span>
 
-              <span className="text-red-300 mt-2 inline-block text-sm">
+                <span className="mx-2">-</span>
+
+                <span>
+                  {analyses[0].date}
+                </span>
+              </div>
+
+              <span className="text-red-500 font-medium group-hover:text-red-600 transition">
                 Read Report →
               </span>
 
@@ -67,44 +78,54 @@ export default function MarketAnalysis() {
 
         </Link>
 
-
         {/* Side Scroll */}
-
         <div className="flex flex-col h-full">
 
-          <div className="h-[260px] sm:h-[300px] lg:h-[360px] overflow-y-auto space-y-3 pr-2">
+          <div className="h-[520px] sm:h-[560px] lg:h-[360px] overflow-y-auto space-y-6 pr-2">
 
-            {analyses.slice(1).map((item,i)=> (
+            {analyses.slice(1).map((item, i) => (
 
               <Link
                 key={i}
                 href={`/market-analysis/${item.slug}`}
+                className="block group"
               >
 
-                <div className="flex gap-3 bg-white rounded-xl border p-2 md:p-3 hover:shadow-md transition">
+                <div className="bg-white rounded-xl overflow-hidden  hover:shadow-lg transition duration-300">
 
-                  <div className="relative w-24 h-20 flex-shrink-0">
+                  {/* Image */}
+                  <div className="relative w-full h-44 sm:h-48">
 
                     <Image
                       src={item.image}
                       fill
-                      alt=""
-                      className="object-cover rounded-lg"
+                      alt={item.title}
+                      className="object-cover group-hover:scale-105 transition duration-500"
                     />
 
                   </div>
 
-                  <div className="flex flex-col justify-center">
+                  {/* Content */}
+                  <div className="p-3">
 
-                    <p className="text-xs text-gray-500">
-                      {item.date}
-                    </p>
-
-                    <p className="text-sm font-semibold line-clamp-2">
+                    <h3 className="text-xl sm:text-base font-semibold leading-snug mb-2 line-clamp-2">
                       {item.title}
-                    </p>
+                    </h3>
 
-                    <span className="text-red-500 text-xs mt-1">
+                    <div className="text-xs sm:text-sm text-gray-600 mb-2">
+                      <span className="font-semibold">
+                        {item.author}
+                      </span>
+
+                      <span className="mx-2">-</span>
+
+                      <span>
+                        {item.date}
+                      </span>
+                    </div>
+
+                    {/* Read Report */}
+                    <span className="text-red-500 text-xs sm:text-sm font-medium group-hover:text-red-600 transition">
                       Read Report →
                     </span>
 
@@ -118,9 +139,7 @@ export default function MarketAnalysis() {
 
           </div>
 
-
           {/* Explore */}
-
           <Link
             href="/market-analysis"
             className="mt-4 text-red-500 text-sm font-medium hover:text-red-600"
