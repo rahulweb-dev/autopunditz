@@ -1,192 +1,159 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Calendar, ArrowRight, Clock } from "lucide-react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
+import { newsData } from "@/app/constants/data/newsData";
 
-const news = [
-  {
-    title: "Safest Cars in India 2026: EVs Dominate, Perfect Scores Emerge — Kia Seltos Leads ICE Safety Revolution",
-    excerpt:
-      "India’s automotive safety landscape underwent a dramatic transformation in 2026. With the rise of the Bharat NCAP, safety is no longer a premium feature—it is becoming a baseline expectation.",
-    image:
-      "https://static.wixstatic.com/media/1da610_5461451e916542b9846eccc35a589408~mv2.jpg/v1/fill/w_264,h_264,fp_0.50_0.50,q_90,enc_avif,quality_auto/1da610_5461451e916542b9846eccc35a589408~mv2.jpg",
-    date: "Apr 7, 2026",
-    readTime: "5 min read",
-    featured: true,
-  },
-  {
-    title: "Renault India Sales March 2026: 77% YoY Growth, Duster Relaunch Boosts Volumes",
-    excerpt:
-      "Renault India posted a robust performance in March 2026, registering total sales of 5,046 units, marking a strong 77% year-on-year (YoY) growth compared to 2,846 units in March 2025. However, on a month-on-month (MoM) basis, sales declined by 15%, indicating some cooling after February’s momentum.",
-    image:
-      "https://static.wixstatic.com/media/1da610_bdfdb767c68a4521a9c0a9f55e3de7b2~mv2.jpg/v1/fill/w_1110,h_222,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/1da610_bdfdb767c68a4521a9c0a9f55e3de7b2~mv2.jpg",
-    date: "Apr 6, 2026",
-    readTime: "3 min read",
-  },
-  {
-    title: "Discounts and Offers on Skoda Cars for April 2026",
-    excerpt:
-      "Skoda India has rolled out a strong set of offers for April 2026, targeting both MY25 stock clearance and selective MY26 push. The benefits vary significantly across models and model years, with the highest discounts clearly focused on clearing older inventory. Here’s a detailed breakdown.",
-    image:
-      "https://static.wixstatic.com/media/eb34fb_1e02107d30274267b49116288e0de731~mv2.png/v1/fill/w_1110,h_632,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/eb34fb_1e02107d30274267b49116288e0de731~mv2.png",
-    date: "Apr 5, 2026",
-    readTime: "4 min read",
-  },
-  {
-    title: "Skoda India Sales Analysis: March 2026",
-    excerpt:
-      "In March 2026, the Czech automaker recorded total sales of 7,928 units, achieving a 7% Year-on-Year (YoY) growth and a substantial 25% Month-on-Month (MoM) jump compared to February. The data reveals a brand successfully navigating a transitional phase, with its India 2.0 models continuing to bear the brunt of the volume requirements.",
-    image:
-      "https://static.wixstatic.com/media/1da610_7f4eb9124ae4470fa008e3d5c7d5c210~mv2.png/v1/fill/w_1110,h_251,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/1da610_7f4eb9124ae4470fa008e3d5c7d5c210~mv2.png",
-    date: "Apr 6, 2026",
-    readTime: "3 min read",
-  },
-
-
-];
+const tabs = ["Cars", "Bikes"];
 
 export default function LatestNews() {
+
+  const [active, setActive] = useState("Cars");
+  const router = useRouter();
+
+  const handleExplore = () => {
+    router.push(`/${active.toLowerCase()}`);
+  };
+
   return (
-    <section className="container mx-auto px-6 py-16">
+    <section id="latest-auto-news" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 ">
 
-      {/* Section Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="flex items-center justify-between mb-8"
-      >
-        <div>
-          <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-2">
-            Latest News
-          </h2>
-          <p className="text-neutral-600">
-            Breaking stories and market updates
-          </p>
-        </div>
+      {/* Header */}
 
-        <button className="hidden md:flex items-center gap-2 px-6 py-3 text-red-600 hover:text-red-700 font-medium group">
-          View All
-          <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-        </button>
-      </motion.div>
+      <div className="mb-6 md:mb-8">
+        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold">
+          Latest News
+        </h2>
+
+        <p className="text-gray-500 text-xs sm:text-sm md:text-base">
+          Breaking vehicle updates
+        </p>
+      </div>
+
+      {/* Tabs */}
+
+      <div className="flex gap-4 sm:gap-6 overflow-x-auto border-b mb-6 pb-1">
+        {tabs.map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActive(tab)}
+            className={`pb-2 text-xs sm:text-sm md:text-base whitespace-nowrap transition ${
+              active === tab
+                ? "border-b-2 border-red-500 text-red-500 font-medium"
+                : "text-gray-500 hover:text-black"
+            }`}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
 
         {/* Featured */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          whileHover={{ y: -4 }}
-          className="bg-white rounded-2xl overflow-hidden shadow-lg border cursor-pointer"
+
+        <Link
+          href={`/${active.toLowerCase()}/${newsData[active][0].slug}`}
+          className="lg:col-span-2"
         >
-          <div className="relative h-80">
+          <div className="relative h-48 sm:h-56 md:h-72 lg:h-90 rounded-xl overflow-hidden group cursor-pointer">
+
             <Image
-              src={news[0].image}
-              alt={news[0].title}
+              src={newsData[active][0].image}
               fill
-              className="object-cover"
+              alt={newsData[active][0].title}
+              className="object-cover group-hover:scale-105 transition duration-500"
             />
 
-            <div className="absolute top-4 left-4 px-3 py-1 bg-red-600 text-white text-sm rounded-full">
-              Featured
-            </div>
-          </div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
 
-          <div className="p-8">
-            <div className="flex gap-4 text-sm text-neutral-500 mb-4">
-              <span className="flex items-center gap-1">
-                <Calendar className="w-4 h-4" />
-                {news[0].date}
+            <div className="absolute bottom-0 p-3 sm:p-4 md:p-6 text-white w-full">
+
+              <h3 className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold mb-1">
+                {newsData[active][0].title}
+              </h3>
+
+              <p className="text-xs sm:text-sm text-white/90 line-clamp-2">
+                {newsData[active][0].desc}
+              </p>
+
+              <span className="text-sm text-red-300 mt-2 inline-block">
+                Read More →
               </span>
 
-              <span className="flex items-center gap-1">
-                <Clock className="w-4 h-4" />
-                {news[0].readTime}
-              </span>
             </div>
 
-            <h3 className="text-2xl md:text-3xl font-bold mb-4">
-              {news[0].title}
-            </h3>
-
-            <p className="text-neutral-600 mb-6">
-              {news[0].excerpt}
-            </p>
-
-            <button className="text-blue-600 font-medium flex items-center gap-2 group">
-              Read More
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1" />
-            </button>
           </div>
-        </motion.div>
+        </Link>
 
-        {/* Side News */}
-        <div className="flex flex-col gap-6">
-          {news.slice(1).map((item, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{ y: -4 }}
-              className="bg-white rounded-2xl shadow-lg border border-neutral-100 overflow-hidden flex flex-col sm:flex-row cursor-pointer group"
-            >
+        {/* Side Scroll */}
 
-              {/* Image */}
-              <div className="relative w-full sm:w-40 h-52 sm:h-40 flex-shrink-0 overflow-hidden">
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              </div>
+        <div className="flex flex-col h-full">
 
-              {/* Content */}
-              <div className="p-5 sm:p-6 flex flex-col justify-between">
+          <div className="h-[260px] sm:h-[300px] lg:h-[360px] overflow-y-auto space-y-3 pr-2">
 
-                <div>
-                  {/* Date */}
-                  <div className="flex gap-3 text-xs text-neutral-500 mb-2">
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3" />
-                      {item.date}
-                    </span>
+            {newsData[active].slice(1).map((item, i) => (
+              
+              <Link
+                key={i}
+                href={`/${active.toLowerCase()}/${item.slug}`}
+              >
+                <div className="flex gap-3 bg-white rounded-xl border p-2 md:p-3 hover:shadow-md transition cursor-pointer">
 
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      {item.readTime}
-                    </span>
+                  <div className="relative w-24 h-20 flex-shrink-0">
+                    <Image
+                      src={item.image}
+                      fill
+                      alt=""
+                      className="object-cover rounded-lg"
+                    />
                   </div>
 
-                  {/* Title */}
-                  <h3 className="font-semibold text-lg text-neutral-900 mb-2 group-hover:text-blue-600 transition">
-                    {item.title}
-                  </h3>
+                  <div className="flex flex-col justify-center">
 
-                  {/* Description */}
-                  <p className="text-sm text-neutral-600 mb-3 line-clamp-2">
-                    {item.excerpt}
-                  </p>
+                    <p className="text-xs text-gray-500">
+                      {item.date}
+                    </p>
+
+                    <p className="text-sm font-semibold line-clamp-2">
+                      {item.title}
+                    </p>
+
+                    <p className="text-xs text-gray-500 line-clamp-2">
+                      {item.desc}
+                    </p>
+
+                    <span className="text-red-500 text-xs mt-1">
+                      Read More →
+                    </span>
+
+                  </div>
+
                 </div>
 
-                {/* Button */}
-                <button className="text-blue-600 text-sm font-medium flex items-center gap-2 group-hover:gap-3 transition-all">
-                  Read More
-                  <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition" />
-                </button>
+              </Link>
 
-              </div>
-            </motion.div>
-          ))}
+            ))}
+
+          </div>
+
+          {/* Explore Button */}
+
+          <button
+            onClick={handleExplore}
+            className="mt-4 text-red-500 text-sm font-medium hover:text-red-600"
+          >
+            Explore {active} →
+          </button>
+
         </div>
 
       </div>
+
     </section>
   );
 }

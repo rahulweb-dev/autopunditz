@@ -1,114 +1,139 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { TrendingUp, Globe, DollarSign, ArrowRight } from "lucide-react";
 import Image from "next/image";
-
-const analyses = [
-  {
-    title: "Electric, Hybrid, Petrol and Diesel Cars Sales for February 2021",
-    description:
-      "We were as always first and were 100% accurate with the wholesale car Data of February'21.We thank our readers for their patronage and feedback, which is the sole reason for doing this article on fuel type analysis. ",
-    image:
-      "https://static.wixstatic.com/media/eb3040_e82b753a661b4ddab809d732ef36ab6f~mv2.jpeg/v1/fill/w_846,h_265,al_c,lg_1,q_80,enc_avif,quality_auto/eb3040_e82b753a661b4ddab809d732ef36ab6f~mv2.jpeg",
-    icon: Globe,
-    stats: "+12.5% YoY Growth",
-  },
-  {
-    title: "World’s Top 10 Most Valuable Automobile Brands of 2021!",
-    description:
-      "Toyota overtakes Mercedes-Benz claiming the Numero Uno position as the world’s most valuable automobile brand with a brand value of US$59.5 billion. ",
-    image:
-      "https://static.wixstatic.com/media/eb3040_ba126d31a04a4b028bea79342ad20c62~mv2.jpeg/v1/fill/w_846,h_265,al_c,lg_1,q_80,enc_avif,quality_auto/eb3040_ba126d31a04a4b028bea79342ad20c62~mv2.jpeg",
-    icon: TrendingUp,
-    stats: "18.2% Market Share",
-  },
-  {
-    title: "Petrol v/s Diesel Cars Sales in India for Feb'21",
-    description:
-      "Maruti Suzuki which is now a predominantly Petrol-only car manufacturer was the No.1 Petrol Car OEM and Mahindra emerged as the No.1 Diesel Car OEM for February 2021. ",
-    image:
-      "https://static.wixstatic.com/media/eb3040_20c2b85fed164c348a024664a8cfd088~mv2.jpeg/v1/fill/w_846,h_265,al_c,lg_1,q_80,enc_avif,quality_auto/eb3040_20c2b85fed164c348a024664a8cfd088~mv2.jpeg",
-    icon: DollarSign,
-    stats: "$240B Revenue",
-  },
-];
+import Link from "next/link";
+import { analyses } from "@/app/constants/data/marketAnalysisData";
 
 export default function MarketAnalysis() {
+
   return (
-    <section className="container mx-auto px-6 py-16">
-      
+
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
+
       {/* Header */}
-      <div className="flex items-center justify-between mb-10">
-        <div>
-          <h2 className="text-4xl font-bold text-neutral-900 mb-2">
-            Market Analysis
-          </h2>
-          <p className="text-neutral-600">
-            In-depth reports and forecasts
-          </p>
-        </div>
+
+      <div className="mb-6 md:mb-8">
+
+        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold">
+          Market Analysis
+        </h2>
+
+        <p className="text-gray-500 text-xs sm:text-sm md:text-base">
+          Automotive industry insights & reports
+        </p>
+
       </div>
 
-      {/* Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {analyses.map((item, index) => {
-          const Icon = item.icon;
 
-          return (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              viewport={{ once: true }}
-              whileHover={{ y: -6 }}
-              className="bg-white rounded-3xl overflow-hidden shadow-lg border border-neutral-100"
-            >
-              
-              {/* Image */}
-              <div className="relative h-52">
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  fill
-                  className="object-cover"
-                />
+      {/* Layout */}
 
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-black/30" />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
 
-                {/* Stats Badge */}
-                <div className="absolute bottom-4 left-4 flex items-center gap-2 text-white">
-                  <div className="w-10 h-10 rounded-lg bg-white/20 backdrop-blur flex items-center justify-center">
-                    <Icon className="w-5 h-5" />
+        {/* Featured */}
+
+        <Link
+          href={`/market-analysis/${analyses[0].slug}`}
+          className="lg:col-span-2"
+        >
+
+          <div className="relative h-48 sm:h-56 md:h-72 lg:h-[360px] rounded-xl overflow-hidden group">
+
+            <Image
+              src={analyses[0].image}
+              fill
+              alt={analyses[0].title}
+              className="object-cover group-hover:scale-105 transition duration-500"
+            />
+
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+
+            <div className="absolute bottom-0 p-3 sm:p-4 md:p-6 text-white">
+
+              <h3 className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold mb-1">
+                {analyses[0].title}
+              </h3>
+
+              <p className="text-xs sm:text-sm text-white/90">
+                {analyses[0].date}
+              </p>
+
+              <span className="text-red-300 mt-2 inline-block text-sm">
+                Read Report →
+              </span>
+
+            </div>
+
+          </div>
+
+        </Link>
+
+
+        {/* Side Scroll */}
+
+        <div className="flex flex-col h-full">
+
+          <div className="h-[260px] sm:h-[300px] lg:h-[360px] overflow-y-auto space-y-3 pr-2">
+
+            {analyses.slice(1).map((item,i)=> (
+
+              <Link
+                key={i}
+                href={`/market-analysis/${item.slug}`}
+              >
+
+                <div className="flex gap-3 bg-white rounded-xl border p-2 md:p-3 hover:shadow-md transition">
+
+                  <div className="relative w-24 h-20 flex-shrink-0">
+
+                    <Image
+                      src={item.image}
+                      fill
+                      alt=""
+                      className="object-cover rounded-lg"
+                    />
+
                   </div>
-                  <span className="font-semibold text-sm">
-                    {item.stats}
-                  </span>
+
+                  <div className="flex flex-col justify-center">
+
+                    <p className="text-xs text-gray-500">
+                      {item.date}
+                    </p>
+
+                    <p className="text-sm font-semibold line-clamp-2">
+                      {item.title}
+                    </p>
+
+                    <span className="text-red-500 text-xs mt-1">
+                      Read Report →
+                    </span>
+
+                  </div>
+
                 </div>
-              </div>
 
-              {/* Content */}
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-neutral-900 mb-3">
-                  {item.title}
-                </h3>
+              </Link>
 
-                <p className="text-neutral-600 text-sm mb-5">
-                  {item.description}
-                </p>
+            ))}
 
-                <button className="flex items-center gap-2 text-blue-600 font-medium group">
-                  View Report
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
-                </button>
-              </div>
+          </div>
 
-            </motion.div>
-          );
-        })}
+
+          {/* Explore */}
+
+          <Link
+            href="/market-analysis"
+            className="mt-4 text-red-500 text-sm font-medium hover:text-red-600"
+          >
+            Explore Market Analysis →
+          </Link>
+
+        </div>
+
       </div>
+
     </section>
+
   );
+
 }

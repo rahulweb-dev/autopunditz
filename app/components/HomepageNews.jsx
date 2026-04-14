@@ -20,41 +20,59 @@ const breakingNews = [
 
 const featured = {
   title:
-    "Tata Nexon EV 2026 Launch Confirmed — 500KM Range Expected",
+    "Safest Cars in India 2026: EVs Dominate, Perfect Scores Emerge — Kia Seltos Leads ICE Safety Revolution",
   desc:
-    "Tata Motors preparing next generation Nexon EV with improved range and new design",
+    "India’s automotive safety landscape underwent a dramatic transformation in 2026. With the rise of Bharat NCAP, safety is becoming a baseline expectation.",
   image:
-    "https://images.unsplash.com/photo-1503376780353-7e6692767b70",
+    "https://static.wixstatic.com/media/1da610_5461451e916542b9846eccc35a589408~mv2.jpg",
 };
 
 const latestNews = [
   {
-    title: "Hyundai Creta EV Spotted Testing",
-    desc: "Creta EV expected launch in 2026 with 500km range",
-    tag: "Electric",
+    title:
+      "Safest Cars in India 2026: EVs Dominate, Perfect Scores Emerge — Kia Seltos Leads ICE Safety Revolution",
+    desc:
+      "India’s automotive safety landscape underwent a dramatic transformation in 2026. With the rise of Bharat NCAP, safety is becoming a baseline expectation.",
+    tag: "Safety",
     image:
-      "https://images.unsplash.com/photo-1552519507-da3b142c6e3d",
+      "https://static.wixstatic.com/media/1da610_5461451e916542b9846eccc35a589408~mv2.jpg",
+    date: "Apr 7, 2026",
+    readTime: "5 min read",
+    featured: true,
   },
+
   {
-    title: "Mahindra Scorpio N New Variant",
-    desc: "New Scorpio variant with ADAS features",
-    tag: "Launch",
+    title:
+      "Renault India Sales March 2026: 77% YoY Growth, Duster Relaunch Boosts Volumes",
+    desc:
+      "Renault India posted 5,046 units in March 2026 marking 77% YoY growth.",
+    tag: "Sales",
     image:
-      "https://images.unsplash.com/photo-1494976388531-d1058494cdd8",
+      "https://static.wixstatic.com/media/1da610_bdfdb767c68a4521a9c0a9f55e3de7b2~mv2.jpg",
+    date: "Apr 6, 2026",
+    readTime: "3 min read",
   },
+
   {
-    title: "Maruti Swift Hybrid Confirmed",
-    desc: "Swift hybrid expected in India soon",
-    tag: "Upcoming",
+    title: "Discounts and Offers on Skoda Cars for April 2026",
+    desc:
+      "Skoda India offers strong benefits across models including MY25 clearance.",
+    tag: "Offers",
     image:
-      "https://images.unsplash.com/photo-1493238792000-8113da705763",
+      "https://static.wixstatic.com/media/eb34fb_1e02107d30274267b49116288e0de731~mv2.png",
+    date: "Apr 5, 2026",
+    readTime: "4 min read",
   },
+
   {
-    title: "Kia Seltos Facelift Revealed",
-    desc: "New Seltos gets ADAS and new interior",
-    tag: "Review",
+    title: "Skoda India Sales Analysis: March 2026",
+    desc:
+      "Skoda recorded 7,928 units with 7% YoY growth and 25% MoM jump.",
+    tag: "Sales",
     image:
-      "https://images.unsplash.com/photo-1511919884226-fd3cad34687c",
+      "https://static.wixstatic.com/media/1da610_7f4eb9124ae4470fa008e3d5c7d5c210~mv2.png",
+    date: "Apr 6, 2026",
+    readTime: "3 min read",
   },
 ];
 
@@ -102,18 +120,23 @@ export default function HomepageNews() {
             </div>
           </div>
         </div>
+        <div className="mb-6">
+          <h2 className="text-4xl font-semibold">
+            Latest Car News
+          </h2>
 
+          <div className="bg-red-500 h-1 w-60 mt-2 rounded-full"></div>
+        </div>
         {/* Category Tabs */}
         <div className="flex gap-6 border-b border-gray-800 mb-8">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setActive(cat)}
-              className={`pb-2 text-sm ${
-                active === cat
-                  ? "border-b-2 border-red-500 text-red-500"
-                  : "text-gray-400"
-              }`}
+              className={`pb-2 text-sm ${active === cat
+                ? "border-b-2 border-red-500 text-red-500"
+                : "text-gray-400"
+                }`}
             >
               {cat}
             </button>

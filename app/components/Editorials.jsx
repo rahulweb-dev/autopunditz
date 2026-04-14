@@ -1,11 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { User, Calendar, ArrowRight } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 const editorials = [
   {
+    slug: "indian-brand-analysis-2025",
     title: "2025: Indian mass-market passenger vehicle Brand analysis",
     excerpt:
       "Mahindra became the second-largest carmaker in India.",
@@ -13,22 +13,24 @@ const editorials = [
     date: "Apr 7, 2026",
     category: "Opinion",
     image:
-      "https://static.wixstatic.com/media/1da610_73ad1d21253249cbb9b77cb417c80fbb~mv2.jpg/v1/fill/w_1110,h_606,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/1da610_73ad1d21253249cbb9b77cb417c80fbb~mv2.jpg",
+      "https://static.wixstatic.com/media/1da610_73ad1d21253249cbb9b77cb417c80fbb~mv2.jpg",
   },
   {
+    slug: "best-selling-cars-2025",
     title: "Best Selling Cars of 2025",
     excerpt:
-      "Maruti Dzire became the best-selling car in 2025, followed by the Hyundai Creta Tata Punch dropped to No.10 in 2025, from its No.1 position in 2024 SUV and crossover body-style products are now the majority in the top 10 rankingMahindra Scorpio is the most expensive product in the top 10 ranking",
+      "Maruti Dzire became the best-selling car in 2025.",
     author: "David Chen",
     date: "Apr 6, 2026",
     category: "Analysis",
     image:
-      "https://static.wixstatic.com/media/1da610_fb6ed218ead34b948263020a61e06b66~mv2.jpg/v1/fill/w_1110,h_455,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/1da610_fb6ed218ead34b948263020a61e06b66~mv2.jpg",
+      "https://static.wixstatic.com/media/1da610_fb6ed218ead34b948263020a61e06b66~mv2.jpg",
   },
   {
+    slug: "car-sales-analysis-2025",
     title: "Indian Car Sales Analysis for CY2025",
     excerpt:
-      "2025 registered the highest-ever wholesale of 45,29,913 vehicles, with improvement in growth rate to 5.7% 3% to 13% GST reduction across various PV categories in September 2025 is the major growth driver in 2025,4,66,318 vehicle sales made October 2025 the best sales month in history,The Maruti Dzire became the best-selling car in 2025,Mahindra became the second-largest carmaker in 2025 ,All manufacturers offered discounts to prop up sales in 2025",
+      "2025 registered highest wholesale vehicle sales.",
     author: "Emma Rodriguez",
     date: "Apr 5, 2026",
     category: "Deep Dive",
@@ -38,98 +40,132 @@ const editorials = [
 ];
 
 export default function Editorials() {
+
   return (
-    <section className="bg-neutral-100 py-20">
-      <div className="container mx-auto px-6">
-        
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="flex items-center justify-between mb-10"
+
+    <section className="max-w-7xl mx-auto px-4 py-10">
+
+      {/* Header */}
+
+      <div className="mb-6">
+
+        <h2 className="text-3xl md:text-4xl font-semibold">
+          Editorials
+        </h2>
+
+        <p className="text-gray-500 mt-2">
+          Expert perspectives and thought leadership
+        </p>
+
+      </div>
+
+
+      {/* Layout */}
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        {/* Featured */}
+
+        <Link
+          href={`/editorials/${editorials[0].slug}`}
+          className="lg:col-span-2"
         >
-          <div>
-            <h2 className="text-4xl font-bold text-neutral-900 mb-2">
-              Editorials
-            </h2>
-            <p className="text-neutral-600">
-              Expert perspectives and thought leadership
-            </p>
+
+          <div className="relative h-[260px] md:h-[360px] rounded-xl overflow-hidden group">
+
+            <Image
+              src={editorials[0].image}
+              fill
+              alt=""
+              className="object-cover group-hover:scale-105 transition"
+            />
+
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+
+            <div className="absolute bottom-0 p-6 text-white">
+
+              <span className="bg-red-600 text-xs px-3 py-1 rounded-full">
+                {editorials[0].category}
+              </span>
+
+              <h3 className="text-xl font-semibold mt-2">
+                {editorials[0].title}
+              </h3>
+
+              <p className="text-sm text-gray-200 mt-1">
+                {editorials[0].date}
+              </p>
+
+            </div>
+
           </div>
 
-          <button className="hidden md:flex items-center gap-2 px-6 py-3 text-blue-600 hover:text-blue-700 font-medium group">
-            More Opinions
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </button>
-        </motion.div>
+        </Link>
 
-        {/* Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {editorials.map((item, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              viewport={{ once: true }}
-              whileHover={{ y: -6 }}
-              className="bg-white rounded-3xl overflow-hidden shadow-lg border border-neutral-100"
-            >
-              
-              {/* Image */}
-              <div className="relative h-52">
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  fill
-                  className="object-cover"
-                />
 
-                <div className="absolute top-4 left-4 px-3 py-1 bg-blue-600 text-white text-xs rounded-full">
-                  {item.category}
-                </div>
-              </div>
+        {/* Side Scroll */}
 
-              {/* Content */}
-              <div className="p-6">
-                
-                <h3 className="text-xl font-bold text-neutral-900 mb-3">
-                  {item.title}
-                </h3>
+        <div className="flex flex-col">
 
-                <p className="text-neutral-600 text-sm mb-6">
-                  {item.excerpt}
-                </p>
+          <div className="h-[260px] md:h-[360px] overflow-y-auto space-y-3 pr-2">
 
-                {/* Author */}
-                <div className="flex items-center justify-between pt-5 border-t">
-                  
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
-                      <User className="w-5 h-5 text-white" />
-                    </div>
+            {editorials.slice(1).map((item, i) => (
 
-                    <div>
-                      <div className="font-medium text-sm">
-                        {item.author}
-                      </div>
-                      <div className="flex items-center gap-1 text-xs text-neutral-500">
-                        <Calendar className="w-3 h-3" />
-                        {item.date}
-                      </div>
-                    </div>
+              <Link
+                key={i}
+                href={`/editorials/${item.slug}`}
+              >
+
+                <div className="flex gap-3 border rounded-xl p-2 hover:shadow">
+
+                  <div className="relative w-24 h-20">
+
+                    <Image
+                      src={item.image}
+                      fill
+                      alt=""
+                      className="object-cover rounded"
+                    />
+
                   </div>
 
-                  <ArrowRight className="w-5 h-5 text-blue-600" />
+                  <div>
+
+                    <p className="text-xs text-red-500">
+                      {item.category}
+                    </p>
+
+                    <p className="text-sm font-semibold line-clamp-2">
+                      {item.title}
+                    </p>
+
+                    <p className="text-xs text-gray-500">
+                      {item.date}
+                    </p>
+
+                  </div>
 
                 </div>
-              </div>
 
-            </motion.div>
-          ))}
+              </Link>
+
+            ))}
+
+          </div>
+
+          <Link
+            href="/editorials"
+            className="mt-4 text-red-500 text-sm font-medium"
+          >
+            Explore Editorials →
+          </Link>
+
         </div>
+
       </div>
+
     </section>
+
   );
+
 }

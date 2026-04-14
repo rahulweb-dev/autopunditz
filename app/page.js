@@ -1,7 +1,7 @@
 import Editorials from "./components/Editorials";
 import Footer from "./components/Footer";
 import Hero from "./components/hero";
-import IndustryInsights from "./components/IndustryInsights";
+// import IndustryInsights from "./components/IndustryInsights";
 import LatestNews from "./components/LatestNews";
 import LatestPosts from "./components/LatestPosts";
 import MarketAnalysis from "./components/MarketAnalysis";
@@ -13,7 +13,7 @@ export default function Home() {
     <>
       <Hero />
       <LatestNews />
-      <IndustryInsights />
+      {/* <IndustryInsights /> */}
       <VideoWall />
       <MarketAnalysis />
       <SalesDataAnalysis />

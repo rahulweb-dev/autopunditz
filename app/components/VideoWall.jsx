@@ -1,114 +1,89 @@
 "use client";
-
-import { useState } from "react";
+import Link from "next/link";
+import { useState, useRef } from "react";
 import Image from "next/image";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination } from "swiper/modules";
+
+import "swiper/css";
+import "swiper/css/pagination";
 
 const videos = [
   {
     title: "AutoPunditz Exclusive Automotive Analysis",
-    thumbnail: "https://img.youtube.com/vi/CTXBSxxweJ0/maxresdefault.jpg",
-    duration: "12:45",
+    thumb: "https://img.youtube.com/vi/CTXBSxxweJ0/maxresdefault.jpg",
+    previewMp4: "https://www.w3schools.com/html/mov_bbb.mp4",
+    dur: "12:45",
     views: "245K",
-    videoId: "CTXBSxxweJ0",
+    id: "CTXBSxxweJ0",
     featured: true,
   },
   {
     title: "2026 EV Charging Infrastructure Tour",
-    thumbnail:
-      "https://images.unsplash.com/photo-1760538978585-f82dc257ec15?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600",
-    duration: "8:30",
+    thumb:
+      "https://images.unsplash.com/photo-1760538978585-f82dc257ec15?w=600&q=80",
+    previewMp4: "https://www.w3schools.com/html/movie.mp4",
+    dur: "8:30",
     views: "128K",
-    videoId: "CTXBSxxweJ0",
+    id: "CTXBSxxweJ0",
   },
   {
     title: "Luxury SUV Comparison: Top 5 Models",
-    thumbnail:
-      "https://images.unsplash.com/photo-1758795114772-ced07f7e5145?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600",
-    duration: "15:20",
+    thumb:
+      "https://images.unsplash.com/photo-1758795114772-ced07f7e5145?w=600&q=80",
+    previewMp4: "https://www.w3schools.com/html/mov_bbb.mp4",
+    dur: "15:20",
     views: "189K",
-    videoId: "CTXBSxxweJ0",
+    id: "CTXBSxxweJ0",
   },
 ];
 
-const tickerItems = [
-  "Autonomous Driving: Real-World Testing — 312K views",
-  "Luxury SUV Comparison: Top 5 Models — 189K views",
-  "AutoPunditz Exclusive Analysis — 245K views",
-  "2026 EV Charging Infrastructure Tour — 128K views",
-];
-
-function PlayIcon({ size = "md" }) {
-  const dim = size === "lg" ? "w-11 h-11" : "w-9 h-9";
+function VideoCard({ video, onPlay, featured }) {
+  const videoRef = useRef(null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   return (
     <div
-      className={`${dim} rounded-full border border-white/60 flex items-center justify-center mt-3 transition-all duration-200 group-hover:bg-[#c8ff00] group-hover:border-[#c8ff00]`}
+      onClick={() => onPlay(video.id)}
+      className="group relative overflow-hidden cursor-pointer bg-[#111] rounded-xl"
     >
-      <svg
-        width="10"
-        height="12"
-        viewBox="0 0 12 14"
-        className="fill-white/90 group-hover:fill-[#0a0a0a] transition-colors duration-200 ml-0.5"
-      >
-        <path d="M1 1.5L11 7L1 12.5V1.5Z" />
-      </svg>
-    </div>
-  );
-}
-
-function VideoCard({ video, featured = false, setActiveVideo }) {
-  return (
-    <div
-      onClick={() => setActiveVideo(video.videoId)}
-      className={`relative overflow-hidden cursor-pointer group bg-[#111] ${
-        featured ? "col-span-2" : ""
-      }`}
-    >
-      {/* Thumbnail */}
       <div
-        className={`relative overflow-hidden ${
-          featured ? "h-[400px]" : "h-[220px]"
-        }`}
+        className={`relative ${featured ? "h-[510px]" : "aspect-[16/10]"
+          }`}
       >
         <Image
-          src={video.thumbnail}
+          src={video.thumb}
           alt={video.title}
           fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          className="object-cover group-hover:scale-105 transition duration-500"
         />
 
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent" />
-      </div>
+        <video
+          ref={videoRef}
+          src={video.previewMp4}
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          onCanPlay={() => setIsLoaded(true)}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${isLoaded ? "group-hover:opacity-100 opacity-0" : "opacity-0"
+            }`}
+        />
 
-      {/* Content */}
-      <div className="absolute inset-0 flex flex-col justify-between p-5">
-        <div className="flex justify-between">
-          {featured ? (
-            <span className="text-[10px] px-2 py-1 bg-[#c8ff00] text-black">
-              Featured
-            </span>
-          ) : (
-            <span />
-          )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
 
-          <span className="text-[10px] bg-black/60 px-2 py-1 text-white">
-            {video.duration}
-          </span>
+        <div className="absolute top-3 right-3 text-xs bg-black/60 px-2 py-1 rounded text-white">
+          {video.dur}
         </div>
 
-        <div>
-          <p className="text-xs text-white/60 mb-1">{video.views} views</p>
+        <div className="absolute bottom-0 p-4 text-white">
+          <p className="text-xs text-gray-300">
+            {video.views} views
+          </p>
 
-          <h3
-            className={`text-white ${
-              featured ? "text-2xl" : "text-lg"
-            }`}
-          >
+          <h3 className="text-sm md:text-base font-medium">
             {video.title}
           </h3>
-
-          <PlayIcon size={featured ? "lg" : "md"} />
         </div>
       </div>
     </div>
@@ -119,59 +94,108 @@ export default function VideoWall() {
   const [activeVideo, setActiveVideo] = useState(null);
 
   return (
-    <section className="container mx-auto px-6 py-12">
-      {/* Header */}
-      <div className="flex justify-between mb-10">
-        <h2 className="text-3xl font-bold">
-          Video <span className="text-lime-400">Wall</span>
-        </h2>
+    <section className="py-8 md:py-12">
 
-        <button className="text-sm text-gray-500 hover:text-lime-400">
-          All Videos →
-        </button>
-      </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
 
-      {/* Grid */}
-      <div className="grid grid-cols-2 gap-2">
-        {videos.map((video, i) => (
-          <VideoCard
-            key={i}
-            video={video}
-            featured={video.featured}
-            setActiveVideo={setActiveVideo}
-          />
-        ))}
-      </div>
+        {/* Header */}
 
-      {/* Modal */}
-      {activeVideo && (
-        <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-6">
-          <button
-            onClick={() => setActiveVideo(null)}
-            className="absolute top-6 right-6 text-white text-2xl"
+        <div className="flex justify-between items-end mb-6">
+
+          <div>
+            <h2 className="text-2xl md:text-4xl font-semibold">
+              Video Wall
+            </h2>
+
+            <div className="bg-red-500 h-1 w-32 mt-2 rounded-full" />
+          </div>
+
+          <Link
+            href="/videowall"
+            className="text-sm text-gray-400 hover:text-red-500"
           >
-            ✕
-          </button>
+            Explore More →
+          </Link>
 
-          <div className="w-full max-w-6xl aspect-video">
-            <iframe
-              className="w-full h-full rounded-lg"
-              src={`https://www.youtube.com/embed/${activeVideo}?autoplay=1`}
-              title="YouTube Video"
-              allowFullScreen
+        </div>
+
+
+        {/* Desktop Layout */}
+
+        <div className="hidden lg:grid lg:grid-cols-3 gap-6">
+
+          <div className="lg:col-span-2">
+            <VideoCard
+              video={videos[0]}
+              onPlay={setActiveVideo}
+              featured
             />
           </div>
-        </div>
-      )}
 
-      {/* Ticker */}
-      <div className="mt-10 overflow-hidden">
-        <div className="flex gap-10 animate-pulse text-sm text-gray-400">
-          {tickerItems.map((item, i) => (
-            <span key={i}>{item}</span>
-          ))}
+          <div className="space-y-4">
+
+            {videos.slice(1).map((video, i) => (
+              <VideoCard
+                key={i}
+                video={video}
+                onPlay={setActiveVideo}
+              />
+            ))}
+
+          </div>
+
         </div>
+
+
+        {/* Mobile Layout */}
+
+        <div className="lg:hidden">
+
+          <Swiper
+            modules={[Pagination]}
+            spaceBetween={12}
+            pagination={{ clickable: true }}
+            slidesPerView={1.1}
+          >
+            {videos.map((video, i) => (
+              <SwiperSlide key={i}>
+                <VideoCard
+                  video={video}
+                  onPlay={setActiveVideo}
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+
+        </div>
+
+
+        {/* Video Modal */}
+
+        {activeVideo && (
+          <div
+            className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+            onClick={() => setActiveVideo(null)}
+          >
+
+            <div
+              className="w-full max-w-4xl aspect-video"
+              onClick={(e) => e.stopPropagation()}
+            >
+
+              <iframe
+                className="w-full h-full rounded-lg"
+                src={`https://www.youtube.com/embed/${activeVideo}?autoplay=1`}
+                allowFullScreen
+              />
+
+            </div>
+
+          </div>
+        )}
+
       </div>
+
     </section>
   );
 }

@@ -3,11 +3,12 @@
 import { motion } from "framer-motion";
 import { ArrowRight, TrendingUp } from "lucide-react";
 import Image from "next/image";
+import LatestNews from "./LatestNews";
 
 export default function Hero() {
   return (
     <section className="relative h-[calc(100vh-73px)] min-h-[600px] bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900 overflow-hidden">
-      
+
       {/* Background Image */}
       <div className="absolute inset-0 opacity-20">
         <Image
@@ -20,19 +21,19 @@ export default function Hero() {
       </div>
 
       {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-neutral-900/95 via-neutral-900/80 to-transparent" />
+      {/* <div className="absolute inset-0 bg-gradient-to-r from-neutral-900/95 via-neutral-900/80 to-transparent" /> */}
 
       {/* Content */}
       <div className="relative max-w-[1400px] mx-auto px-6 h-full flex items-center">
-        <div className="max-w-2xl">
-          
+        <div className="max-w-3xl">
+
           {/* Badge */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-600/20 border border-blue-500/30 mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 mt-16 rounded-full bg-blue-600/20 border border-blue-500/30 mb-6">
               <TrendingUp className="w-4 h-4 text-blue-400" />
               <span className="text-sm text-blue-300">
                 Market Data Updated Daily
@@ -72,12 +73,26 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.5 }}
             className="flex flex-wrap gap-4"
           >
-            <button className="group px-8 py-4 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium flex items-center gap-2 transition-all hover:scale-105">
+            <button
+              onClick={() => {
+                document
+                  .getElementById("latest-auto-news")
+                  ?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="group px-8 py-4 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium flex items-center gap-2 transition-all hover:scale-105"
+            >
               Explore Data
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
 
-            <button className="px-8 py-4 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white rounded-xl font-medium border border-white/20 transition-all">
+            <button
+              onClick={() => {
+                document
+                  .getElementById("sales-data")
+                  ?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="px-8 py-4 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white rounded-xl font-medium border border-white/20 transition-all"
+            >
               View Reports
             </button>
           </motion.div>
@@ -87,39 +102,46 @@ export default function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.7 }}
-            className="flex flex-wrap items-center gap-8 mt-12 pt-8 border-t border-white/10"
+            className="grid grid-cols-3 sm:grid-cols-3 gap-6 md:gap-8 mb-6 pt-8 border-t border-white/10 text-center justify-items-center"
           >
-            <div>
+
+            <div className="w-full">
               <div className="text-2xl md:text-3xl font-bold text-white">
-                2.5M+
+                90+
               </div>
-              <div className="text-sm text-neutral-400">Data Points</div>
+              <div className="text-sm text-neutral-400">
+                OEMs Tracked
+              </div>
             </div>
 
-            <div>
+            <div className="w-full">
               <div className="text-2xl md:text-3xl font-bold text-white">
-                50K+
+                25k+
+              </div>
+              <div className="text-sm text-neutral-400">
+                Data Points
+              </div>
+            </div>
+
+            <div className="w-full">
+              <div className="text-2xl md:text-3xl font-bold text-white">
+                15K+
               </div>
               <div className="text-sm text-neutral-400">
                 Reports Published
               </div>
             </div>
 
-            <div>
-              <div className="text-2xl md:text-3xl font-bold text-white">
-                1000+
-              </div>
-              <div className="text-sm text-neutral-400">
-                OEMs Tracked
-              </div>
-            </div>
           </motion.div>
 
         </div>
       </div>
 
+
+
       {/* Bottom Gradient */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-neutral-50 to-transparent" />
+      {/* <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-neutral-50 to-transparent" /> */}
     </section>
   );
 }
+
