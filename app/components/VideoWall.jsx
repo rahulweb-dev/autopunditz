@@ -110,12 +110,6 @@ export default function VideoWall() {
             <div className="bg-red-500 h-1 w-32 mt-2 rounded-full" />
           </div>
 
-          <Link
-            href="/videowall"
-            className="text-sm text-gray-400 hover:text-red-500"
-          >
-            Explore More →
-          </Link>
 
         </div>
 
@@ -141,6 +135,13 @@ export default function VideoWall() {
                 onPlay={setActiveVideo}
               />
             ))}
+            <div className="flex justify-center">
+              <Link
+                href="/videowall"
+                className="text-sm text-red-500 hover:text-red-400"
+              >
+                Explore More →
+              </Link></div>
 
           </div>
 
@@ -193,6 +194,14 @@ export default function VideoWall() {
 
           </div>
         )}
+        <div className="pt-5 ml-4">
+        <Link
+          href="/videowall"
+          className="text-sm text-red-500 hover:text-red-400 lg:hidden "
+        >
+          Explore More →
+        </Link></div>
+
 
       </div>
 

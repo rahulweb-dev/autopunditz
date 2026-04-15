@@ -12,7 +12,7 @@ export default function Hero() {
       {/* Background Image */}
       <div className="absolute inset-0 opacity-20">
         <Image
-          src="https://images.unsplash.com/photo-1774791697892-d215769d89ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1920"
+          src="/main_banner.png"
           alt="Automotive Dashboard"
           fill
           priority
