@@ -118,11 +118,11 @@ export default function Header() {
 
               <div className="absolute left-0 top-8 bg-white shadow-xl rounded-xl w-[200px] p-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
 
-                <Link href="/news/cars" className="dropdownLink">
+                <Link href="/cars" className="dropdownLink">
                   Cars
                 </Link>
 
-                <Link href="/news/bikes" className="dropdownLink">
+                <Link href="/bikes" className="dropdownLink">
                   Bikes
                 </Link>
 

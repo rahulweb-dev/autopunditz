@@ -116,7 +116,7 @@ export default function Hero() {
 
             <div className="w-full">
               <div className="text-2xl md:text-3xl font-bold text-white">
-                90+
+                50+
               </div>
               <div className="text-sm text-neutral-400">
                 OEMs Tracked
