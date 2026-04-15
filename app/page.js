@@ -14,12 +14,12 @@ export default function Home() {
       <Hero />
       <LatestNews />
       {/* <IndustryInsights /> */}
-
+      <LatestPosts />
       <MarketAnalysis />
       <SalesDataAnalysis />
       <Editorials />
       <VideoWall />
-      <LatestPosts />
+
       <Footer />
 
     </>
