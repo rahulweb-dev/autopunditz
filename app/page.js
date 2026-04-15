@@ -17,7 +17,8 @@ export default function Home() {
 
       <MarketAnalysis />
       <SalesDataAnalysis />
-      <Editorials />  <VideoWall />
+      <Editorials />
+      <VideoWall />
       <LatestPosts />
       <Footer />
 
