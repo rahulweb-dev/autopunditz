@@ -20,7 +20,7 @@ export default function Hero() {
         />
       </div>
       {/* Mobile Image */}
-      <div className="absolute inset-0 opacity-20 block md:hidden">
+      <div className="absolute inset-0 opacity-40 block md:hidden">
         <Image
           src="/mobile_banner.webp" // 👈 your mobile image
           alt="Automotive Dashboard Mobile"
