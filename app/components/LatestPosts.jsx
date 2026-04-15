@@ -57,13 +57,10 @@ export default function LatestPosts() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 whileHover={{ y: -5 }}
-                className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition border cursor-pointer"
+                className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition border cursor-pointer h-full flex flex-col"
               >
-
                 {/* Image */}
-
-                <div className="relative h-52">
-
+                <div className="relative h-52 w-full">
                   <Image
                     src={post.image}
                     alt={post.title}
@@ -76,29 +73,27 @@ export default function LatestPosts() {
                       {post.category}
                     </span>
                   </div>
-
                 </div>
 
-
                 {/* Content */}
+                <div className="p-5 flex flex-col flex-1">
 
-                <div className="p-5">
-
-                  <h3 className="font-semibold text-lg mb-2 line-clamp-2">
+                  {/* Title */}
+                  <h3 className="font-semibold text-lg mb-2 line-clamp-2 min-h-[48px]">
                     {post.title}
                   </h3>
 
-                  <p className="text-sm text-gray-600 mb-4 line-clamp-3">
+                  {/* Description */}
+                  <p className="text-sm text-gray-600 mb-4 line-clamp-3 min-h-[72px]">
                     {post.excerpt}
                   </p>
 
+                  {/* Spacer pushes footer down */}
+                  <div className="flex-1"></div>
 
                   {/* Footer */}
-
                   <div className="flex justify-between text-xs text-gray-500 border-t pt-3">
-
                     <div className="flex gap-3">
-
                       <span className="flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
                         {post.date}
@@ -108,15 +103,11 @@ export default function LatestPosts() {
                         <Clock className="w-3 h-3" />
                         {post.readTime}
                       </span>
-
                     </div>
 
                     <ArrowRight className="w-4 h-4 text-red-600" />
-
                   </div>
-
                 </div>
-
               </motion.div>
 
             </Link>
