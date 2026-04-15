@@ -10,16 +10,25 @@ export default function Hero() {
     <section className="relative h-[calc(100vh-73px)] min-h-[600px] bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900 overflow-hidden">
 
       {/* Background Image */}
-      <div className="absolute inset-0 opacity-20">
+      <div className="absolute inset-0 opacity-20 md:block hidden">
         <Image
           src="/main_banner.png"
           alt="Automotive Dashboard"
           fill
           priority
+          className="object-cover sm:object-left"
+        />
+      </div>
+      {/* Mobile Image */}
+      <div className="absolute inset-0 opacity-20 block md:hidden">
+        <Image
+          src="/mobile_banner.webp" // 👈 your mobile image
+          alt="Automotive Dashboard Mobile"
+          fill
+          priority
           className="object-cover"
         />
       </div>
-
       {/* Overlay */}
       {/* <div className="absolute inset-0 bg-gradient-to-r from-neutral-900/95 via-neutral-900/80 to-transparent" /> */}
 
