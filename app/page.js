@@ -20,7 +20,6 @@ export default function Home() {
       <Editorials />
       <VideoWall />
 
-      <Footer />
 
     </>
   );

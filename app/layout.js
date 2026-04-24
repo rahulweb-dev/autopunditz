@@ -1,7 +1,6 @@
 import "./globals.css";
-import Header from "./components/Header";
-
 import { Noto_Serif } from "next/font/google";
+import LayoutWrapper from "./components/LayoutWrapper";
 
 const notoSerif = Noto_Serif({
   subsets: ["latin"],
@@ -14,6 +13,7 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+
   return (
     <html
       lang="en"
@@ -21,8 +21,9 @@ export default function RootLayout({ children }) {
       className={notoSerif.className}
     >
       <body className="min-h-full flex flex-col">
-        <Header />
-        {children}
+        <LayoutWrapper>
+          {children}
+        </LayoutWrapper>
       </body>
     </html>
   );

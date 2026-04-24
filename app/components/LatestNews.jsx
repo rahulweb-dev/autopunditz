@@ -1,27 +1,62 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { newsData } from "@/app/constants/data/newsData";
 
 const tabs = ["Cars", "Bikes"];
 
 export default function LatestNews() {
-
   const [active, setActive] = useState("Cars");
+  const [blogs, setBlogs] = useState([]);
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const res = await fetch("/api/blog");
+        const data = await res.json();
+        setBlogs(data.data || data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchBlogs();
+  }, []);
+
+  // ✅ Filter based on active tab
+  const filtered = blogs.filter(
+    (item) => item.category?.toLowerCase() === active.toLowerCase()
+  );
+
+  // ✅ Extract image + desc (same as your old structure)
+  const formatData = filtered.map((item) => {
+    const cleanText = item.content?.replace(/<[^>]+>/g, "") || "";
+    const imgMatch = item.content?.match(/<img.*?src="(.*?)"/);
+
+    return {
+      ...item,
+      image: item.image || imgMatch?.[1] || "/placeholder.jpg",
+      desc: cleanText.slice(0, 100),
+      slug: item._id, // replace slug with id
+      date: new Date(item.createdAt).toLocaleDateString("en-IN"),
+    };
+  });
 
   const handleExplore = () => {
     router.push(`/${active.toLowerCase()}`);
   };
 
+  if (!formatData.length) {
+    return <p className="text-center py-10">Loading...</p>;
+  }
+
   return (
-    <section id="latest-auto-news" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 ">
+    <section id="latest-auto-news" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
 
       {/* Header */}
-
       <div className="mb-6 md:mb-8">
         <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold">
           Latest News
@@ -33,7 +68,6 @@ export default function LatestNews() {
       </div>
 
       {/* Tabs */}
-
       <div className="flex gap-4 sm:gap-6 overflow-x-auto border-b mb-6 pb-1">
         {tabs.map((tab) => (
           <button
@@ -51,21 +85,19 @@ export default function LatestNews() {
       </div>
 
       {/* Grid */}
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
 
         {/* Featured */}
-
         <Link
-          href={`/${active.toLowerCase()}/${newsData[active][0].slug}`}
+          href={`/${active.toLowerCase()}/${formatData[0].slug}`}
           className="lg:col-span-2"
         >
           <div className="relative h-48 sm:h-56 md:h-72 lg:h-90 rounded-xl overflow-hidden group cursor-pointer">
 
             <Image
-              src={newsData[active][0].image}
+              src={formatData[0].image}
               fill
-              alt={newsData[active][0].title}
+              alt={formatData[0].title}
               className="object-cover group-hover:scale-105 transition duration-500"
             />
 
@@ -74,11 +106,11 @@ export default function LatestNews() {
             <div className="absolute bottom-0 p-3 sm:p-4 md:p-6 text-white w-full">
 
               <h3 className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold mb-1">
-                {newsData[active][0].title}
+                {formatData[0].title}
               </h3>
 
               <p className="text-xs sm:text-sm text-white/90 line-clamp-2">
-                {newsData[active][0].desc}
+                {formatData[0].desc}
               </p>
 
               <span className="text-sm text-red-300 mt-2 inline-block">
@@ -91,13 +123,11 @@ export default function LatestNews() {
         </Link>
 
         {/* Side Scroll */}
-
         <div className="flex flex-col h-full">
 
           <div className="h-[260px] sm:h-[300px] lg:h-[360px] overflow-y-auto space-y-3 pr-2">
 
-            {newsData[active].slice(1).map((item, i) => (
-              
+            {formatData.slice(1).map((item, i) => (
               <Link
                 key={i}
                 href={`/${active.toLowerCase()}/${item.slug}`}
@@ -134,15 +164,12 @@ export default function LatestNews() {
                   </div>
 
                 </div>
-
               </Link>
-
             ))}
 
           </div>
 
           {/* Explore Button */}
-
           <button
             onClick={handleExplore}
             className="mt-4 text-red-500 text-sm font-medium hover:text-red-600"
