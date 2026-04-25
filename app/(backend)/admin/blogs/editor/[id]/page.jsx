@@ -109,6 +109,7 @@ export default function EditorPage() {
         <option value="Cars">Cars</option>
         <option value="Bikes">Bikes</option>
         <option value="News">News</option>
+         <option value="Market Analysis">Market Analysis</option>
       </select>
 
       {/* SCHEDULE */}

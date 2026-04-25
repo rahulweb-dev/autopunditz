@@ -32,7 +32,7 @@ export default function BlogsPage() {
   const [editorContent, setEditorContent] = useState("");
   const [editBlog, setEditBlog] = useState(null);
   const [sortBy, setSortBy] = useState("latest");
-
+  const [showConfirm, setShowConfirm] = useState(null)
   useEffect(() => {
     fetch("/api/blog").then((r) => r.json()).then(setBlogs);
   }, []);
@@ -99,6 +99,17 @@ export default function BlogsPage() {
   const updateStatus = async (id, status) => {
     await fetch(`/api/blog/${id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status }) });
     setBlogs((prev) => prev.map((b) => b._id === id ? { ...b, status } : b));
+  };
+
+  const handleDelete = async () => {
+    if (!showConfirm) return;
+
+    await fetch(`/api/blog/${showConfirm}`, {
+      method: "DELETE",
+    });
+
+    setBlogs((prev) => prev.filter((b) => b._id !== showConfirm));
+    setShowConfirm(null);
   };
 
   return (
@@ -173,7 +184,7 @@ export default function BlogsPage() {
         .indigo-btn:hover { background: linear-gradient(135deg,#818cf8,#6366f1); box-shadow: 0 4px 20px rgba(99,102,241,0.4); transform: translateY(-1px); }
       `}</style>
 
-      <div className="blogs-root min-h-screen bg-[#0d0d12] text-[#e2e2f0] p-8">
+      <div className="blogs-root min-h-screen  text-black p-8">
 
         {/* HEADER */}
         <div className="animate-fadeUp flex justify-between items-start mb-[30px]">
@@ -181,7 +192,7 @@ export default function BlogsPage() {
             <p className="text-[11px] text-[#6366f1] tracking-[0.14em] font-semibold uppercase mb-1.5">
               Content Management
             </p>
-            <h1 className="text-[34px] font-bold text-[#f0f0f5] leading-tight m-0">
+            <h1 className="text-[34px] font-bold  leading-tight m-0">
               Blog Dashboard
             </h1>
             <p className="text-[13px] text-[#6b6b80] mt-1.5">
@@ -196,12 +207,12 @@ export default function BlogsPage() {
         </div>
 
         {/* STAT CARDS */}
-        <div className="flex gap-3 mb-7 flex-wrap">
+        {/* <div className="flex gap-3 mb-7 flex-wrap">
           <StatCard icon={FileText} label="Total" value={stats.total} accent="#6366f1" />
           <StatCard icon={Globe} label="Published" value={stats.published} accent="#10b981" />
           <StatCard icon={FileText} label="Drafts" value={stats.draft} accent="#6b6b80" />
           <StatCard icon={Calendar} label="Scheduled" value={stats.scheduled} accent="#f59e0b" />
-        </div>
+        </div> */}
 
         {/* FILTER BAR */}
         <div className="animate-fadeUp bg-[#16161e] border border-[#2a2a38] rounded-xl p-4 mb-4">
@@ -210,28 +221,28 @@ export default function BlogsPage() {
             <div className="relative flex-1 min-w-[180px]">
               <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4b4b6a]" />
               <input
-                className="search-input w-full bg-[#0d0d12] border border-[#2a2a38] rounded-lg py-[9px] px-3 pl-8 text-[#e2e2f0] text-[13px] font-['DM_Sans',sans-serif] placeholder:text-[#4b4b6a] focus:outline-none focus:border-[#6366f1] focus:ring-3 focus:ring-[#6366f1]/20"
+                className="search-input w-full bg-white border border-[#2a2a38] rounded-lg py-[9px] px-3 pl-8 text-black text-[13px] font-['DM_Sans',sans-serif] placeholder:text-[#4b4b6a] focus:outline-none focus:border-[#6366f1] focus:ring-3 focus:ring-[#6366f1]/20"
                 placeholder="Search posts…"
                 value={search}
                 onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
               />
             </div>
 
-            <input 
-              type="date" 
-              onChange={(e) => setFromDate(e.target.value)} 
-              className="bg-[#0d0d12] border border-[#2a2a38] rounded-lg py-[9px] px-3 text-[#e2e2f0] text-[13px] cursor-pointer" 
+            <input
+              type="date"
+              onChange={(e) => setFromDate(e.target.value)}
+              className="bg-white border border-[#2a2a38] rounded-lg py-[9px] px-3  text-[13px] cursor-pointer"
             />
-            <input 
-              type="date" 
-              onChange={(e) => setToDate(e.target.value)}   
-              className="bg-[#0d0d12] border border-[#2a2a38] rounded-lg py-[9px] px-3 text-[#e2e2f0] text-[13px] cursor-pointer" 
+            <input
+              type="date"
+              onChange={(e) => setToDate(e.target.value)}
+              className="bg-white border border-[#2a2a38] rounded-lg py-[9px] px-3 text-black text-[13px] cursor-pointer"
             />
 
-            <select 
-              value={sortBy} 
-              onChange={(e) => setSortBy(e.target.value)} 
-              className="bg-[#0d0d12] border border-[#2a2a38] rounded-lg py-[9px] px-3 text-[#e2e2f0] text-[13px] cursor-pointer"
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="bg-white border border-[#2a2a38] rounded-lg py-[9px] px-3 text-black text-[13px] cursor-pointer"
             >
               <option value="latest">Latest</option>
               <option value="oldest">Oldest</option>
@@ -239,10 +250,10 @@ export default function BlogsPage() {
               <option value="views">Most Views</option>
             </select>
 
-            <select 
-              value={perPage} 
-              onChange={(e) => { setPerPage(Number(e.target.value)); setCurrentPage(1); }} 
-              className="bg-[#0d0d12] border border-[#2a2a38] rounded-lg py-[9px] px-3 text-[#e2e2f0] text-[13px] cursor-pointer"
+            <select
+              value={perPage}
+              onChange={(e) => { setPerPage(Number(e.target.value)); setCurrentPage(1); }}
+              className="bg-white border border-[#2a2a38] rounded-lg py-[9px] px-3 text-black text-[13px] cursor-pointer"
             >
               <option value={10}>10 / page</option>
               <option value={20}>20 / page</option>
@@ -252,14 +263,14 @@ export default function BlogsPage() {
 
           {/* Row 2: Category + Status pills */}
           <div className="flex gap-2 flex-wrap items-center">
-            <span className="text-[11px] text-[#3a3a50] font-semibold uppercase tracking-[0.08em] mr-1">Cat</span>
-            {["all", "cars", "bikes", "news", "analysis"].map((cat) => (
+            <span className="text-[11px] text-white font-semibold uppercase tracking-[0.08em] mr-1">Cat</span>
+            {["all", "cars", "bikes", "news", "market analysis"].map((cat) => (
               <button
                 key={cat}
-                className={`pill-filter ${categoryFilter === cat ? "active" : ""} rounded-full px-[13px] py-[5px] text-[12px] font-medium cursor-pointer capitalize font-['DM_Sans',sans-serif] ${categoryFilter === cat 
-                  ? "bg-[#6366f1] text-white border border-[#6366f1]" 
+                className={`pill-filter ${categoryFilter === cat ? "active" : ""} rounded-full px-[13px] py-[5px] text-[12px] font-medium cursor-pointer capitalize font-['DM_Sans',sans-serif] ${categoryFilter === cat
+                  ? "bg-[#6366f1] text-white border border-[#6366f1]"
                   : "bg-[#1e1e2a] text-[#6b6b80] border border-[#2a2a38] hover:bg-[#2a2a42] hover:text-[#c8c8e0]"
-                }`}
+                  }`}
                 onClick={() => { setCategoryFilter(cat); setCurrentPage(1); }}
               >
                 {cat} <span className="opacity-55">({categoryCounts[cat] || 0})</span>
@@ -268,14 +279,14 @@ export default function BlogsPage() {
 
             <div className="w-px h-[18px] bg-[#2a2a38] mx-1.5" />
 
-            <span className="text-[11px] text-[#3a3a50] font-semibold uppercase tracking-[0.08em] mr-1">Status</span>
+            <span className="text-[11px] text-white font-semibold uppercase tracking-[0.08em] mr-1">Status</span>
             {["all", "published", "draft", "scheduled"].map((s) => (
               <button
                 key={s}
-                className={`pill-filter ${statusFilter === s ? "active" : ""} rounded-full px-[13px] py-[5px] text-[12px] font-medium cursor-pointer capitalize font-['DM_Sans',sans-serif] ${statusFilter === s 
-                  ? "bg-[#6366f1] text-white border border-[#6366f1]" 
+                className={`pill-filter ${statusFilter === s ? "active" : ""} rounded-full px-[13px] py-[5px] text-[12px] font-medium cursor-pointer capitalize font-['DM_Sans',sans-serif] ${statusFilter === s
+                  ? "bg-[#6366f1] text-white border border-[#6366f1]"
                   : "bg-[#1e1e2a] text-[#6b6b80] border border-[#2a2a38] hover:bg-[#2a2a42] hover:text-[#c8c8e0]"
-                }`}
+                  }`}
                 onClick={() => { setStatusFilter(s); setCurrentPage(1); }}
               >
                 {s}
@@ -292,26 +303,26 @@ export default function BlogsPage() {
             </span>
             <div className="w-px h-4 bg-[#2a2a38]" />
             {[
-              { label: "Publish", status: "published", c: "#10b981" }, 
+              { label: "Publish", status: "published", c: "#10b981" },
               { label: "Draft", status: "draft", c: "#6b6b80" }
             ].map(({ label, status, c }) => (
-              <button 
-                key={status} 
-                onClick={() => bulkStatusChange(status)} 
+              <button
+                key={status}
+                onClick={() => bulkStatusChange(status)}
                 className="rounded-md px-[14px] py-[5px] text-[12px] font-semibold cursor-pointer font-['DM_Sans',sans-serif]"
                 style={{ backgroundColor: `${c}18`, color: c, border: `1px solid ${c}35` }}
               >
                 {label}
               </button>
             ))}
-            <button 
-              onClick={() => bulkDelete()} 
+            <button
+              onClick={() => bulkDelete()}
               className="rounded-md px-[14px] py-[5px] text-[12px] font-semibold cursor-pointer font-['DM_Sans',sans-serif] bg-[#ef44441a] text-[#f87171] border border-[#ef444433]"
             >
               Delete
             </button>
-            <button 
-              onClick={() => setSelected([])} 
+            <button
+              onClick={() => setSelected([])}
               className="ml-auto bg-none border-none text-[#4b4b6a] cursor-pointer flex"
             >
               <X size={14} />
@@ -326,19 +337,19 @@ export default function BlogsPage() {
               <thead>
                 <tr className="bg-[#0d0d12] border-b border-[#2a2a38]">
                   <th className="py-[13px] px-4 w-10">
-                    <input 
-                      type="checkbox" 
+                    <input
+                      type="checkbox"
                       onChange={toggleSelectAll}
                       checked={paginated.length > 0 && selected.length === paginated.length}
-                      className="accent-[#6366f1] cursor-pointer" 
+                      className="accent-[#6366f1] cursor-pointer"
                     />
                   </th>
-                  <th className="py-[13px] px-4 text-left text-[#3a3a54] text-[11px] font-semibold tracking-[0.08em] uppercase">Post</th>
-                  <th className="py-[13px] px-4 text-center text-[#3a3a54] text-[11px] font-semibold tracking-[0.08em] uppercase">Category</th>
-                  <th className="py-[13px] px-4 text-center text-[#3a3a54] text-[11px] font-semibold tracking-[0.08em] uppercase">Status</th>
-                  <th className="py-[13px] px-4 text-center text-[#3a3a54] text-[11px] font-semibold tracking-[0.08em] uppercase">Views</th>
-                  <th className="py-[13px] px-4 text-center text-[#3a3a54] text-[11px] font-semibold tracking-[0.08em] uppercase">Date</th>
-                  <th className="py-[13px] px-4 text-center text-[#3a3a54] text-[11px] font-semibold tracking-[0.08em] uppercase"></th>
+                  <th className="py-[13px] px-4 text-left text-white text-[11px] font-semibold tracking-[0.08em] uppercase">Post</th>
+                  <th className="py-[13px] px-4 text-center text-white text-[11px] font-semibold tracking-[0.08em] uppercase">Category</th>
+                  <th className="py-[13px] px-4 text-center text-white text-[11px] font-semibold tracking-[0.08em] uppercase">Status</th>
+                  <th className="py-[13px] px-4 text-center text-white text-[11px] font-semibold tracking-[0.08em] uppercase">Views</th>
+                  <th className="py-[13px] px-4 text-center text-white text-[11px] font-semibold tracking-[0.08em] uppercase">Date</th>
+                  <th className="py-[13px] px-4 text-center text-white text-[11px] font-semibold tracking-[0.08em] uppercase"></th>
                 </tr>
               </thead>
 
@@ -355,11 +366,11 @@ export default function BlogsPage() {
                 {paginated.map((b) => (
                   <tr key={b._id} className="blog-row row-stagger animate-fadeUp border-b border-[#1a1a24] bg-transparent">
                     <td className="py-3 px-4">
-                      <input 
-                        type="checkbox" 
+                      <input
+                        type="checkbox"
                         checked={selected.includes(b._id)}
                         onChange={() => toggleSelect(b._id)}
-                        className="accent-[#6366f1] cursor-pointer" 
+                        className="accent-[#6366f1] cursor-pointer"
                       />
                     </td>
 
@@ -415,7 +426,7 @@ export default function BlogsPage() {
                         {[
                           { icon: Eye, color: "#6366f1", action: () => setPreviewBlog(b), title: "Preview" },
                           { icon: Pencil, color: "#10b981", action: () => setEditBlog(b), title: "Edit" },
-                          { icon: Trash2, color: "#ef4444", action: () => bulkDelete(b._id), title: "Delete" },
+                          { icon: Trash2, color: "#ef4444", action: () => setShowConfirm(b._id), title: "Delete" },
                         ].map(({ icon: Icon, color, action, title }) => (
                           <button
                             key={title}
@@ -460,11 +471,10 @@ export default function BlogsPage() {
                 <button
                   key={i}
                   onClick={() => setCurrentPage(i + 1)}
-                  className={`rounded-md py-1.5 px-3 text-[12px] font-semibold cursor-pointer font-['DM_Sans',sans-serif] ${
-                    currentPage === i + 1
+                  className={`rounded-md py-1.5 px-3 text-[12px] font-semibold cursor-pointer font-['DM_Sans',sans-serif] ${currentPage === i + 1
                       ? "bg-[#6366f1] text-white border border-[#6366f1]"
                       : "bg-[#1e1e2a] text-[#8b8ba8] border border-[#2a2a38]"
-                  }`}
+                    }`}
                 >
                   {i + 1}
                 </button>
@@ -576,7 +586,7 @@ export default function BlogsPage() {
                       className="w-full bg-[#0d0d12] border border-[#2a2a38] rounded-lg py-[9px] px-3 text-[#e2e2f0] text-[13px] cursor-pointer"
                     >
                       <option value="">Select Category</option>
-                      {["Cars", "Bikes", "News", "Analysis"].map((c) => (
+                      {["Cars", "Bikes", "News", "Market Analysis"].map((c) => (
                         <option key={c} value={c}>{c}</option>
                       ))}
                     </select>
@@ -638,7 +648,40 @@ export default function BlogsPage() {
             </div>
           </div>
         )}
+        {showConfirm && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
 
+            <div className="bg-white rounded-2xl p-6 w-[360px] shadow-2xl animate-fadeIn">
+
+              <h2 className="text-lg font-semibold mb-2 text-gray-800">
+                Delete Post?
+              </h2>
+
+              <p className="text-sm text-gray-500 mb-5">
+                This action cannot be undone.
+              </p>
+
+              <div className="flex justify-end gap-2">
+
+                <button
+                  onClick={() => setShowConfirm(null)}
+                  className="px-4 py-2 border rounded-lg hover:bg-gray-100 transition"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  onClick={handleDelete}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                >
+                  Yes, Delete
+                </button>
+
+              </div>
+
+            </div>
+          </div>
+        )}
       </div>
     </>
   );
