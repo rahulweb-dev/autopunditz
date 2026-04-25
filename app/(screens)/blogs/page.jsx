@@ -11,7 +11,7 @@ export default function BlogsPage() {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const res = await fetch('/api/blog')
+        const res = await fetch('/api/blog/public')
         const data = await res.json()
         setBlogs(data)
       } catch (err) {

@@ -11,7 +11,6 @@ import Link from "@tiptap/extension-link";
 import ResizeImage from "tiptap-extension-resize-image";
 import MenuBar from "../components/MenuBar";
 import { useEffect } from "react";
-
 export default function Tiptap({ setContent, initialContent }) {
 
   const editor = useEditor({
@@ -49,7 +48,7 @@ export default function Tiptap({ setContent, initialContent }) {
     editorProps: {
       attributes: {
         class:
-          "min-h-[200px] border rounded-md bg-slate-50 py-3 px-4 focus:outline-none",
+          "min-h-[200px] border rounded-md bg-slate-50 py-3 px-4 focus:outline-none whitespace-pre-wrap break-words",
       },
     },
 

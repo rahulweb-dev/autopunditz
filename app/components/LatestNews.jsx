@@ -15,7 +15,7 @@ export default function LatestNews() {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const res = await fetch("/api/blog");
+        const res = await fetch("/api/blog/public");
         const data = await res.json();
         setBlogs(data.data || data);
       } catch (err) {
