@@ -2,157 +2,148 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { analyses } from "@/app/constants/data/marketAnalysisData";
+import useBlogs from "@/hooks/useBlogs";
+import { useMemo } from "react";
+
+function extractImage(html) {
+  if (!html) return "/placeholder.jpg";
+  const match = html.match(/<img[^>]+src="([^">]+)"/);
+  return match ? match[1] : "/placeholder.jpg";
+}
 
 export default function MarketAnalysis() {
+  const { blogs, isLoading } = useBlogs();
+
+  const analyses = useMemo(() => {
+    return blogs
+      .filter(blog =>
+        blog?.category?.toLowerCase()?.includes("market")
+      )
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  }, [blogs]);
+
+  const featured = analyses[0];
+
+  // ✅ better loading logic
+  if (isLoading && !blogs.length) {
+    return <p className="text-center py-20">Loading...</p>;
+  }
 
   return (
-
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
-
-      {/* Header */}
+    <section className="max-w-7xl mx-auto px-4 py-6 md:py-10">
 
       <div className="mb-6 md:mb-8">
-
-        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold">
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold">
           Market Analysis
         </h2>
-
-        <p className="text-gray-500 text-xs sm:text-sm md:text-base">
+        <p className="text-gray-500 text-sm md:text-base">
           Automotive industry insights & reports
         </p>
-
       </div>
 
+      {analyses.length === 0 ? (
+        <p className="text-center">No Market Analysis found</p>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-      {/* Layout */}
+          {/* Featured */}
+          {featured && (
+            <Link
+              href={`/market-analysis/${featured._id}`}
+              className="lg:col-span-2 group"
+            >
+              <div className="bg-white rounded-xl overflow-hidden hover:shadow-lg">
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
+                <div className="relative w-full h-64 md:h-72">
+                  <Image
+                    src={extractImage(featured.content)}
+                    fill
+                    alt={featured.title}
+                    className="object-cover"
+                  />
+                </div>
 
-        {/* Featured */}
-        <Link
-          href={`/market-analysis/${analyses[0].slug}`}
-          className="lg:col-span-2 block group"
-        >
+                <div className="p-5">
+                  <h3 className="text-xl md:text-2xl font-semibold mb-2">
+                    {featured.title}
+                  </h3>
 
-          <div className="bg-white rounded-xl overflow-hidden hover:shadow-lg transition duration-300">
-
-            {/* Image */}
-            <div className="relative w-full h-56 sm:h-54 md:h-72 lg:h-[290px]">
-
-              <Image
-                src={analyses[0].image}
-                fill
-                alt={analyses[0].title}
-                className="object-cover group-hover:scale-105 transition duration-500"
-              />
-
-            </div>
-
-            {/* Content */}
-            <div className="p-4 md:p-5">
-
-              <h3 className="text-lg sm:text-xl md:text-2xl font-semibold leading-snug mb-2">
-                {analyses[0].title}
-              </h3>
-
-              <div className="text-sm text-gray-600 mb-2">
-                <span className="font-semibold">
-                  {analyses[0].author}
-                </span>
-
-                <span className="mx-2">-</span>
-
-                <span>
-                  {analyses[0].date}
-                </span>
-              </div>
-
-              <span className="text-red-500 font-medium group-hover:text-red-600 transition">
-                Read Report →
-              </span>
-
-            </div>
-
-          </div>
-
-        </Link>
-
-        {/* Side Scroll */}
-        <div className="flex flex-col h-full">
-
-          <div className="h-[520px] sm:h-[560px] lg:h-[360px] overflow-y-auto space-y-6 pr-2">
-
-            {analyses.slice(1).map((item, i) => (
-
-              <Link
-                key={i}
-                href={`/market-analysis/${item.slug}`}
-                className="block group"
-              >
-
-                <div className="bg-white rounded-xl overflow-hidden  hover:shadow-lg transition duration-300">
-
-                  {/* Image */}
-                  <div className="relative w-full h-44 sm:h-48">
-
-                    <Image
-                      src={item.image}
-                      fill
-                      alt={item.title}
-                      className="object-cover group-hover:scale-105 transition duration-500"
-                    />
-
+                  <div className="text-sm text-gray-600 mb-2">
+                    <span className="font-semibold">
+                      {featured.author || "Admin"}
+                    </span>
+                    <span className="mx-2">-</span>
+                    <span>
+                      {new Date(featured.createdAt).toDateString()}
+                    </span>
                   </div>
 
-                  {/* Content */}
-                  <div className="p-3">
+                  <span className="text-red-500 font-medium">
+                    Read Report →
+                  </span>
+                </div>
 
-                    <h3 className="text-xl sm:text-base font-semibold leading-snug mb-2 line-clamp-2">
-                      {item.title}
-                    </h3>
+              </div>
+            </Link>
+          )}
 
-                    <div className="text-xs sm:text-sm text-gray-600 mb-2">
-                      <span className="font-semibold">
-                        {item.author}
-                      </span>
+          {/* Side */}
+          <div className="flex flex-col">
+            <div className="h-[360px] overflow-y-auto space-y-6 pr-2">
 
-                      <span className="mx-2">-</span>
+              {analyses.slice(1).map((item) => (
+                <Link
+                  key={item._id}
+                  href={`/market-analysis/${item._id}`}
+                  className="group"
+                >
+                  <div className="bg-white rounded-xl overflow-hidden hover:shadow-lg">
 
-                      <span>
-                        {item.date}
+                    <div className="relative w-full h-44">
+                      <Image
+                        src={extractImage(item.content)}
+                        fill
+                        alt={item.title}
+                        className="object-cover"
+                      />
+                    </div>
+
+                    <div className="p-3">
+                      <h3 className="text-base font-semibold mb-2 line-clamp-2">
+                        {item.title}
+                      </h3>
+
+                      <div className="text-xs text-gray-600 mb-2">
+                        <span className="font-semibold">
+                          {item.author || "Admin"}
+                        </span>
+                        <span className="mx-2">-</span>
+                        <span>
+                          {new Date(item.createdAt).toDateString()}
+                        </span>
+                      </div>
+
+                      <span className="text-red-500 text-sm">
+                        Read Report →
                       </span>
                     </div>
 
-                    {/* Read Report */}
-                    <span className="text-red-500 text-xs sm:text-sm font-medium group-hover:text-red-600 transition">
-                      Read Report →
-                    </span>
-
                   </div>
+                </Link>
+              ))}
 
-                </div>
+            </div>
 
-              </Link>
-
-            ))}
-
+            <Link
+              href="/market-analysis"
+              className="mt-4 text-red-500 text-sm font-medium"
+            >
+              Explore Market Analysis →
+            </Link>
           </div>
 
-          {/* Explore */}
-          <Link
-            href="/market-analysis"
-            className="mt-4 text-red-500 text-sm font-medium hover:text-red-600"
-          >
-            Explore Market Analysis →
-          </Link>
-
         </div>
-
-      </div>
-
+      )}
     </section>
-
   );
-
 }

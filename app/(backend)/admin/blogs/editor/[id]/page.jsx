@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Tiptap from "@/app/components/Tiptap";
+import useBlogs from "@/hooks/useBlogs";
 
 export default function EditorPage() {
   const { id } = useParams();
@@ -10,56 +11,54 @@ export default function EditorPage() {
 
   const isEdit = id !== "new";
 
-  const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("");
-  const [content, setContent] = useState("");
-  const [status, setStatus] = useState("draft");
-  const [publishAt, setPublishAt] = useState("");
+  const { blogs, isLoading } = useBlogs();
+
+  // 🔥 find blog from cache
+  const blog = isEdit
+    ? blogs.find((b) => b._id?.toString() === id)
+    : null;
+
+  // ⛔ prevent empty state issue
+  if (isEdit && isLoading) {
+    return <div className="p-6">Loading...</div>;
+  }
+
+  // 🔥 initialize state from blog (NO useEffect)
+  const [title, setTitle] = useState(blog?.title || "");
+  const [category, setCategory] = useState(blog?.category || "");
+  const [content, setContent] = useState(blog?.content || "");
+  const [status, setStatus] = useState(blog?.status || "draft");
+
+  const [publishAt, setPublishAt] = useState(() => {
+    if (!blog?.publishAt) return "";
+    return new Date(blog.publishAt).toISOString().slice(0, 16);
+  });
+
   const [loading, setLoading] = useState(false);
 
-  // 🔥 LOAD BLOG (EDIT MODE)
-  useEffect(() => {
-    if (!isEdit) return;
-
-    fetch(`/api/blog/${id}`)
-      .then(res => res.json())
-      .then(data => {
-        setTitle(data.title || "");
-        setCategory(data.category || "");
-        setContent(data.content || "");
-        setStatus(data.status || "draft");
-
-        if (data.publishAt) {
-          const date = new Date(data.publishAt);
-          setPublishAt(date.toISOString().slice(0, 16));
-        }
-      });
-  }, [id]);
-
-  // ✅ HANDLE SAVE (FULLY FIXED)
+  // ✅ SAVE FUNCTION
   const handleSave = async (type) => {
     if (!title.trim()) return alert("Title required");
 
+    if (!content || content === "<p></p>") {
+      return alert("Content required");
+    }
+
     let finalStatus = type;
 
-    // 🔥 FIX 1: Auto convert publish → scheduled if future date
     if (type === "published" && publishAt) {
-      const selectedTime = new Date(publishAt);
-      const now = new Date();
-
-      if (selectedTime > now) {
+      if (new Date(publishAt) > new Date()) {
         finalStatus = "scheduled";
       }
     }
 
-    // 🔥 FIX 2: Prevent scheduling without date
     if (type === "scheduled" && !publishAt) {
       return alert("Please select publish date & time");
     }
 
     const payload = {
       title,
-      category,
+      category: category.toLowerCase(), // 🔥 normalize
       content,
       status: finalStatus,
       publishAt: publishAt ? new Date(publishAt) : null,
@@ -109,7 +108,7 @@ export default function EditorPage() {
         <option value="Cars">Cars</option>
         <option value="Bikes">Bikes</option>
         <option value="News">News</option>
-         <option value="Market Analysis">Market Analysis</option>
+        <option value="Market Analysis">Market Analysis</option>
       </select>
 
       {/* SCHEDULE */}
@@ -126,8 +125,12 @@ export default function EditorPage() {
       </div>
 
       {/* EDITOR */}
-      {/* <Tiptap setContent={setContent} initialContent={content} /> */}
-      <Tiptap setContent={setContent} />
+      <Tiptap
+        key={id} // 🔥 important
+        setContent={setContent}
+        // initialContent={content}
+      />
+
       {/* ACTION BUTTONS */}
       <div className="flex gap-3 pt-4">
 

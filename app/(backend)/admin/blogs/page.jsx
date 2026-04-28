@@ -5,7 +5,9 @@ import Link from "next/link";
 import { Plus, Pencil, Trash2, Eye, Search, ChevronLeft, ChevronRight, X, Calendar, FileText, Globe } from "lucide-react";
 import Image from "next/image";
 import Tiptap from "@/app/components/Tiptap";
+import useSWR from "swr";
 
+const fetcher = (url) => fetch(url).then((res) => res.json());
 const StatCard = ({ icon: Icon, label, value, accent }) => (
   <div className="stat-card animate-fadeUp bg-[#16161e] border border-[#2a2a38] rounded-xl p-[18px_22px] flex items-center gap-3.5 flex-1 min-w-[130px]">
     <div className={`bg-[${accent}20] rounded-lg p-2.5 flex-shrink-0`} style={{ backgroundColor: `${accent}20` }}>
@@ -19,7 +21,13 @@ const StatCard = ({ icon: Icon, label, value, accent }) => (
 );
 
 export default function BlogsPage() {
-  const [blogs, setBlogs] = useState([]);
+  const { data, mutate } = useSWR("/api/blog", fetcher, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    dedupingInterval: 60000,
+  });
+
+  const blogs = Array.isArray(data) ? data : data?.data || [];
   const [selected, setSelected] = useState([]);
   const [statusFilter, setStatusFilter] = useState("all");
   const [search, setSearch] = useState("");
@@ -33,9 +41,6 @@ export default function BlogsPage() {
   const [editBlog, setEditBlog] = useState(null);
   const [sortBy, setSortBy] = useState("latest");
   const [showConfirm, setShowConfirm] = useState(null)
-  useEffect(() => {
-    fetch("/api/blog").then((r) => r.json()).then(setBlogs);
-  }, []);
 
   useEffect(() => {
     if (editBlog) setEditorContent(editBlog.content || "");
@@ -83,22 +88,48 @@ export default function BlogsPage() {
   const bulkDelete = async (singleId = null) => {
     const ids = singleId ? [singleId] : selected;
     if (!ids.length || !confirm("Delete selected blog(s)?")) return;
-    await Promise.all(ids.map((id) => fetch(`/api/blog/${id}`, { method: "DELETE" })));
-    setBlogs((prev) => prev.filter((b) => !ids.includes(b._id)));
+
+    await Promise.all(ids.map((id) =>
+      fetch(`/api/blog/${id}`, { method: "DELETE" })
+    ));
+
+    mutate((prev) => prev.filter((b) => !ids.includes(b._id)), false);
+
     if (!singleId) setSelected([]);
   };
 
   const bulkStatusChange = async (status) => {
     await Promise.all(selected.map((id) =>
-      fetch(`/api/blog/${id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status }) })
+      fetch(`/api/blog/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      })
     ));
-    setBlogs((prev) => prev.map((b) => selected.includes(b._id) ? { ...b, status } : b));
+
+    mutate((prev) =>
+      prev.map((b) =>
+        selected.includes(b._id) ? { ...b, status } : b
+      ),
+      false
+    );
+
     setSelected([]);
   };
 
   const updateStatus = async (id, status) => {
-    await fetch(`/api/blog/${id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status }) });
-    setBlogs((prev) => prev.map((b) => b._id === id ? { ...b, status } : b));
+    await fetch(`/api/blog/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status }),
+    });
+
+    mutate((prev) =>
+      prev.map((b) =>
+        b._id === id ? { ...b, status } : b
+      ),
+      false
+    );
   };
 
   const handleDelete = async () => {
@@ -108,7 +139,7 @@ export default function BlogsPage() {
       method: "DELETE",
     });
 
-    setBlogs((prev) => prev.filter((b) => b._id !== showConfirm));
+    mutate((prev) => prev.filter((b) => b._id !== showConfirm), false);
     setShowConfirm(null);
   };
 
@@ -472,8 +503,8 @@ export default function BlogsPage() {
                   key={i}
                   onClick={() => setCurrentPage(i + 1)}
                   className={`rounded-md py-1.5 px-3 text-[12px] font-semibold cursor-pointer font-['DM_Sans',sans-serif] ${currentPage === i + 1
-                      ? "bg-[#6366f1] text-white border border-[#6366f1]"
-                      : "bg-[#1e1e2a] text-[#8b8ba8] border border-[#2a2a38]"
+                    ? "bg-[#6366f1] text-white border border-[#6366f1]"
+                    : "bg-[#1e1e2a] text-[#8b8ba8] border border-[#2a2a38]"
                     }`}
                 >
                   {i + 1}
@@ -634,7 +665,12 @@ export default function BlogsPage() {
                         body: JSON.stringify(updated),
                       });
                       if (!res.ok) throw new Error("Update failed");
-                      setBlogs((prev) => prev.map((b) => b._id === editBlog._id ? updated : b));
+                      mutate((prev) =>
+                        prev.map((b) =>
+                          b._id === editBlog._id ? updated : b
+                        ),
+                        false
+                      );
                       setEditBlog(null);
                     } catch (err) {
                       console.error(err);
