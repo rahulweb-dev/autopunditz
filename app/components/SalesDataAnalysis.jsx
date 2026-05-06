@@ -10,42 +10,42 @@ const salesCategories = [
     icon: Car,
     image:
       "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1600&auto=format&fit=crop",
-    link: "/sales/car-sales",
+    link: "/sales-analysis/car-sales-figures",
   },
   {
     title: "Two Wheeler Sales",
     icon: Bike,
     image:
       "https://plus.unsplash.com/premium_photo-1661963005592-182d602c6a3f?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    link: "/sales/two-wheeler",
+    link: "/sales-analysis/two-wheeler-sales-figures",
   },
   {
     title: "Three Wheeler Sales",
     icon: Truck,
     image:
       "https://images.unsplash.com/photo-1677981316525-53d7d56d7a04?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    link: "/sales/three-wheeler",
+    link: "/sales-analysis/three-wheeler-sales-statistics",
   },
   {
     title: "Commercial Vehicle Sales",
     icon: BarChart3,
     image:
       "https://images.unsplash.com/photo-1763067036683-00e8491af467?w=700&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tbWVyY2lhbCUyMHZlaGljbGVzfGVufDB8fDB8fHww",
-    link: "/sales/commercial-vehicles",
+    link: "/sales-analysis/commercial-vehicle-sales",
   },
   {
     title: "Electric Vehicle Sales",
     icon: Zap,
     image:
       "https://images.unsplash.com/photo-1666919643134-d97687c1826c?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    link: "/sales/electric-vehicles",
+    link: "/sales-analysis/electric-vehicle-sales",
   },
   {
     title: "Yearly Sales",
     icon: Calendar,
     image:
       "https://plus.unsplash.com/premium_photo-1742395281482-7e970c1f6057?w=700&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8eWVhcmx5JTIwc2FsZXN8ZW58MHx8MHx8fDA%3D",
-    link: "/sales/yearly-sales",
+    link: "/sales-analysis/yearly-sales-analysis",
   },
 ];
 

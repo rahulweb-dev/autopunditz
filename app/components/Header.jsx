@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown, Search } from "lucide-react";
+import SearchModal from "./SearchModal";
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -13,7 +14,8 @@ export default function Header() {
   const toggleDropdown = (menu) => {
     setOpenDropdown(openDropdown === menu ? null : menu);
   };
-
+  const [searchOpen, setSearchOpen] =
+    useState(false);
   return (
     <motion.header
       initial={{ y: -30, opacity: 0 }}
@@ -57,47 +59,47 @@ export default function Header() {
 
                 <div className="space-y-2 text-sm">
 
-                  <Link href="/sales/car-sales" className="dropdownLink">
+                  <Link href="/sales-analysis/car-sales-figures" className="dropdownLink">
                     Car Sales Figures
                   </Link>
 
-                  <Link href="/sales/two-wheeler" className="dropdownLink">
+                  <Link href="/sales-analysis/two-wheeler-sales-figures" className="dropdownLink">
                     Two Wheeler Sales Figures
                   </Link>
 
-                  <Link href="/sales/three-wheeler" className="dropdownLink">
+                  <Link href="/sales-analysis/three-wheeler-sales-statistics" className="dropdownLink">
                     Three Wheeler Sales Statistics
                   </Link>
 
-                  <Link href="/sales/tractor" className="dropdownLink">
+                  <Link href="/sales-analysis/tractor-sales" className="dropdownLink">
                     Tractor Sales
                   </Link>
 
-                  <Link href="/sales/commercial" className="dropdownLink">
+                  <Link href="/sales-analysis/commercial-vehicle-sales" className="dropdownLink">
                     Commercial Vehicle Sales
                   </Link>
 
-                  <Link href="/sales/electric" className="dropdownLink">
+                  <Link href="/sales-analysis/electric-vehicle-sales" className="dropdownLink">
                     Electric Vehicle Sales
                   </Link>
 
-                  <Link href="/sales/yearly" className="dropdownLink">
+                  <Link href="/sales-analysis/yearly-sales-analysis" className="dropdownLink">
                     Yearly Sales Analysis
                   </Link>
 
-                  <Link href="/sales/statewise" className="dropdownLink">
+                  <Link href="/sales-analysis/statewise-sales-figures" className="dropdownLink">
                     Statewise Sales Figures
                   </Link>
 
-                  <Link href="/sales/registration" className="dropdownLink">
+                  <Link href="/sales-analysis/vehicle-registration-data" className="dropdownLink">
                     Vehicle Registration Data
                   </Link>
 
-                  <Link href="/sales/production" className="dropdownLink">
+                  <Link href="/sales-analysis/production-statistics" className="dropdownLink">
                     Production Statistics
                   </Link>
 
-                  <Link href="/sales/export" className="dropdownLink">
+                  <Link href="/sales-analysis/export-statistics" className="dropdownLink">
                     Export Statistics
                   </Link>
 
@@ -174,14 +176,14 @@ export default function Header() {
             </div>
 
             <Link
-              href="/about"
+              href="/about-us"
               className="text-sm font-semibold hover:text-blue-600"
             >
               ABOUT US
             </Link>
 
             <Link
-              href="/contact"
+              href="/contact-us"
               className="text-sm font-semibold hover:text-blue-600"
             >
               CONTACT US
@@ -191,20 +193,67 @@ export default function Header() {
 
           {/* Right Section */}
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 relative">
 
-            <button className="hidden md:flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-lg hover:bg-gray-200">
-              <Search size={18} />
-              <span className="text-sm">Search</span>
-            </button>
-
-            {/* Mobile Button */}
+            {/* SEARCH BUTTON */}
 
             <button
-              onClick={() => setMobileOpen(!mobileOpen)}
+              onClick={() => setSearchOpen(true)}
+              className="
+      hidden md:flex
+      items-center
+      gap-2
+      bg-gray-100
+      hover:bg-gray-200
+      px-4
+      py-2
+      rounded-xl
+      transition
+    "
+            >
+
+              <Search size={18} />
+
+              <span className="text-sm font-medium">
+                Search
+              </span>
+
+            </button>
+
+            {/* MOBILE SEARCH */}
+
+            <button
+              onClick={() => setSearchOpen(true)}
+              className="
+      md:hidden
+      p-2
+      rounded-lg
+      hover:bg-gray-100
+    "
+            >
+
+              <Search size={20} />
+
+            </button>
+
+            {/* SEARCH MODAL */}
+
+            <SearchModal
+              open={searchOpen}
+              setOpen={setSearchOpen}
+            />
+
+            {/* MOBILE MENU BUTTON */}
+
+            <button
+              onClick={() =>
+                setMobileOpen(!mobileOpen)
+              }
               className="lg:hidden"
             >
+
               {mobileOpen ? <X /> : <Menu />}
+
             </button>
 
           </div>
@@ -216,66 +265,110 @@ export default function Header() {
       {/* Mobile Menu */}
 
       <AnimatePresence>
-
         {mobileOpen && (
+          <>
+            {/* 🔥 BACKDROP */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileOpen(false)}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
+            />
 
-          <motion.div
-            initial={{ height: 0 }}
-            animate={{ height: "auto" }}
-            exit={{ height: 0 }}
-            className="lg:hidden bg-white border-t"
-          >
+            {/* 🔥 SIDE PANEL */}
+            <motion.div
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ type: "spring", stiffness: 260, damping: 25 }}
+              className="fixed top-0 left-0 h-full w-[85%] max-w-sm bg-white z-50 shadow-2xl flex flex-col"
+            >
 
-            <div className="p-4 space-y-4">
+              {/* HEADER */}
+              <div className="flex items-center justify-between p-5 border-b">
+                <h2 className="font-bold text-lg tracking-wide">AutoPunditz</h2>
 
-              <Link href="/">HOME</Link>
+                <button onClick={() => setMobileOpen(false)}>
+                  <X size={22} />
+                </button>
+              </div>
 
-              <MobileDropdown
-                title="SALES ANALYSIS"
-                menu="sales"
-                openDropdown={openDropdown}
-                toggleDropdown={toggleDropdown}
-                links={[
-                  { name: "Car Sales Figures", href: "/sales/car-sales" },
-                  { name: "Two Wheeler", href: "/sales/two-wheeler" },
-                  { name: "Three Wheeler", href: "/sales/three-wheeler" },
-                  { name: "Tractor", href: "/sales/tractor" },
-                ]}
-              />
+              {/* MENU CONTENT */}
+              <div className="flex-1 overflow-y-auto p-5 space-y-5">
 
-              <MobileDropdown
-                title="NEWS"
-                menu="news"
-                openDropdown={openDropdown}
-                toggleDropdown={toggleDropdown}
-                links={[
-                  { name: "Cars", href: "/news/cars" },
-                  { name: "Bikes", href: "/news/bikes" },
-                  { name: "Offers", href: "/news/offers" },
-                ]}
-              />
+                {/* HOME */}
+                <Link
+                  href="/"
+                  onClick={() => setMobileOpen(false)}
+                  className="block text-lg font-semibold"
+                >
+                  Home
+                </Link>
 
-              <MobileDropdown
-                title="AUTOPEDIA"
-                menu="autopedia"
-                openDropdown={openDropdown}
-                toggleDropdown={toggleDropdown}
-                links={[
-                  { name: "Dealerships", href: "/autopedia/dealerships" },
-                  { name: "Editorials", href: "/autopedia/editorials" },
-                ]}
-              />
+                {/* DROPDOWNS */}
+                <MobileDropdown
+                  title="Sales Analysis"
+                  menu="sales"
+                  openDropdown={openDropdown}
+                  toggleDropdown={toggleDropdown}
+                  links={[
+                    { name: "Car Sales Figures", href: "/sales-analysis/car-sales-figures" },
+                    { name: "Two Wheeler", href: "/sales-analysis/two-wheeler-sales-figures" },
+                    { name: "Three Wheeler", href: "/sales-analysis/three-wheeler-sales-statistics" },
+                    { name: "Tractor", href: "/sales-analysis/tractor-sales" },
+                    { name: "Commercial Vehicle Sales", href: "/sales-analysis/commercial-vehicle-sales" },
+                    { name: "Electric Vehicle Sales", href: "/sales-analysis/electric-vehicle-sales" },
+                    { name: "Yearly Sales Analysis", href: "/sales-analysis/yearly-sales-analysis" },
+                    { name: "Statewise Sales Figures", href: "/sales-analysis/statewise-sales-figures" },
+                    { name: "Vehicle Registration Data", href: "/sales-analysis/vehicle-registration-data" },
+                    { name: "Production Statistics", href: "/sales-analysis/production-statistics" },
+                    { name: "Export Statistics", href: "/sales-analysis/export-statistics" },
+                  ]}
+                />
 
-              <Link href="/about">ABOUT</Link>
+                <MobileDropdown
+                  title="News"
+                  menu="news"
+                  openDropdown={openDropdown}
+                  toggleDropdown={toggleDropdown}
+                  links={[
+                    { name: "Cars", href: "/news/cars" },
+                    { name: "Bikes", href: "/news/bikes" },
+                    { name: "Offers", href: "/news/offers" },
+                  ]}
+                />
 
-              <Link href="/contact">CONTACT</Link>
+                <MobileDropdown
+                  title="Autopedia"
+                  menu="autopedia"
+                  openDropdown={openDropdown}
+                  toggleDropdown={toggleDropdown}
+                  links={[
+                    { name: "Dealerships", href: "/autopedia/dealerships" },
+                    { name: "Editorials", href: "/autopedia/editorials" },
+                  ]}
+                />
 
-            </div>
+                {/* SIMPLE LINKS */}
+                <Link href="/about" className="block text-lg font-medium">
+                  About
+                </Link>
 
-          </motion.div>
+                <Link href="/contact" className="block text-lg font-medium">
+                  Contact
+                </Link>
 
+              </div>
+
+              {/* 🔥 FOOTER */}
+              <div className="p-5 border-t text-sm text-gray-500">
+                © AutoPunditz
+              </div>
+
+            </motion.div>
+          </>
         )}
-
       </AnimatePresence>
 
     </motion.header>
@@ -289,28 +382,45 @@ function MobileDropdown({
   toggleDropdown,
   links,
 }) {
+  const isOpen = openDropdown === menu;
+
   return (
-    <div>
+    <div className="border-b pb-3">
 
       <button
         onClick={() => toggleDropdown(menu)}
-        className="flex justify-between w-full"
+        className="flex justify-between items-center w-full text-lg font-medium py-2"
       >
         {title}
-        <ChevronDown size={16} />
+
+        <ChevronDown
+          size={18}
+          className={`transition-transform duration-300 ${isOpen ? "rotate-180" : ""
+            }`}
+        />
       </button>
 
-      {openDropdown === menu && (
-        <div className="pl-4 mt-2 space-y-2">
-
-          {links.map((link, index) => (
-            <Link key={index} href={link.href}>
-              {link.name}
-            </Link>
-          ))}
-
-        </div>
-      )}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="pl-3 mt-2 space-y-2 text-gray-600"
+          >
+            {links.map((link, index) => (
+              <Link
+                key={index}
+                href={link.href}
+                className="block py-1 hover:text-black"
+              >
+                {link.name}
+              </Link>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </div>
   );

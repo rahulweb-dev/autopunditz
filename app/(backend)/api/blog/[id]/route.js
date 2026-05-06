@@ -31,9 +31,21 @@ export async function PUT(req, context) {
 
     console.log("Updating:", id, body); // debug
 
-    const updated = await Blog.findByIdAndUpdate(id, body, {
-      new: true,
-    });
+    const updated = await Blog.findByIdAndUpdate(
+      id,
+      {
+        title: body.title,
+        category: body.category,
+        subCategory: body.subCategory, // 🔥 FORCE UPDATE
+        content: body.content,
+        status: body.status,
+        publishAt: body.publishAt,
+      },
+      {
+        new: true,
+        runValidators: true, // 🔥 IMPORTANT
+      }
+    );
 
     if (!updated) {
       return Response.json(

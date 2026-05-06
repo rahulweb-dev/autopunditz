@@ -28,7 +28,9 @@ export default function LatestNews() {
 
   // ✅ Filter based on active tab
   const filtered = blogs.filter(
-    (item) => item.category?.toLowerCase() === active.toLowerCase()
+    (item) =>
+      item.category === "News" &&
+      item.subCategory?.toLowerCase() === active.toLowerCase()
   );
 
   // ✅ Extract image + desc (same as your old structure)
@@ -73,11 +75,10 @@ export default function LatestNews() {
           <button
             key={tab}
             onClick={() => setActive(tab)}
-            className={`pb-2 text-xs sm:text-sm md:text-base whitespace-nowrap transition ${
-              active === tab
+            className={`pb-2 text-xs sm:text-sm md:text-base whitespace-nowrap transition ${active === tab
                 ? "border-b-2 border-red-500 text-red-500 font-medium"
                 : "text-gray-500 hover:text-black"
-            }`}
+              }`}
           >
             {tab}
           </button>

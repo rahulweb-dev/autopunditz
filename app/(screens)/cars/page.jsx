@@ -15,7 +15,12 @@ export default function CarsPage() {
 
         // ✅ Filter only Cars category
         const filtered = (data.data || data).filter(
-          (item) => item.category?.toLowerCase() === "cars"
+          (item) =>
+            item.category?.toLowerCase() ===
+            "news" &&
+            item.subCategory?.toLowerCase() ===
+            "cars" &&
+            item.status === "published"
         );
 
         setCars(filtered);

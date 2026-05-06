@@ -14,10 +14,18 @@ export default function MarketAnalysisPage() {
   const { blogs, isLoading } = useBlogs();
 
   const analyses = blogs
-    .filter((blog) =>
-      blog?.category?.toLowerCase()?.includes("market")
+    .filter(
+      (blog) =>
+        blog?.category?.toLowerCase() ===
+        "marketanalysis" &&
+        blog?.subCategory?.toLowerCase() ===
+        "marketanalysis"
     )
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt) -
+        new Date(a.createdAt)
+    );
 
   if (isLoading) return <p>Loading...</p>;
   if (!analyses.length) return <p>No Market Analysis found</p>;

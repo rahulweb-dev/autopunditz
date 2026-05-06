@@ -15,9 +15,13 @@ export default function BikesPage() {
 
         // ✅ Filter Bikes category
         const filtered = (data.data || data).filter(
-          (item) => item.category?.toLowerCase() === "bikes"
+          (item) =>
+            item.category?.toLowerCase() ===
+            "news" &&
+            item.subCategory?.toLowerCase() ===
+            "bikes" &&
+            item.status === "published"
         );
-
         setBikes(filtered);
       } catch (err) {
         console.error(err);

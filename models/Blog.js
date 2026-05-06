@@ -5,7 +5,11 @@ const BlogSchema = new mongoose.Schema(
     title: { type: String, required: true },
     content: { type: String, required: true },
     category: { type: String, default: "News" },
-
+    subCategory: {
+      type: String,
+      default:"Two wheeler",
+      required: true,
+    },
     status: {
       type: String,
       enum: ["draft", "published", "pending", "scheduled", "trash"],

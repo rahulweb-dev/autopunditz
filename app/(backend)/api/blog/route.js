@@ -24,26 +24,67 @@ export async function GET() {
   return Response.json(blogs);
 }
 
-// CREATE
 export async function POST(req) {
-  await connectDB();
+await connectDB();
 
-  const body = await req.json();
+try {
+  const {
+    title,
+    category,
+    subCategory,
+    content,
+    status,
+    publishAt,
+  } = await req.json();
+
+  // ✅ VALIDATIONS
+  if (!title) {
+    return Response.json({ error: "Title required" }, { status: 400 });
+  }
+
+  if (!content) {
+    return Response.json({ error: "Content required" }, { status: 400 });
+  }
+
+  if (!category) {
+    return Response.json({ error: "Category required" }, { status: 400 });
+  }
+
+  if (!subCategory) {
+    return Response.json({ error: "SubCategory required" }, { status: 400 });
+  }
 
   const now = new Date();
+  let finalStatus = status || "draft";
 
-  if (body.publishAt) {
-    const publishDate = new Date(body.publishAt);
+  // 🔥 AUTO STATUS LOGIC
+  if (publishAt) {
+    const publishDate = new Date(publishAt);
 
-    // 🔥 FIX: compare correctly
     if (publishDate > now) {
-      body.status = "scheduled";
+      finalStatus = "scheduled";
     } else {
-      body.status = "published";
+      finalStatus = "published";
     }
   }
 
-  const blog = await Blog.create(body);
+  // ✅ CREATE BLOG (explicit fields only)
+  const blog = await Blog.create({
+    title,
+    category,
+    subCategory, // 🔥 GUARANTEED SAVE
+    content,
+    status: finalStatus,
+    publishAt,
+  });
 
   return Response.json(blog, { status: 201 });
+
+} catch (error) {
+  console.error("POST BLOG ERROR:", error);
+  return Response.json(
+    { error: error.message || "Something went wrong" },
+    { status: 500 }
+  );
+}
 }
