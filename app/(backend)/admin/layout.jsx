@@ -46,12 +46,7 @@ export default function AdminLayout({ children }) {
       {/* SIDEBAR */}
       <aside
         className={`
-          ${collapsed ? "w-16 " : "w-64"}
-          bg-[#0f0f12] text-white
-          flex flex-col min-h-screen
-          transition-all duration-300 shadow-xl
-
-          fixed md:relative top-0 left-0 h-full z-50
+          ${collapsed ? "w-16 " : "w-64"} bg-[#0f0f12] text-white flex flex-col min-h-screen transition-all duration-300 shadow-xl fixed md:relative top-0 left-0 h-full z-50
           ${mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         `}
       >

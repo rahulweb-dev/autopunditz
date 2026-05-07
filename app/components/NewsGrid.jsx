@@ -66,7 +66,7 @@ export default function NewsGrid({ title, subtitle, data, basePath }) {
 
                 {/* ✅ META (FIXED) */}
                 <p className="text-xs text-gray-400 mb-2">
-                  {formatDate(item.date || item.createdAt)} •{" "}
+                  {formatDate(item.date || item.createdAt)} 
                   {getReadingTime(item.content)}
                 </p>
 

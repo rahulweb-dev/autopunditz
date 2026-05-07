@@ -41,7 +41,7 @@ export default function MarketAnalysisPage() {
 
         {analyses.map((item, i) => (
 
-          <Link key={i} href={`/market-analysis/${item._id}`}>
+          <Link key={i} href={`/market-analysis/${item.slug}`}>
 
             <div className="bg-white rounded-xl shadow-sm hover:shadow-md">
 
