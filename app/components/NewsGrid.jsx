@@ -82,7 +82,7 @@ export default function NewsGrid({ title, subtitle, data, basePath }) {
 
                 {/* READ MORE */}
                 <Link
-                  href={`${basePath}/${item._id}`}
+                  href={`${basePath}/${item.slug}`}
                   className="mt-auto text-red-500 text-sm font-medium hover:text-red-600"
                 >
                   Read More →

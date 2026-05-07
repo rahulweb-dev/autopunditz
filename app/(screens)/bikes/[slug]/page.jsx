@@ -1,10 +1,9 @@
-import Image from "next/image";
+import  Image  from "next/image";
 import { headers } from "next/headers";
 
-export default async function BikeDetails({ params }) {
-  const { id } = await params;
+export default async function CarDetails({ params }) {
+  const { slug } = await params;
 
-  // ✅ Fix fetch
   const host = (await headers()).get("host");
   const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
 
@@ -15,14 +14,12 @@ export default async function BikeDetails({ params }) {
   const data = await res.json();
   const blogs = Array.isArray(data) ? data : data.data || [];
 
-  const blog = blogs.find(
-    (item) => item._id?.toString() === id
-  );
+  const blog = blogs.find((item) => item.slug?.toString() === slug);
 
   if (!blog) {
     return (
       <div className="text-center py-20 text-xl">
-        Bike Article Not Found
+        Article Not Found
       </div>
     );
   }
@@ -46,24 +43,18 @@ export default async function BikeDetails({ params }) {
       </p>
 
       <div className="relative h-[300px] md:h-[450px] mb-6 rounded-xl overflow-hidden">
-        {image.startsWith("http") ? (
-          <Image
-            src={image}
-            fill
-            alt={blog.title}
-            className="object-cover"
-          />
-        ) : (
-          <img
-            src={image}
-            alt="placeholder"
-            className="w-full h-full object-cover"
-          />
-        )}
+        <Image
+          src={image}
+          alt={blog.title}
+          fill
+          priority
+          sizes="(max-width: 768px) 100vw, 800px"
+          className="object-cover"
+        />
       </div>
 
       <div
-        className="prose max-w-none whitespace-pre-wrap"
+        className="prose max-w-none prose-img:rounded-xl whitespace-pre-wrap"
         dangerouslySetInnerHTML={{ __html: blog.content }}
       />
 

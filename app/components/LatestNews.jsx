@@ -42,7 +42,7 @@ export default function LatestNews() {
       ...item,
       image: item.image || imgMatch?.[1] || "/placeholder.jpg",
       desc: cleanText.slice(0, 100),
-      slug: item._id, // replace slug with id
+      slug: item.slug, // replace slug with id
       date: new Date(item.createdAt).toLocaleDateString("en-IN"),
     };
   });

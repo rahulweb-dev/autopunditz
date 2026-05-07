@@ -2,7 +2,7 @@ import  Image  from "next/image";
 import { headers } from "next/headers";
 
 export default async function CarDetails({ params }) {
-  const { id } = await params;
+  const { slug } = await params;
 
   const host = (await headers()).get("host");
   const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
@@ -14,7 +14,7 @@ export default async function CarDetails({ params }) {
   const data = await res.json();
   const blogs = Array.isArray(data) ? data : data.data || [];
 
-  const blog = blogs.find((item) => item._id?.toString() === id);
+  const blog = blogs.find((item) => item.slug?.toString() === slug);
 
   if (!blog) {
     return (
