@@ -24,15 +24,34 @@ async function autoPublish() {
 // ✅ GET ALL BLOGS
 export async function GET() {
 
-  await connectDB();
+  try {
 
-  await autoPublish();
+    await connectDB();
 
-  const blogs = await Blog.find()
-    .sort({ createdAt: -1 });
+    await autoPublish();
 
-  return Response.json(blogs);
+    const blogs =
+      await Blog.find()
+        .sort({ createdAt: -1 });
 
+    return Response.json(
+      blogs
+    );
+
+  } catch (error) {
+
+    console.log(error);
+
+    return Response.json(
+      {
+        error:
+          error.message,
+      },
+      {
+        status: 500,
+      }
+    );
+  }
 }
 
 // ✅ CREATE BLOG
