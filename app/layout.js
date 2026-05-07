@@ -20,7 +20,7 @@ export default function RootLayout({ children }) {
       suppressHydrationWarning
       className={notoSerif.className}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col"  cz-shortcut-listen="true">
         <LayoutWrapper>
           {children}
         </LayoutWrapper>

@@ -1,28 +1,61 @@
-// middleware.js
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 
 export function middleware(req) {
-  const token = req.cookies.get("token")?.value;
 
+  const pathname =
+    req.nextUrl.pathname;
+
+  // ✅ Allow Login
+  if (
+    pathname === "/admin/login"
+  ) {
+    return NextResponse.next();
+  }
+
+  const token =
+    req.cookies.get("token")?.value;
+
+  // ✅ No Token
   if (!token) {
-    return NextResponse.redirect(new URL("/admin/login", req.url));
+
+    return NextResponse.redirect(
+      new URL("/admin/login", req.url)
+    );
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // 🚫 writers cannot access users page
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
+
+    // ✅ Admin Only
     if (
-      req.nextUrl.pathname.startsWith("/admin/users") &&
+      pathname.startsWith(
+        "/admin/users"
+      ) &&
       decoded.role !== "admin"
     ) {
-      return NextResponse.redirect(new URL("/admin/dashboard", req.url));
+
+      return NextResponse.redirect(
+        new URL(
+          "/admin/dashboard",
+          req.url
+        )
+      );
     }
 
     return NextResponse.next();
-  } catch {
-    return NextResponse.redirect(new URL("/admin/login", req.url));
+
+  } catch (err) {
+
+    console.log(err);
+
+    return NextResponse.redirect(
+      new URL("/admin/login", req.url)
+    );
   }
 }
 

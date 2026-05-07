@@ -46,9 +46,16 @@ export default function Tiptap({ setContent, initialContent }) {
     immediatelyRender: false,
 
     editorProps: {
+      transformPastedHTML(html) {
+        return html
+          .replace(/style="[^"]*"/g, "") // remove inline styles
+          .replace(/width="[^"]*"/g, "")
+          .replace(/height="[^"]*"/g, "");
+      },
+
       attributes: {
         class:
-          "min-h-[200px] border rounded-md bg-slate-50 py-3 px-4 focus:outline-none whitespace-pre-wrap break-words",
+          "ProseMirror min-h-[200px] border rounded-md bg-slate-50 py-3 px-4 focus:outline-none whitespace-pre-wrap break-words",
       },
     },
 
