@@ -1,8 +1,8 @@
 import Image from "next/image";
 import { headers } from "next/headers";
 
-export default async function BikeDetails({ params }) {
-  const { id } = await params;
+export default async function EditorDetails({ params }) {
+  const { slug } = await params;
 
   // ✅ Fix fetch
   const host = (await headers()).get("host");
@@ -16,13 +16,13 @@ export default async function BikeDetails({ params }) {
   const blogs = Array.isArray(data) ? data : data.data || [];
 
   const blog = blogs.find(
-    (item) => item._id?.toString() === id
+    (item) => item.slug?.toString() === slug
   );
 
   if (!blog) {
     return (
       <div className="text-center py-20 text-xl">
-        Bike Article Not Found
+        Editorial Article Not Found
       </div>
     );
   }

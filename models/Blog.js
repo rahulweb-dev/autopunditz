@@ -7,8 +7,13 @@ const BlogSchema = new mongoose.Schema(
     category: { type: String, default: "News" },
     subCategory: {
       type: String,
-      default:"Two wheeler",
+      default: "Two wheeler",
       required: true,
+    },
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
     },
     status: {
       type: String,

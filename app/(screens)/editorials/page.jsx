@@ -172,8 +172,8 @@ export default function EditorialsPage() {
             {editorials.map((item, index) => (
 
               <Link
-                key={item._id}
-                href={`/editorials/${item._id}`}
+                key={item.slug}
+                href={`/editorials/${item.slug}`}
                 className="group"
               >
 

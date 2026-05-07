@@ -122,7 +122,7 @@ export default function Editorials() {
             {featured && (
 
               <Link
-                href={`/editorials/${featured._id}`}
+                href={`/editorials/${featured.slug}`}
                 className="lg:col-span-2 group"
               >
 
@@ -292,16 +292,6 @@ export default function Editorials() {
 
               </div>
 
-              {/* BUTTON */}
-
-              {/* <Link
-                href="/editorials"
-                className="mt-6 inline-flex items-center justify-center bg-red-500 hover:bg-red-600 text-white rounded-xl px-6 py-3 font-semibold transition"
-              >
-
-                Explore Editorials
-
-              </Link> */}
 
             </div>
 
