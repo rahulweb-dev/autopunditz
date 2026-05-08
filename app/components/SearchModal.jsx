@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 
 function extractImage(html = "") {
-
   const match = html.match(
     /<img[^>]+src="([^">]+)"/
   );
@@ -21,7 +20,6 @@ function extractImage(html = "") {
 }
 
 export default function SearchModal({
-  open,
   setOpen,
 }) {
 
@@ -37,7 +35,7 @@ export default function SearchModal({
   const [recent, setRecent] =
     useState([]);
 
-  // ✅ RECENT SEARCHES
+  // LOAD RECENT
 
   useEffect(() => {
 
@@ -52,7 +50,7 @@ export default function SearchModal({
 
   }, []);
 
-  // ✅ SEARCH
+  // SEARCH API
 
   useEffect(() => {
 
@@ -95,7 +93,7 @@ export default function SearchModal({
 
   }, [query]);
 
-  // ✅ SAVE RECENT
+  // SAVE RECENT
 
   const saveRecent = (text) => {
 
@@ -120,64 +118,54 @@ export default function SearchModal({
 
   };
 
-  // ✅ ROUTE
+  // ROUTES
 
   const getRoute = (item) => {
 
     if (
       item.category === "News"
     ) {
-
       return `/${item.subCategory?.toLowerCase()
         }/${item._id}`;
-
     }
 
     if (
       item.category ===
       "MarketAnalysis"
     ) {
-
       return `/market-analysis/${item._id}`;
-
     }
 
     if (
       item.category === "Sales"
     ) {
-
       return `/sales-analysis/${item.subCategory
         ?.toLowerCase()
         .replace(/\s+/g, "-")
         }/${item._id}`;
-
     }
 
     if (
       item.category ===
       "Editorials"
     ) {
-
       return `/editorials/${item._id}`;
-
     }
 
     return "/";
   };
 
-  if (!open) return null;
-
   return (
 
-    <div className=" top-10 right-0 w-[95vw] md:w-[400px] bg-white   rounded-3xl overflow-hidden z-[999]">
+    <div className="bg-white">
 
-      {/* SEARCH BAR */}
+      {/* SEARCH INPUT */}
 
-      <div className="flex items-center gap-3 px-5 py-4 border-b">
+      <div className="flex items-center gap-3 px-4 py-4 border-b">
 
         <Search
           className="text-gray-400"
-          size={20}
+          size={18}
         />
 
         <input
@@ -186,27 +174,31 @@ export default function SearchModal({
           onChange={(e) =>
             setQuery(e.target.value)
           }
-          placeholder="Search news, editorials, sales..."
-          className="flex-1 outline-none text-lg"
+          placeholder="Search..."
+          className="
+            flex-1  outline-none  text-sm
+          "
         />
 
         <button
           onClick={() => setOpen(false)}
+          className="
+            p-1  rounded-lg hover:bg-gray-100"
         >
-          <X />
+          <X size={18} />
         </button>
 
       </div>
 
-      {/* RESULTS */}
+      {/* CONTENT */}
 
-      <div className="max-h-[70vh] overflow-y-auto">
+      <div className="max-h-125 overflow-y-auto">
 
         {/* RECENT */}
 
         {!query && recent.length > 0 && (
 
-          <div className="p-5">
+          <div className="p-4">
 
             <h3 className="font-semibold mb-4">
 
@@ -223,12 +215,16 @@ export default function SearchModal({
                   onClick={() =>
                     setQuery(item)
                   }
-                  className="flex items-center gap-3 text-gray-700 hover:text-black"
+                  className="
+                    flex  items-center  gap-3   text-gray-700 hover:text-black
+                  "
                 >
 
-                  <Clock size={16} />
+                  <Clock size={15} />
 
-                  {item}
+                  <span className="text-sm">
+                    {item}
+                  </span>
 
                 </button>
 
@@ -244,7 +240,7 @@ export default function SearchModal({
 
         {loading && (
 
-          <div className="p-10 text-center">
+          <div className="p-6 text-center text-sm text-gray-500">
 
             Searching...
 
@@ -265,10 +261,13 @@ export default function SearchModal({
                 saveRecent(query);
                 setOpen(false);
               }}
-              className="flex gap-4 p-4 hover:bg-gray-50 transition"
+              className="  flex gap-3  p-4  hover:bg-gray-50 transition  "
             >
 
-              <div className="relative w-28 h-24 rounded-xl overflow-hidden flex-shrink-0">
+              <div
+                className="
+                  relative  w-20  h-16  rounded-xl  overflow-hidden shrink-0 "
+              >
 
                 <Image
                   src={extractImage(
@@ -281,27 +280,19 @@ export default function SearchModal({
 
               </div>
 
-              <div>
+              <div className="min-w-0">
 
-                <span className="text-xs uppercase text-red-500 font-semibold">
+                <span className="text-xs text-red-500 font-semibold uppercase">
 
                   {item.category}
 
                 </span>
 
-                <h3 className="font-bold line-clamp-2 mt-1">
+                <h3 className="text-sm font-semibold line-clamp-2 mt-1">
 
                   {item.title}
 
                 </h3>
-
-                <p className="text-sm text-gray-500 mt-2">
-
-                  {new Date(
-                    item.createdAt
-                  ).toDateString()}
-
-                </p>
 
               </div>
 
