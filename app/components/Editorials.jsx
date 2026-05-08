@@ -403,8 +403,8 @@ export default function Editorials() {
                   .map((item) => (
 
                     <Link
-                      key={item._id}
-                      href={`/editorials/${item._id}`}
+                      key={item.slug}
+                      href={`/editorials/${item.slug}`}
                       className="group"
                     >
 

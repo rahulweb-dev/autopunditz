@@ -182,7 +182,7 @@ export default function MarketAnalysis() {
           {/* Featured */}
           {featured && (
             <Link
-              href={`/market-analysis/${featured._id}`}
+              href={`/market-analysis/${featured.slug}`}
               className="lg:col-span-2 group"
             >
               <div className="bg-white rounded-xl overflow-hidden hover:shadow-lg">
@@ -226,7 +226,7 @@ export default function MarketAnalysis() {
 
               {analyses.slice(1).map((item) => (
                 <Link
-                  key={item._id}
+                  key={item.slug}
                   href={`/market-analysis/${item.slug}`}
                   className="group"
                 >

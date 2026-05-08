@@ -69,7 +69,7 @@ export default function LatestPosts() {
       return `/sales-analysis/${post.subCategory
         ?.toLowerCase()
         .replace(/\s+/g, "-")
-        }/${post._id}`;
+        }/${post.slug}`;
 
     }
 
@@ -78,7 +78,7 @@ export default function LatestPosts() {
       "Editorials"
     ) {
 
-      return `/editorials/${post._id}`;
+      return `/editorials/${post.slug}`;
 
     }
 
