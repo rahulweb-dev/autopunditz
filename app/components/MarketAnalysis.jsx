@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import useBlogs from "@/hooks/useBlogs";
 import { useMemo } from "react";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 function extractImage(html) {
   if (!html) return "/placeholder.jpg";
@@ -24,9 +26,140 @@ export default function MarketAnalysis() {
 
   const featured = analyses[0];
 
-  // ✅ better loading logic
   if (isLoading && !blogs.length) {
-    return <p className="text-center py-20">Loading...</p>;
+
+    return (
+
+      <section className="max-w-container mx-auto px-4 py-6 md:py-10">
+
+        {/* Header */}
+        <div className="mb-6 md:mb-8">
+
+          <Skeleton
+            height={42}
+            width={260}
+            borderRadius={10}
+          />
+
+          <Skeleton
+            height={18}
+            width={240}
+            className="mt-3"
+            borderRadius={8}
+          />
+
+        </div>
+
+        {/* Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+          {/* Featured */}
+          <div className="lg:col-span-2">
+
+            <div className="bg-white rounded-xl overflow-hidden">
+
+              {/* Image */}
+              <Skeleton
+                height={320}
+                width="100%"
+                borderRadius={0}
+              />
+
+              {/* Content */}
+              <div className="p-5">
+
+                <Skeleton
+                  height={34}
+                  width="90%"
+                  borderRadius={8}
+                />
+
+                <Skeleton
+                  height={16}
+                  width={220}
+                  className="mt-4"
+                  borderRadius={8}
+                />
+
+                <Skeleton
+                  height={20}
+                  width={140}
+                  className="mt-6"
+                  borderRadius={8}
+                />
+
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* Side Cards */}
+          <div className="flex flex-col">
+
+            <div className="h-[360px] overflow-hidden space-y-6 pr-2">
+
+              {[1, 2, 3].map((i) => (
+
+                <div
+                  key={i}
+                  className="bg-white rounded-xl overflow-hidden"
+                >
+
+                  {/* Image */}
+                  <Skeleton
+                    height={176}
+                    width="100%"
+                    borderRadius={0}
+                  />
+
+                  {/* Content */}
+                  <div className="p-3">
+
+                    <Skeleton
+                      height={22}
+                      width="95%"
+                      borderRadius={8}
+                    />
+
+                    <Skeleton
+                      height={14}
+                      width={180}
+                      className="mt-3"
+                      borderRadius={8}
+                    />
+
+                    <Skeleton
+                      height={18}
+                      width={110}
+                      className="mt-4"
+                      borderRadius={8}
+                    />
+
+                  </div>
+
+                </div>
+              ))}
+
+            </div>
+
+            {/* Explore */}
+            <div className="mt-4">
+
+              <Skeleton
+                height={18}
+                width={180}
+                borderRadius={8}
+              />
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+    );
   }
 
   return (

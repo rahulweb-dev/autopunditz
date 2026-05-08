@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import useBlogs from "@/hooks/useBlogs";
 import { useMemo } from "react";
-
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 function extractImage(html = "") {
   const match = html.match(
     /<img[^>]+src="([^">]+)"/
@@ -36,16 +37,201 @@ export default function Editorials() {
   }, [blogs]);
 
   const featured = editorials[0];
-
-  // ✅ LOADING
   if (isLoading && !blogs.length) {
+
     return (
-      <p className="text-center py-20">
-        Loading Editorials...
-      </p>
+
+      <section className="bg-gradient-to-b from-gray-50 to-white py-14">
+
+        <div className="max-w-7xl mx-auto px-4">
+
+          {/* HEADER */}
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
+
+            <div>
+
+              <Skeleton
+                height={18}
+                width={180}
+                borderRadius={8}
+              />
+
+              <Skeleton
+                height={55}
+                width={260}
+                className="mt-4"
+                borderRadius={10}
+              />
+
+              <Skeleton
+                height={18}
+                width={420}
+                className="mt-4"
+                borderRadius={8}
+              />
+
+              <Skeleton
+                height={18}
+                width={360}
+                className="mt-2"
+                borderRadius={8}
+              />
+
+            </div>
+
+            <Skeleton
+              height={20}
+              width={180}
+              borderRadius={8}
+            />
+
+          </div>
+
+          {/* GRID */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            {/* FEATURED */}
+            <div className="lg:col-span-2">
+
+              <div className="relative h-[350px] md:h-[520px] rounded-3xl overflow-hidden">
+
+                {/* IMAGE */}
+                <Skeleton
+                  height="100%"
+                  width="100%"
+                  borderRadius={24}
+                />
+
+                {/* CONTENT */}
+                <div className="absolute bottom-0 p-6 md:p-10 w-full">
+
+                  <Skeleton
+                    height={32}
+                    width={120}
+                    borderRadius={999}
+                  />
+
+                  <Skeleton
+                    height={48}
+                    width="85%"
+                    className="mt-6"
+                    borderRadius={10}
+                  />
+
+                  <Skeleton
+                    height={48}
+                    width="65%"
+                    className="mt-3"
+                    borderRadius={10}
+                  />
+
+                  <Skeleton
+                    height={18}
+                    width={260}
+                    className="mt-6"
+                    borderRadius={8}
+                  />
+
+                  <Skeleton
+                    height={18}
+                    width="90%"
+                    className="mt-6"
+                    borderRadius={8}
+                  />
+
+                  <Skeleton
+                    height={18}
+                    width="70%"
+                    className="mt-3"
+                    borderRadius={8}
+                  />
+
+                  <Skeleton
+                    height={22}
+                    width={150}
+                    className="mt-6"
+                    borderRadius={8}
+                  />
+
+                </div>
+
+              </div>
+
+            </div>
+
+            {/* SIDE ARTICLES */}
+            <div className="flex flex-col">
+
+              <div className="h-[520px] overflow-hidden space-y-5 pr-2">
+
+                {[1, 2, 3, 4].map((i) => (
+
+                  <div
+                    key={i}
+                    className="bg-white rounded-2xl border border-gray-100 overflow-hidden p-4"
+                  >
+
+                    <div className="flex gap-4">
+
+                      {/* IMAGE */}
+                      <div className="w-28 h-24 flex-shrink-0">
+
+                        <Skeleton
+                          height={96}
+                          width={112}
+                          borderRadius={14}
+                        />
+
+                      </div>
+
+                      {/* CONTENT */}
+                      <div className="flex-1">
+
+                        <Skeleton
+                          height={14}
+                          width={80}
+                          borderRadius={6}
+                        />
+
+                        <Skeleton
+                          height={20}
+                          width="95%"
+                          className="mt-3"
+                          borderRadius={8}
+                        />
+
+                        <Skeleton
+                          height={20}
+                          width="75%"
+                          className="mt-2"
+                          borderRadius={8}
+                        />
+
+                        <Skeleton
+                          height={14}
+                          width={170}
+                          className="mt-4"
+                          borderRadius={6}
+                        />
+
+                      </div>
+
+                    </div>
+
+                  </div>
+                ))}
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
     );
   }
-
   return (
 
     <section className="bg-gradient-to-b from-gray-50 to-white py-14">

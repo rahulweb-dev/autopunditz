@@ -5,11 +5,15 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 const tabs = ["Cars", "Bikes"];
 
 export default function LatestNews() {
   const [active, setActive] = useState("Cars");
   const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] =
+    useState(true);
   const router = useRouter();
 
   useEffect(() => {
@@ -18,8 +22,14 @@ export default function LatestNews() {
         const res = await fetch("/api/blog/public");
         const data = await res.json();
         setBlogs(data.data || data);
+        setLoading(false);
       } catch (err) {
+
         console.error(err);
+
+      } finally {
+
+        setLoading(false);
       }
     };
 
@@ -51,8 +61,173 @@ export default function LatestNews() {
     router.push(`/${active.toLowerCase()}`);
   };
 
-  if (!formatData.length) {
-    return <p className="text-center py-10">Loading...</p>;
+  if (loading) {
+
+    return (
+
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
+
+        {/* Header */}
+        <div className="mb-6 md:mb-8">
+
+          <Skeleton
+            height={42}
+            width={240}
+            borderRadius={10}
+          />
+
+          <Skeleton
+            height={18}
+            width={180}
+            className="mt-3"
+            borderRadius={8}
+          />
+
+        </div>
+
+        {/* Tabs */}
+        <div className="flex gap-6 border-b mb-6 pb-3">
+
+          {[1, 2].map((i) => (
+
+            <Skeleton
+              key={i}
+              height={28}
+              width={70}
+              borderRadius={8}
+            />
+
+          ))}
+
+        </div>
+
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
+
+          {/* Featured Card */}
+          <div className="lg:col-span-2">
+
+            <div className="relative h-48 sm:h-56 md:h-72 lg:h-[360px] rounded-xl overflow-hidden">
+
+              <Skeleton
+                height="100%"
+                width="100%"
+                borderRadius={16}
+              />
+
+              {/* Bottom Content */}
+              <div className="absolute bottom-0 left-0 w-full p-4 md:p-6">
+
+                <Skeleton
+                  height={30}
+                  width="80%"
+                  borderRadius={8}
+                />
+
+                <Skeleton
+                  height={18}
+                  width="95%"
+                  className="mt-3"
+                  borderRadius={8}
+                />
+
+                <Skeleton
+                  height={18}
+                  width="75%"
+                  className="mt-2"
+                  borderRadius={8}
+                />
+
+                <Skeleton
+                  height={18}
+                  width={110}
+                  className="mt-4"
+                  borderRadius={8}
+                />
+
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* Right Side Cards */}
+          <div className="flex flex-col h-full">
+
+            <div className="h-[260px] sm:h-[300px] lg:h-[360px] overflow-hidden space-y-3 pr-2">
+
+              {[1, 2, 3, 4].map((i) => (
+
+                <div
+                  key={i}
+                  className="flex gap-3 bg-white rounded-xl border p-2 md:p-3"
+                >
+
+                  {/* Image */}
+                  <div className="w-24 h-20 flex-shrink-0">
+
+                    <Skeleton
+                      height={80}
+                      width={96}
+                      borderRadius={10}
+                    />
+
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1">
+
+                    <Skeleton
+                      height={12}
+                      width={70}
+                      borderRadius={6}
+                    />
+
+                    <Skeleton
+                      height={18}
+                      width="95%"
+                      className="mt-2"
+                      borderRadius={6}
+                    />
+
+                    <Skeleton
+                      height={18}
+                      width="80%"
+                      className="mt-2"
+                      borderRadius={6}
+                    />
+
+                    <Skeleton
+                      height={14}
+                      width={90}
+                      className="mt-3"
+                      borderRadius={6}
+                    />
+
+                  </div>
+
+                </div>
+              ))}
+
+            </div>
+
+            {/* Explore Button */}
+            <div className="mt-4">
+
+              <Skeleton
+                height={20}
+                width={120}
+                borderRadius={8}
+              />
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+    );
   }
 
   return (
@@ -76,8 +251,8 @@ export default function LatestNews() {
             key={tab}
             onClick={() => setActive(tab)}
             className={`pb-2 text-xs sm:text-sm md:text-base whitespace-nowrap transition ${active === tab
-                ? "border-b-2 border-red-500 text-red-500 font-medium"
-                : "text-gray-500 hover:text-black"
+              ? "border-b-2 border-red-500 text-red-500 font-medium"
+              : "text-gray-500 hover:text-black"
               }`}
           >
             {tab}
