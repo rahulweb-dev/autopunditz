@@ -177,8 +177,8 @@ export default async function CategoryPage({
             {blogs.map((item, index) => (
 
               <Link
-                key={item._id}
-                href={`/sales-analysis/${id}/${item._id}`}
+                key={item.slug}
+                href={`/sales-analysis/${id}/${item.slug}`}
                 className="group"
               >
 
