@@ -48,8 +48,18 @@ export default function LoginPage() {
 
       if (data.success) {
 
-        window.location.href =
-          "/admin/dashboard";
+        if (
+          data.role === "writer"
+        ) {
+
+          window.location.href =
+            "/admin/blogs";
+
+        } else {
+
+          window.location.href =
+            "/admin/dashboard";
+        }
 
       } else {
 

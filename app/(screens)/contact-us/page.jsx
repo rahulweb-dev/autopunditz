@@ -2,182 +2,488 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import {
+  Mail,
+  Phone,
+  Send,
+  User,
+  MessageSquare,
+} from "lucide-react";
+
 export default function ContactPage() {
+
   const [form, setForm] = useState({
     name: "",
     email: "",
     phone: "",
-    travelers: "",
-    date: "",
     message: "",
   });
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const [errors, setErrors] =
+    useState({});
+
+  const [loading, setLoading] =
+    useState(false);
+
+  const [success, setSuccess] =
+    useState("");
+
+  // ✅ VALIDATION
+  function validate() {
+
+    const newErrors = {};
+
+    // NAME
+    if (!form.name.trim()) {
+
+      newErrors.name =
+        "Name is required";
+    }
+
+    // EMAIL
+    if (!form.email.trim()) {
+
+      newErrors.email =
+        "Email is required";
+
+    } else if (
+      !/^\S+@\S+\.\S+$/.test(
+        form.email
+      )
+    ) {
+
+      newErrors.email =
+        "Invalid email";
+    }
+
+    // PHONE
+    if (!form.phone.trim()) {
+
+      newErrors.phone =
+        "Phone number is required";
+
+    } else if (
+      form.phone.length < 10
+    ) {
+
+      newErrors.phone =
+        "Invalid phone number";
+    }
+
+    // MESSAGE
+    if (!form.message.trim()) {
+
+      newErrors.message =
+        "Message is required";
+
+    } else if (
+      form.message.length < 10
+    ) {
+
+      newErrors.message =
+        "Message should be at least 10 characters";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(
+      newErrors
+    ).length === 0;
+  }
+
+  // ✅ HANDLE CHANGE
+  function handleChange(e) {
+
+    setForm({
+      ...form,
+      [e.target.name]:
+        e.target.value,
+    });
+
+    // REMOVE ERROR LIVE
+    setErrors({
+      ...errors,
+      [e.target.name]: "",
+    });
+  }
+
+  // ✅ SUBMIT
+  async function handleSubmit(e) {
+
+    e.preventDefault();
+
+    setSuccess("");
+
+    if (!validate()) return;
+
+    try {
+
+      setLoading(true);
+
+      const res = await fetch(
+        "/api/contact",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+
+          body: JSON.stringify(
+            form
+          ),
+        }
+      );
+
+      const data =
+        await res.json();
+
+      if (data.success) {
+
+        setSuccess(
+          "Message sent successfully!"
+        );
+
+        setForm({
+          name: "",
+          email: "",
+          phone: "",
+          message: "",
+        });
+
+      } else {
+
+        alert(data.message);
+      }
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert(
+        "Something went wrong"
+      );
+
+    } finally {
+
+      setLoading(false);
+    }
+  }
 
   return (
-    <div className="bg-[#f7f7f7] min-h-screen p-6">
 
-      {/* 🔥 CONTAINER */}
-      <div className="max-w-7xl mx-auto bg-white rounded-3xl shadow-sm p-10 space-y-10">
+    <div className="bg-gradient-to-b from-[#f5f7fb] to-white min-h-screen py-10 px-4">
 
-        {/* 🔥 TITLE */}
-        <div className="grid md:grid-cols-2 gap-10 items-center">
+      {/* MAIN */}
+      <div className="max-w-7xl mx-auto">
+
+        {/* HERO */}
+        <div className="grid lg:grid-cols-2 gap-10 items-center mb-14">
+
+          {/* LEFT */}
           <div>
-            <p className="text-sm text-gray-400 mb-2">Get in Touch</p>
-            <h1 className="text-5xl font-bold leading-tight">
-              Contact Us
+
+            <span className="inline-block bg-black text-white px-4 py-2 rounded-full text-sm mb-5">
+
+              Contact Support
+
+            </span>
+
+            <h1 className="text-4xl md:text-6xl font-bold leading-tight text-gray-900">
+
+              Let’s Build
+              Something Amazing
+
             </h1>
-          </div>
 
-          <p className="text-gray-500">
-            Tell us your query or feedback and we’ll respond within 24 hours
-            with insights or assistance.
-          </p>
-        </div>
+            <p className="text-gray-500 mt-6 text-lg leading-relaxed max-w-xl">
 
-        {/* 🧾 FORM + IMAGE */}
-        <div className="grid md:grid-cols-2 gap-10">
+              Reach out to us for
+              automotive insights,
+              reports, partnerships,
+              or any assistance.
+              We usually reply within
+              24 hours.
 
-          {/* 📝 FORM */}
-          <div className="bg-[#fafafa] p-6 rounded-2xl space-y-4">
+            </p>
 
-            <div className="grid grid-cols-2 gap-4">
-              <input
-                name="name"
-                placeholder="Your full name"
-                value={form.name}
-                onChange={handleChange}
-                className="p-3 rounded-lg bg-white border"
-              />
-              <input
-                name="email"
-                placeholder="you@example.com"
-                value={form.email}
-                onChange={handleChange}
-                className="p-3 rounded-lg bg-white border"
-              />
-            </div>
+            {/* INFO */}
+            <div className="mt-10 space-y-5">
 
-            <div className="grid grid-cols-2 gap-4">
-              <input
-                name="phone"
-                placeholder="Phone number"
-                value={form.phone}
-                onChange={handleChange}
-                className="p-3 rounded-lg bg-white border"
-              />
-              <input
-                name="travelers"
-                placeholder="Number of Users"
-                value={form.travelers}
-                onChange={handleChange}
-                className="p-3 rounded-lg bg-white border"
-              />
-            </div>
+              <div className="flex items-center gap-4">
 
-            <input
-              type="date"
-              name="date"
-              value={form.date}
-              onChange={handleChange}
-              className="p-3 rounded-lg bg-white border w-full"
-            />
+                <div className="w-12 h-12 rounded-2xl bg-black text-white flex items-center justify-center">
 
-            <textarea
-              name="message"
-              rows="4"
-              placeholder="Your message..."
-              value={form.message}
-              onChange={handleChange}
-              className="p-3 rounded-lg bg-white border w-full"
-            />
+                  <Phone size={20} />
 
-            {/* BUTTON */}
-            <div className="flex items-center gap-3">
-              <button className="bg-black text-white px-6 py-3 rounded-full hover:opacity-90">
-                Send Message
-              </button>
+                </div>
 
-              <button className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center">
-                →
-              </button>
+                <div>
+
+                  <p className="font-semibold">
+                    Call Us
+                  </p>
+
+                  <p className="text-gray-500">
+                    +91 98765 43210
+                  </p>
+
+                </div>
+
+              </div>
+
+              <div className="flex items-center gap-4">
+
+                <div className="w-12 h-12 rounded-2xl bg-black text-white flex items-center justify-center">
+
+                  <Mail size={20} />
+
+                </div>
+
+                <div>
+
+                  <p className="font-semibold">
+                    Email
+                  </p>
+
+                  <p className="text-gray-500">
+                    support@autopunditz.com
+                  </p>
+
+                </div>
+
+              </div>
+
             </div>
 
           </div>
 
-          {/* 🖼 IMAGE CARD */}
-          <div className="rounded-2xl overflow-hidden relative">
+          {/* RIGHT IMAGE */}
+          <div className="relative h-[500px] rounded-[32px] overflow-hidden shadow-2xl">
 
             <Image
-              src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"
-              alt="contact"
+              src="https://images.unsplash.com/photo-1503376780353-7e6692767b70"
+              alt="Contact"
               fill
+              priority
               className="object-cover"
             />
 
+            <div className="absolute inset-0 bg-black/30" />
 
-            <span className="absolute top-4 right-4 bg-white/80 px-3 py-1 text-xs rounded-full">
-              Your Journey
-            </span>
+            <div className="absolute bottom-6 left-6 right-6 bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-5 text-white">
+
+              <p className="text-sm uppercase tracking-wider text-gray-200">
+
+                Automotive Intelligence
+
+              </p>
+
+              <h3 className="text-2xl font-bold mt-2">
+
+                Stay Connected With Industry Experts
+
+              </h3>
+
+            </div>
+
           </div>
 
         </div>
 
-        {/* 📞 INFO SECTION */}
-        <div className="grid md:grid-cols-3 gap-8 text-center pt-6">
+        {/* FORM CARD */}
+        <div className="max-w-4xl mx-auto bg-white shadow-xl rounded-[32px] p-6 md:p-10 border border-gray-100">
 
-          <div>
-            <p className="text-2xl mb-2">📞</p>
-            <h3 className="font-semibold">Call & WhatsApp</h3>
-            <p className="text-gray-500 text-sm">
-              +91 98765 43210 <br /> +91 87654 32109
+          <div className="text-center mb-10">
+
+            <h2 className="text-3xl md:text-4xl font-bold">
+              Send Us a Message
+            </h2>
+
+            <p className="text-gray-500 mt-3">
+              Fill out the form below and our team will contact you shortly.
             </p>
+
           </div>
 
-          <div>
-            <p className="text-2xl mb-2">⏰</p>
-            <h3 className="font-semibold">Working Hours</h3>
-            <p className="text-gray-500 text-sm">
-              Daily: 9am - 6pm <br /> Sunday: Closed
-            </p>
-          </div>
+          {/* SUCCESS */}
+          {success && (
 
-          <div>
-            <p className="text-2xl mb-2">📧</p>
-            <h3 className="font-semibold">Write to Us</h3>
-            <p className="text-gray-500 text-sm">
-              support@autopunditz.com
-            </p>
-          </div>
+            <div className="mb-6 bg-green-100 border border-green-300 text-green-700 px-4 py-3 rounded-xl">
 
-        </div>
+              {success}
 
-      </div>
+            </div>
+          )}
 
-      {/* 🔥 CTA SECTION */}
-      <div className="max-w-6xl mx-auto mt-10 bg-white rounded-3xl p-10 flex flex-col md:flex-row justify-between items-center gap-6">
+          {/* FORM */}
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-6"
+          >
 
-        <div>
-          <p className="text-sm text-gray-400">Start now</p>
-          <h2 className="text-3xl font-bold">
-            Discover automotive insights
-          </h2>
-          <p className="text-gray-500 mt-2">
-            Stay updated with analytics and reports from the auto industry.
-          </p>
-        </div>
+            {/* NAME */}
+            <div>
 
-        <div className="flex gap-4">
-          <img
-            src="https://images.unsplash.com/photo-1549921296-3a6b0e7f9a72"
-            className="w-32 h-32 rounded-xl object-cover"
-          />
-          <img
-            src="https://images.unsplash.com/photo-1503376780353-7e6692767b70"
-            className="w-32 h-32 rounded-xl object-cover"
-          />
+              <label className="font-medium mb-2 block">
+                Full Name
+              </label>
+
+              <div className="relative">
+
+                <User
+                  size={18}
+                  className="absolute left-4 top-4 text-gray-400"
+                />
+
+                <input
+                  type="text"
+                  name="name"
+                  value={form.name}
+                  onChange={handleChange}
+                  placeholder="Enter your name"
+                  className="w-full h-14 pl-12 pr-4 rounded-2xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black outline-none"
+                />
+
+              </div>
+
+              {errors.name && (
+
+                <p className="text-red-500 text-sm mt-2">
+                  {errors.name}
+                </p>
+              )}
+
+            </div>
+
+            {/* EMAIL + PHONE */}
+            <div className="grid md:grid-cols-2 gap-6">
+
+              {/* EMAIL */}
+              <div>
+
+                <label className="font-medium mb-2 block">
+                  Email Address
+                </label>
+
+                <div className="relative">
+
+                  <Mail
+                    size={18}
+                    className="absolute left-4 top-4 text-gray-400"
+                  />
+
+                  <input
+                    type="email"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    placeholder="you@example.com"
+                    className="w-full h-14 pl-12 pr-4 rounded-2xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black outline-none"
+                  />
+
+                </div>
+
+                {errors.email && (
+
+                  <p className="text-red-500 text-sm mt-2">
+                    {errors.email}
+                  </p>
+                )}
+
+              </div>
+
+              {/* PHONE */}
+              <div>
+
+                <label className="font-medium mb-2 block">
+                  Phone Number
+                </label>
+
+                <div className="relative">
+
+                  <Phone
+                    size={18}
+                    className="absolute left-4 top-4 text-gray-400"
+                  />
+
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={form.phone}
+                    onChange={handleChange}
+                    placeholder="+91 9876543210"
+                    className="w-full h-14 pl-12 pr-4 rounded-2xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black outline-none"
+                  />
+
+                </div>
+
+                {errors.phone && (
+
+                  <p className="text-red-500 text-sm mt-2">
+                    {errors.phone}
+                  </p>
+                )}
+
+              </div>
+
+            </div>
+
+            {/* MESSAGE */}
+            <div>
+
+              <label className="font-medium mb-2 block">
+                Your Message
+              </label>
+
+              <div className="relative">
+
+                <MessageSquare
+                  size={18}
+                  className="absolute left-4 top-4 text-gray-400"
+                />
+
+                <textarea
+                  name="message"
+                  rows="6"
+                  value={form.message}
+                  onChange={handleChange}
+                  placeholder="Write your message..."
+                  className="w-full pl-12 pr-4 py-4 rounded-2xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black outline-none resize-none"
+                />
+
+              </div>
+
+              {errors.message && (
+
+                <p className="text-red-500 text-sm mt-2">
+                  {errors.message}
+                </p>
+              )}
+
+            </div>
+
+            {/* BUTTON */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full h-14 rounded-2xl bg-black text-white font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition disabled:opacity-50"
+            >
+
+              {loading ? (
+                "Sending Message..."
+              ) : (
+                <>
+                  <Send size={18} />
+                  Send Message
+                </>
+              )}
+
+            </button>
+
+          </form>
+
         </div>
 
       </div>

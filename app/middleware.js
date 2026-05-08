@@ -13,48 +13,111 @@ export function middleware(req) {
     return NextResponse.next();
   }
 
+  // ✅ Allow APIs
+  if (
+    pathname.startsWith("/api")
+  ) {
+    return NextResponse.next();
+  }
+
+  // ✅ Get Cookie
   const token =
-    req.cookies.get("token")?.value;
+    req.cookies.get(
+      "token"
+    )?.value;
 
   // ✅ No Token
   if (!token) {
 
     return NextResponse.redirect(
-      new URL("/admin/login", req.url)
+      new URL(
+        "/admin/login",
+        req.url
+      )
     );
   }
 
   try {
 
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET
+    // ✅ Decode JWT
+    const decoded =
+      jwt.verify(
+        token,
+        process.env.JWT_SECRET
+      );
+
+    console.log(
+      "ROLE:",
+      decoded.role
     );
 
-    // ✅ Admin Only
+    // ======================
+    // ✅ WRITER ACCESS
+    // ======================
+
     if (
-      pathname.startsWith(
-        "/admin/users"
-      ) &&
-      decoded.role !== "admin"
+      decoded.role ===
+      "writer"
     ) {
 
-      return NextResponse.redirect(
-        new URL(
-          "/admin/dashboard",
-          req.url
+      // ❌ Block Dashboard
+      if (
+        pathname.startsWith(
+          "/admin/dashboard"
         )
-      );
+      ) {
+
+        return NextResponse.redirect(
+          new URL(
+            "/admin/blogs",
+            req.url
+          )
+        );
+      }
+
+      // ❌ Block Users
+      if (
+        pathname.startsWith(
+          "/admin/users"
+        )
+      ) {
+
+        return NextResponse.redirect(
+          new URL(
+            "/admin/blogs",
+            req.url
+          )
+        );
+      }
+
+      // ❌ Block Settings
+      if (
+        pathname.startsWith(
+          "/admin/settings"
+        )
+      ) {
+
+        return NextResponse.redirect(
+          new URL(
+            "/admin/blogs",
+            req.url
+          )
+        );
+      }
     }
 
+    // ✅ Allow Access
     return NextResponse.next();
 
-  } catch (err) {
+  } catch (error) {
 
-    console.log(err);
+    console.log(error);
 
     return NextResponse.redirect(
-      new URL("/admin/login", req.url)
+      new URL(
+        "/admin/login",
+        req.url
+      )
     );
   }
 }

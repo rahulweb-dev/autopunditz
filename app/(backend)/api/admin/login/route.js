@@ -67,6 +67,7 @@ export async function POST(req) {
   const response =
     NextResponse.json({
       success: true,
+      role: admin.role,
       message:
         "Login Success",
     });
