@@ -1,26 +1,241 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import {
+  useState,
+  useMemo,
+  useEffect,
+} from "react";
+
 import Link from "next/link";
-import { Plus, Pencil, Trash2, Eye, Search, ChevronLeft, ChevronRight, X, FileText } from "lucide-react";
+
+import {
+  Plus,
+  Pencil,
+  Trash2,
+  Eye,
+  Search,
+  ChevronLeft,
+  ChevronRight,
+  X,
+  FileText,
+} from "lucide-react";
+
 import Image from "next/image";
 import Tiptap from "@/app/components/Tiptap";
 import useSWR from "swr";
 
-// ─── Constants ────────────────────────────────────────────────────────────────
-const fetcher = (u) => fetch(u).then((r) => r.json());
-const CATS = ["all", "cars", "bikes", "news", "market analysis"];
-const STATUSES = ["all", "published", "draft", "scheduled"];
-const SORTS = { latest: "Latest", oldest: "Oldest", az: "A → Z", views: "Most Views" };
-const STATUS_CLR = { published: "#10b981", draft: "#9ca3af", scheduled: "#f59e0b" };
-const sel = "bg-white border border-[#2a2a38] rounded-lg py-[9px] px-3 text-black text-[13px] cursor-pointer";
-const darkInput = "w-full bg-[#0d0d12] border border-[#2a2a38] rounded-lg py-[9px] px-3 text-[#e2e2f0] text-[13px] focus:outline-none focus:border-[#6366f1]";
-const lbl = "text-[11px] text-[#4b4b6a] tracking-[0.08em] font-semibold uppercase block mb-2";
-const thumb = (c) => c?.match(/<img.*?src="(.*?)"/)?.[1] || "/placeholder.jpg";
-const apiPut = (id, body) => fetch(`/api/blog/${id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-const fmt = (d, o) => new Date(d).toLocaleDateString("en-US", o);
+// ─────────────────────────────────────────────────────────────
+// CONSTANTS
+// ─────────────────────────────────────────────────────────────
 
-// ─── CSS ──────────────────────────────────────────────────────────────────────
+const fetcher = (u) =>
+  fetch(u).then((r) =>
+    r.json()
+  );
+
+const CATS = [
+  "all",
+  "cars",
+  "bikes",
+  "news",
+  "market analysis",
+];
+
+const STATUSES = [
+  "all",
+  "published",
+  "draft",
+  "scheduled",
+];
+
+const SORTS = {
+  latest: "Latest",
+  oldest: "Oldest",
+  az: "A → Z",
+  views: "Most Views",
+};
+
+const STATUS_CLR = {
+  published: "#10b981",
+  draft: "#9ca3af",
+  scheduled: "#f59e0b",
+};
+
+const sel =
+  "bg-white border border-[#2a2a38] rounded-lg py-[9px] px-3 text-black text-[13px] cursor-pointer";
+
+const darkInput =
+  "w-full bg-[#0d0d12] border border-[#2a2a38] rounded-lg py-[9px] px-3 text-[#e2e2f0] text-[13px] focus:outline-none focus:border-[#6366f1]";
+
+const lbl =
+  "text-[11px] text-[#4b4b6a] tracking-[0.08em] font-semibold uppercase block mb-2";
+
+const thumb = (c) =>
+  c?.match(
+    /<img.*?src="(.*?)"/
+  )?.[1] ||
+  "/placeholder.jpg";
+
+// ✅ FIXED
+const apiPut = (
+  slug,
+  body
+) =>
+  fetch(
+    `/api/blog/${slug}`,
+    {
+      method: "PUT",
+
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+
+      body: JSON.stringify(
+        body
+      ),
+    }
+  );
+
+const fmt = (d, o) =>
+  new Date(
+    d
+  ).toLocaleDateString(
+    "en-US",
+    o
+  );
+// ─────────────────────────────────────────────────────────────
+// MICRO COMPONENTS
+// ─────────────────────────────────────────────────────────────
+
+const Pill = ({
+  v,
+  active,
+  onClick,
+  count,
+}) => (
+
+  <button
+    onClick={onClick}
+    className={`pill-filter rounded-full px-[13px] py-[5px] text-[12px] font-medium cursor-pointer capitalize ${active
+      ? "bg-[#6366f1] text-white border border-[#6366f1]"
+      : "bg-[#1e1e2a] text-[#6b6b80] border border-[#2a2a38]"
+      }`}
+  >
+
+    {v}
+
+    {count != null && (
+      <span className="opacity-55">
+        {" "}
+        ({count})
+      </span>
+    )}
+
+  </button>
+);
+
+const CloseBtn = ({
+  onClick,
+}) => (
+
+  <button
+    onClick={onClick}
+    className="bg-[#1e1e2a] border border-[#2a2a38] rounded-full w-[30px] h-[30px] cursor-pointer text-[#8b8ba8] flex items-center justify-center"
+  >
+
+    <X size={13} />
+
+  </button>
+);
+
+const Modal = ({
+  onClose,
+  maxW = "780px",
+  bg = "#13131b",
+  children,
+}) => (
+
+  <div
+    className="modal-overlay fixed inset-0 bg-black/90 backdrop-blur-[14px] z-50 flex items-center justify-center p-6"
+    onClick={(e) =>
+      e.target ===
+      e.currentTarget &&
+      onClose()
+    }
+  >
+
+    <div
+      className="modal-card border border-[#2a2a38] rounded-2xl w-full overflow-hidden flex flex-col shadow-[0_40px_100px_rgba(0,0,0,0.7)]"
+      style={{
+        maxWidth: maxW,
+        maxHeight: "92vh",
+        background: bg,
+      }}
+    >
+
+      {children}
+
+    </div>
+
+  </div>
+);
+
+const MHead = ({
+  label,
+  icon: Icon,
+  onClose,
+}) => (
+
+  <div className="py-4 px-6 border-b border-[#2a2a38] flex justify-between items-center flex-shrink-0">
+
+    <div className="flex items-center gap-2.5">
+
+      {Icon ? (
+        <>
+
+          <div className="bg-[#6366f115] rounded-lg p-1.5">
+
+            <Icon
+              size={14}
+              className="text-[#6366f1]"
+            />
+
+          </div>
+
+          <span className="font-semibold text-[#131314] text-[15px]">
+
+            {label}
+
+          </span>
+
+        </>
+      ) : (
+        <>
+
+          <div className="w-1.5 h-1.5 rounded-full bg-[#10b981]" />
+
+          <span className="text-[12px] text-[#6b6b80] tracking-[0.07em] font-semibold uppercase">
+
+            {label}
+
+          </span>
+
+        </>
+      )}
+
+    </div>
+
+    <CloseBtn
+      onClick={onClose}
+    />
+
+  </div>
+);
+// ─────────────────────────────────────────────────────────────
+// CSS
+// ─────────────────────────────────────────────────────────────
+
 const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,700;1,300&family=DM+Sans:wght@300;400;500;600&display=swap');
 .br{font-family:'DM Sans',sans-serif} .br h1,.br h2{font-family:'Fraunces',serif}
@@ -45,125 +260,635 @@ select option{background:#1a1a28;color:#e2e2f0}
 .ib:hover{background:linear-gradient(135deg,#818cf8,#6366f1);box-shadow:0 4px 20px rgba(99,102,241,.4);transform:translateY(-1px)}
 `;
 
-// ─── Micro Components ─────────────────────────────────────────────────────────
-const Pill = ({ v, active, onClick, count }) => (
-  <button onClick={onClick}
-    className={`pill-filter rounded-full px-[13px] py-[5px] text-[12px] font-medium cursor-pointer capitalize ${active ? "bg-[#6366f1] text-white border border-[#6366f1]" : "bg-[#1e1e2a] text-[#6b6b80] border border-[#2a2a38]"}`}>
-    {v} {count != null && <span className="opacity-55">({count})</span>}
-  </button>
-);
+// ─────────────────────────────────────────────────────────────
+// COMPONENT
+// ─────────────────────────────────────────────────────────────
 
-const CloseBtn = ({ onClick }) => (
-  <button onClick={onClick} className="bg-[#1e1e2a] border border-[#2a2a38] rounded-full w-[30px] h-[30px] cursor-pointer text-[#8b8ba8] flex items-center justify-center">
-    <X size={13} />
-  </button>
-);
-
-const Modal = ({ onClose, maxW = "780px", bg = "#13131b", children }) => (
-  <div className="modal-overlay fixed inset-0 bg-black/90 backdrop-blur-[14px] z-50 flex items-center justify-center p-6"
-    onClick={(e) => e.target === e.currentTarget && onClose()}>
-    <div className="modal-card border border-[#2a2a38] rounded-2xl w-full overflow-hidden flex flex-col shadow-[0_40px_100px_rgba(0,0,0,0.7)]"
-      style={{ maxWidth: maxW, maxHeight: "92vh", background: bg }}>
-      {children}
-    </div>
-  </div>
-);
-
-const MHead = ({ label, icon: Icon, onClose }) => (
-  <div className="py-4 px-6 border-b border-[#2a2a38] flex justify-between items-center flex-shrink-0">
-    <div className="flex items-center gap-2.5">
-      {Icon
-        ? <><div className="bg-[#6366f115] rounded-lg p-1.5"><Icon size={14} className="text-[#6366f1]" /></div><span className="font-semibold text-[#131314] text-[15px]">{label}</span></>
-        : <><div className="w-1.5 h-1.5 rounded-full bg-[#10b981]" /><span className="text-[12px] text-[#6b6b80] tracking-[0.07em] font-semibold uppercase">{label}</span></>}
-    </div>
-    <CloseBtn onClick={onClose} />
-  </div>
-);
-
-// ─── Main ─────────────────────────────────────────────────────────────────────
 export default function BlogsPage() {
-  const { data, mutate } = useSWR("/api/blog", fetcher, { revalidateOnFocus: false, dedupingInterval: 60000 });
-  const blogs = Array.isArray(data) ? data : data?.data || [];
 
-  const [sel2, setSel2] = useState([]);
-  const [statusF, setStatusF] = useState("all");
-  const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
-  const [catF, setCatF] = useState("all");
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
-  const [preview, setPreview] = useState(null);
-  const [edit, setEdit] = useState(null);
-  const [editorContent, setEditorContent] = useState("");
-  const [sortBy, setSortBy] = useState("latest");
-  const [delConfirm, setDelConfirm] = useState(null);
+  const {
+    data,
+    mutate,
+  } = useSWR(
+    "/api/blog",
+    fetcher,
+    {
+      revalidateOnFocus:
+        false,
 
-  useEffect(() => { if (edit) setEditorContent(edit.content || ""); }, [edit]);
+      dedupingInterval:
+        60000,
+    }
+  );
 
-  const stats = useMemo(() => ({
-    total: blogs.length,
-    published: blogs.filter((b) => b.status === "published").length,
-  }), [blogs]);
+  const blogs =
+    Array.isArray(data)
+      ? data
+      : data?.data || [];
 
-  const catCounts = useMemo(() => {
-    const c = { all: blogs.length };
-    blogs.forEach((b) => { const k = (b.category || "other").toLowerCase(); c[k] = (c[k] || 0) + 1; });
-    return c;
-  }, [blogs]);
+  const [sel2, setSel2] =
+    useState([]);
 
-  const filtered = useMemo(() => {
-    const sorters = {
-      latest: (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
-      oldest: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
-      az: (a, b) => (a.title || "").localeCompare(b.title || ""),
-      views: (a, b) => (b.views || 0) - (a.views || 0),
+  const [statusF, setStatusF] =
+    useState("all");
+
+  const [search, setSearch] =
+    useState("");
+
+  const [page, setPage] =
+    useState(1);
+
+  const [perPage, setPerPage] =
+    useState(10);
+
+  const [catF, setCatF] =
+    useState("all");
+
+  const [from, setFrom] =
+    useState("");
+
+  const [to, setTo] =
+    useState("");
+
+  const [preview, setPreview] =
+    useState(null);
+
+  const [edit, setEdit] =
+    useState(null);
+
+  const [
+    editorContent,
+    setEditorContent,
+  ] = useState("");
+
+  const [sortBy, setSortBy] =
+    useState("latest");
+
+  const [
+    delConfirm,
+    setDelConfirm,
+  ] = useState(null);
+
+  useEffect(() => {
+
+    if (edit) {
+
+      setEditorContent(
+        edit.content || ""
+      );
+
+    }
+
+  }, [edit]);
+
+  // ─────────────────────────────────────────────────────────────
+  // STATS
+  // ─────────────────────────────────────────────────────────────
+
+  const stats =
+    useMemo(
+      () => ({
+
+        total:
+          blogs.length,
+
+        published:
+          blogs.filter(
+            (b) =>
+              b.status ===
+              "published"
+          ).length,
+
+      }),
+      [blogs]
+    );
+
+  const catCounts =
+    useMemo(() => {
+
+      const c = {
+        all:
+          blogs.length,
+      };
+
+      blogs.forEach(
+        (b) => {
+
+          const k =
+            (
+              b.category ||
+              "other"
+            ).toLowerCase();
+
+          c[k] =
+            (c[k] || 0) +
+            1;
+        }
+      );
+
+      return c;
+
+    }, [blogs]);
+
+  // ─────────────────────────────────────────────────────────────
+  // FILTERS
+  // ─────────────────────────────────────────────────────────────
+
+  const filtered =
+    useMemo(() => {
+
+      const sorters = {
+
+        latest:
+          (a, b) =>
+            new Date(
+              b.createdAt
+            ) -
+            new Date(
+              a.createdAt
+            ),
+
+        oldest:
+          (a, b) =>
+            new Date(
+              a.createdAt
+            ) -
+            new Date(
+              b.createdAt
+            ),
+
+        az:
+          (a, b) =>
+            (
+              a.title ||
+              ""
+            ).localeCompare(
+              b.title ||
+              ""
+            ),
+
+        views:
+          (a, b) =>
+            (
+              b.views || 0
+            ) -
+            (
+              a.views || 0
+            ),
+
+      };
+
+      return blogs
+        .filter(
+          (b) =>
+
+            (statusF ===
+              "all" ||
+              b.status ===
+              statusF) &&
+
+            (
+              b.title || ""
+            )
+              .toLowerCase()
+              .includes(
+                search.toLowerCase()
+              ) &&
+
+            (catF ===
+              "all" ||
+              (
+                b.category ||
+                ""
+              ).toLowerCase() ===
+              catF) &&
+
+            (from
+              ? new Date(
+                b.createdAt
+              ) >=
+              new Date(
+                from
+              )
+              : true) &&
+
+            (to
+              ? new Date(
+                b.createdAt
+              ) <=
+              new Date(
+                to
+              )
+              : true)
+        )
+        .sort(
+          sorters[
+          sortBy
+          ]
+        );
+
+    }, [
+      blogs,
+      statusF,
+      search,
+      catF,
+      from,
+      to,
+      sortBy,
+    ]);
+
+  const totalPages =
+    Math.ceil(
+      filtered.length /
+      perPage
+    );
+
+  const paged =
+    filtered.slice(
+      (page - 1) *
+      perPage,
+      page * perPage
+    );
+
+  // ─────────────────────────────────────────────────────────────
+  // SELECTION
+  // ─────────────────────────────────────────────────────────────
+
+  const toggleAll = () =>
+    setSel2(
+      sel2.length ===
+        paged.length
+        ? []
+        : paged.map(
+          (b) =>
+            b.slug
+        )
+    );
+
+  const toggle = (
+    slug
+  ) =>
+    setSel2((p) =>
+      p.includes(slug)
+        ? p.filter(
+          (x) =>
+            x !== slug
+        )
+        : [...p, slug]
+    );
+
+
+  const rp =
+    (fn) =>
+      (...a) => {
+
+        fn(...a);
+
+        setPage(1);
+
+      };
+  // ─────────────────────────────────────────────────────────────
+  // STATUS UPDATE
+  // ─────────────────────────────────────────────────────────────
+
+  const updateStatus =
+    async (
+      slug,
+      status
+    ) => {
+
+      try {
+
+        await apiPut(
+          slug,
+          {
+            status,
+          }
+        );
+
+        mutate(
+          (prev) => {
+
+            const arr =
+              Array.isArray(
+                prev
+              )
+                ? prev
+                : prev?.data ||
+                [];
+
+            return arr.map(
+              (b) =>
+                b.slug ===
+                  slug
+                  ? {
+                    ...b,
+                    status,
+                  }
+                  : b
+            );
+
+          },
+          false
+        );
+
+      } catch (err) {
+
+        console.error(
+          err
+        );
+
+        alert(
+          "Status update failed"
+        );
+
+      }
     };
-    return blogs.filter((b) =>
-      (statusF === "all" || b.status === statusF) &&
-      (b.title || "").toLowerCase().includes(search.toLowerCase()) &&
-      (catF === "all" || (b.category || "").toLowerCase() === catF) &&
-      (from ? new Date(b.createdAt) >= new Date(from) : true) &&
-      (to ? new Date(b.createdAt) <= new Date(to) : true)
-    ).sort(sorters[sortBy]);
-  }, [blogs, statusF, search, catF, from, to, sortBy]);
 
-  const totalPages = Math.ceil(filtered.length / perPage);
-  const paged = filtered.slice((page - 1) * perPage, page * perPage);
+  // ─────────────────────────────────────────────────────────────
+  // BULK STATUS
+  // ─────────────────────────────────────────────────────────────
 
-  const toggleAll = () => setSel2(sel2.length === paged.length ? [] : paged.map((b) => b._id));
-  const toggle = (id) => setSel2((p) => p.includes(id) ? p.filter((x) => x !== id) : [...p, id]);
-  const rp = (fn) => (...a) => { fn(...a); setPage(1); };
+  const bulkStatus =
+    async (
+      status
+    ) => {
 
-  const updateStatus = async (id, status) => {
-    await apiPut(id, { status });
-    mutate((p) => p.map((b) => b._id === id ? { ...b, status } : b), false);
-  };
-  const bulkStatus = async (status) => {
-    await Promise.all(sel2.map((id) => apiPut(id, { status })));
-    mutate((p) => p.map((b) => sel2.includes(b._id) ? { ...b, status } : b), false);
-    setSel2([]);
-  };
-  const bulkDelete = async () => {
-    if (!sel2.length || !confirm("Delete selected?")) return;
-    await Promise.all(sel2.map((id) => fetch(`/api/blog/${id}`, { method: "DELETE" })));
-    mutate((p) => p.filter((b) => !sel2.includes(b._id)), false);
-    setSel2([]);
-  };
-  const handleDelete = async () => {
-    await fetch(`/api/blog/${delConfirm}`, { method: "DELETE" });
-    mutate((p) => p.filter((b) => b._id !== delConfirm), false);
-    setDelConfirm(null);
-  };
-  const saveEdit = async () => {
-    try {
-      const updated = { ...edit, content: editorContent };
-      const res = await fetch(`/api/blog/${edit._id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(updated) });
-      if (!res.ok) throw new Error();
-      mutate((p) => p.map((b) => b._id === edit._id ? updated : b), false);
-      setEdit(null);
-    } catch { alert("Update failed"); }
-  };
+      try {
+
+        await Promise.all(
+          sel2.map(
+            (
+              slug
+            ) =>
+              apiPut(
+                slug,
+                {
+                  status,
+                }
+              )
+          )
+        );
+
+        mutate(
+          (prev) => {
+
+            const arr =
+              Array.isArray(
+                prev
+              )
+                ? prev
+                : prev?.data ||
+                [];
+
+            return arr.map(
+              (b) =>
+                sel2.includes(
+                  b.slug
+                )
+                  ? {
+                    ...b,
+                    status,
+                  }
+                  : b
+            );
+
+          },
+          false
+        );
+
+        setSel2([]);
+
+      } catch (err) {
+
+        console.error(
+          err
+        );
+
+        alert(
+          "Bulk update failed"
+        );
+
+      }
+    };
+
+  // ─────────────────────────────────────────────────────────────
+  // BULK DELETE
+  // ─────────────────────────────────────────────────────────────
+
+  const bulkDelete =
+    async () => {
+
+      if (
+        !sel2.length ||
+        !confirm(
+          "Delete selected?"
+        )
+      ) return;
+
+      try {
+
+        await Promise.all(
+          sel2.map(
+            (
+              slug
+            ) =>
+              fetch(
+                `/api/blog/${slug}`,
+                {
+                  method:
+                    "DELETE",
+                }
+              )
+          )
+        );
+
+        mutate(
+          (prev) => {
+
+            const arr =
+              Array.isArray(
+                prev
+              )
+                ? prev
+                : prev?.data ||
+                [];
+
+            return arr.filter(
+              (b) =>
+                !sel2.includes(
+                  b.slug
+                )
+            );
+
+          },
+          false
+        );
+
+        setSel2([]);
+
+      } catch (err) {
+
+        console.error(
+          err
+        );
+
+        alert(
+          "Delete failed"
+        );
+
+      }
+    };
+
+  // ─────────────────────────────────────────────────────────────
+  // DELETE SINGLE
+  // ─────────────────────────────────────────────────────────────
+
+  const handleDelete =
+    async () => {
+
+      try {
+
+        const res =
+          await fetch(
+            `/api/blog/${delConfirm}`,
+            {
+              method:
+                "DELETE",
+            }
+          );
+
+        const data =
+          await res.json();
+
+        console.log(
+          data
+        );
+
+        if (!res.ok) {
+
+          throw new Error(
+            data.error ||
+            "Delete failed"
+          );
+
+        }
+
+        mutate(
+          (prev) => {
+
+            const arr =
+              Array.isArray(
+                prev
+              )
+                ? prev
+                : prev?.data ||
+                [];
+
+            return arr.filter(
+              (b) =>
+                b.slug !==
+                delConfirm
+            );
+
+          },
+          false
+        );
+
+        setDelConfirm(
+          null
+        );
+
+      } catch (err) {
+
+        console.error(
+          err
+        );
+
+        alert(
+          err.message
+        );
+
+      }
+    };
+
+  // ─────────────────────────────────────────────────────────────
+  // SAVE EDIT
+  // ─────────────────────────────────────────────────────────────
+
+  const saveEdit =
+    async () => {
+
+      try {
+
+        const updated = {
+          ...edit,
+
+          content:
+            editorContent,
+        };
+
+        const res =
+          await fetch(
+            `/api/blog/${edit.slug}`,
+            {
+              method:
+                "PUT",
+
+              headers: {
+                "Content-Type":
+                  "application/json",
+              },
+
+              body:
+                JSON.stringify(
+                  updated
+                ),
+            }
+          );
+
+        if (
+          !res.ok
+        ) {
+
+          throw new Error();
+
+        }
+
+        mutate(
+          (prev) => {
+
+            const arr =
+              Array.isArray(
+                prev
+              )
+                ? prev
+                : prev?.data ||
+                [];
+
+            return arr.map(
+              (b) =>
+                b.slug ===
+                  edit.slug
+                  ? updated
+                  : b
+            );
+
+          },
+          false
+        );
+
+        setEdit(null);
+
+      } catch {
+
+        alert(
+          "Update failed"
+        );
+
+      }
+    };
+
 
   return (
     <>
@@ -247,9 +972,9 @@ export default function BlogsPage() {
                   </td></tr>
                 )}
                 {paged.map((b) => (
-                  <tr key={b._id} className="row rs afu border-b border-[#1a1a24] bg-transparent">
+                  <tr key={b.slug} className="row rs afu border-b border-[#1a1a24] bg-transparent">
                     <td className="py-3 px-4">
-                      <input type="checkbox" className="accent-[#6366f1] cursor-pointer" checked={sel2.includes(b._id)} onChange={() => toggle(b._id)} />
+                      <input type="checkbox" className="accent-[#6366f1] cursor-pointer" checked={sel2.includes(b.slug)} onChange={() => toggle(b.slug)} />
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex gap-3 items-center">
@@ -269,7 +994,7 @@ export default function BlogsPage() {
                       <span className="bg-[#1e1e2a] text-[#6b6b80] rounded-md py-[3px] px-2.5 text-[11px] font-medium capitalize">{b.subCategory || "–"}</span>
                     </td>
                     <td className="py-3 px-4 text-center">
-                      <select value={b.status} onChange={(e) => updateStatus(b._id, e.target.value)}
+                      <select value={b.status} onChange={(e) => updateStatus(b.slug, e.target.value)}
                         className="sb bg-transparent border-none cursor-pointer"
                         style={{ color: STATUS_CLR[b.status], background: `${STATUS_CLR[b.status]}20` }}>
                         {["draft", "published", "scheduled"].map((s) => <option key={s} value={s}>{s}</option>)}
@@ -281,7 +1006,7 @@ export default function BlogsPage() {
                     <td className="py-3 px-4 text-center text-[#5a5a74] text-[12px]">{fmt(b.createdAt, { month: "short", day: "numeric", year: "numeric" })}</td>
                     <td className="py-3 px-4">
                       <div className="flex gap-1.5 justify-end">
-                        {[[Eye, "#6366f1", () => setPreview(b)], [Pencil, "#10b981", () => setEdit(b)], [Trash2, "#ef4444", () => setDelConfirm(b._id)]].map(([Icon, c, fn], i) => (
+                        {[[Eye, "#6366f1", () => setPreview(b)], [Pencil, "#10b981", () => setEdit(b)], [Trash2, "#ef4444", () => setDelConfirm(b.slug)]].map(([Icon, c, fn], i) => (
                           <button key={i} onClick={fn} className="ab rounded-md p-1.5 cursor-pointer flex items-center"
                             style={{ backgroundColor: `${c}14`, border: `1px solid ${c}22`, color: c }}>
                             <Icon size={13} />
@@ -374,7 +1099,7 @@ export default function BlogsPage() {
               <div>
                 <p className={lbl}>Content</p>
                 <div className="border border-[#2a2a38] rounded-lg overflow-hidden">
-                  <Tiptap key={edit._id} initialContent={edit.content || ""} setContent={setEditorContent} />
+                  <Tiptap key={edit.slug} initialContent={edit.content || ""} setContent={setEditorContent} />
                 </div>
               </div>
             </div>

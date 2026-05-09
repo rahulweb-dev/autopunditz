@@ -72,7 +72,7 @@ export async function PUT(
     await connectDB();
 
     const { slug } =
-      params;
+      await params;
 
     const body =
       await req.json();
@@ -160,15 +160,23 @@ export async function DELETE(
 
     await connectDB();
 
+    // ✅ NEXT 16
     const { slug } =
-      params;
+      await params;
+
+
 
     const deleted =
       await Blog.findOneAndDelete(
         {
-          slug,
+          slug: slug.trim(),
         }
       );
+
+    console.log(
+      "DELETED:",
+      deleted
+    );
 
     if (!deleted) {
 
@@ -184,18 +192,26 @@ export async function DELETE(
 
     }
 
-    return Response.json({
-      success: true,
-    });
+    return Response.json(
+      {
+        success: true,
+      },
+      {
+        status: 200,
+      }
+    );
 
   } catch (err) {
 
-    console.error(err);
+    console.error(
+      "DELETE ERROR:",
+      err
+    );
 
     return Response.json(
       {
         error:
-          "Server error",
+          "Delete failed",
       },
       {
         status: 500,

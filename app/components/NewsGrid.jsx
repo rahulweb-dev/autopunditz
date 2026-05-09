@@ -50,7 +50,7 @@ export default function NewsGrid({ title, subtitle, data, basePath }) {
             >
 
               {/* IMAGE */}
-              <Link href={`${basePath}/${item._id || item.slug}`}>
+              <Link href={`${basePath}/${item.slug}`}>
                 <div className="relative h-48 overflow-hidden">
                   <Image
                     src={image}
