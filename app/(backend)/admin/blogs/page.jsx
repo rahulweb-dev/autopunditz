@@ -35,10 +35,10 @@ const fetcher = (u) =>
 
 const CATS = [
   "all",
-  "cars",
-  "bikes",
+  "sales",
   "news",
-  "market analysis",
+  "marketanalysis",
+  "editorials"
 ];
 
 const STATUSES = [
@@ -157,7 +157,7 @@ const Modal = ({
 }) => (
 
   <div
-    className="modal-overlay fixed inset-0 bg-black/90 backdrop-blur-[14px] z-50 flex items-center justify-center p-6"
+    className="modal-overlay fixed inset-0  backdrop-blur-[14px] z-50 flex items-center justify-center p-6"
     onClick={(e) =>
       e.target ===
       e.currentTarget &&
@@ -265,6 +265,11 @@ select option{background:#1a1a28;color:#e2e2f0}
 // ─────────────────────────────────────────────────────────────
 
 export default function BlogsPage() {
+  const [toast, setToast] =
+    useState(null);
+
+  const [subF, setSubF] =
+    useState("all");
 
   const {
     data,
@@ -380,9 +385,13 @@ export default function BlogsPage() {
               "other"
             ).toLowerCase();
 
-          c[k] =
-            (c[k] || 0) +
-            1;
+          if (k) {
+
+            c[k] =
+              (c[k] || 0) +
+              1;
+
+          }
         }
       );
 
@@ -447,6 +456,13 @@ export default function BlogsPage() {
               b.status ===
               statusF) &&
 
+            (subF ===
+              "all" ||
+              (
+                b.subCategory ||
+                ""
+              ) === subF) &&
+
             (
               b.title || ""
             )
@@ -480,6 +496,7 @@ export default function BlogsPage() {
                 to
               )
               : true)
+
         )
         .sort(
           sorters[
@@ -492,10 +509,14 @@ export default function BlogsPage() {
       statusF,
       search,
       catF,
+      subF,
       from,
       to,
       sortBy,
     ]);
+
+
+
 
   const totalPages =
     Math.ceil(
@@ -761,10 +782,6 @@ export default function BlogsPage() {
         const data =
           await res.json();
 
-        console.log(
-          data
-        );
-
         if (!res.ok) {
 
           throw new Error(
@@ -799,15 +816,38 @@ export default function BlogsPage() {
           null
         );
 
+        // ✅ SUCCESS TOAST
+        setToast({
+          type: "success",
+          message:
+            "Blog deleted successfully",
+        });
+
+        // ✅ AUTO HIDE
+        setTimeout(() => {
+
+          setToast(null);
+
+        }, 3000);
+
       } catch (err) {
 
         console.error(
           err
         );
 
-        alert(
-          err.message
-        );
+        setToast({
+          type: "error",
+          message:
+            err.message ||
+            "Delete failed",
+        });
+
+        setTimeout(() => {
+
+          setToast(null);
+
+        }, 3000);
 
       }
     };
@@ -909,31 +949,247 @@ export default function BlogsPage() {
 
         {/* FILTERS */}
         <div className="afu bg-[#16161e] border border-[#2a2a38] rounded-xl p-4 mb-4">
+
+          {/* TOP FILTERS */}
           <div className="flex gap-2.5 items-center flex-wrap mb-3.5">
+
             <div className="relative flex-1 min-w-[180px]">
-              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4b4b6a]" />
-              <input className="si w-full bg-white border border-[#2a2a38] rounded-lg py-[9px] px-3 pl-8 text-black text-[13px]"
-                placeholder="Search posts…" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
+
+              <Search
+                size={14}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4b4b6a]"
+              />
+
+              <input
+                className="si w-full bg-[#0d0d12] border border-[#2a2a38] rounded-lg py-[9px] px-3 pl-8 text-[#e2e2f0] text-[13px]"
+                placeholder="Search posts…"
+                value={search}
+                onChange={(e) => {
+
+                  setSearch(
+                    e.target.value
+                  );
+
+                  setPage(1);
+
+                }}
+              />
+
             </div>
-            <input type="date" onChange={(e) => setFrom(e.target.value)} className={sel} />
-            <input type="date" onChange={(e) => setTo(e.target.value)} className={sel} />
-            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className={sel}>
-              {Object.entries(SORTS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+
+            <input
+              type="date"
+              value={from}
+              onChange={(e) =>
+                setFrom(
+                  e.target.value
+                )
+              }
+              className={`${sel} text-[#e2e2f0] bg-[#0d0d12]`}
+            />
+
+            <input
+              type="date"
+              value={to}
+              onChange={(e) =>
+                setTo(
+                  e.target.value
+                )
+              }
+              className={`${sel} text-[#e2e2f0] bg-[#0d0d12]`}
+            />
+
+            <select
+              value={sortBy}
+              onChange={(e) =>
+                setSortBy(
+                  e.target.value
+                )
+              }
+              className={`${sel} bg-[#0d0d12] text-[#e2e2f0]`}
+            >
+
+              {Object.entries(
+                SORTS
+              ).map(
+                ([v, l]) => (
+
+                  <option
+                    key={v}
+                    value={v}
+                  >
+                    {l}
+                  </option>
+
+                )
+              )}
+
             </select>
-            <select value={perPage} onChange={(e) => { setPerPage(+e.target.value); setPage(1); }} className={sel}>
-              {[10, 20, 50].map((n) => <option key={n} value={n}>{n} / page</option>)}
+
+            <select
+              value={perPage}
+              onChange={(e) => {
+
+                setPerPage(
+                  +e.target.value
+                );
+
+                setPage(1);
+
+              }}
+              className={`${sel} bg-[#0d0d12] text-[#e2e2f0]`}
+            >
+
+              {[10, 20, 50].map(
+                (n) => (
+
+                  <option
+                    key={n}
+                    value={n}
+                  >
+                    {n} / page
+                  </option>
+
+                )
+              )}
+
             </select>
+
           </div>
-          <div className="flex gap-2 flex-wrap items-center">
-            {[{ label: "Cat", items: CATS, active: catF, set: rp(setCatF), counts: catCounts },
-            { label: "Status", items: STATUSES, active: statusF, set: rp(setStatusF) }].map(({ label, items, active, set, counts }, gi) => (
-              <div key={label} className="flex items-center gap-2 flex-wrap">
-                {gi > 0 && <div className="w-px h-[18px] bg-[#2a2a38] mx-1" />}
-                <span className="text-[11px] text-white font-semibold uppercase tracking-[0.08em]">{label}</span>
-                {items.map((v) => <Pill key={v} v={v} active={active === v} onClick={() => set(v)} count={counts?.[v]} />)}
+
+          {/* CATEGORY + STATUS */}
+          <div className="flex gap-2 flex-wrap items-center"> {[
+              {
+                label: "Cat",
+                items: CATS,
+                active: catF,
+                set: rp(setCatF),
+                counts: catCounts,
+              },
+
+              {
+                label: "Status",
+                items: STATUSES,
+                active: statusF,
+                set: rp(setStatusF),
+              },
+
+            ].map(
+              ({
+                label,
+                items,
+                active,
+                set,
+                counts,
+              }, gi) => (
+
+                <div
+                  key={label}
+                  className="flex items-center gap-2 flex-wrap"
+                >
+
+                  {gi > 0 && (
+                    <div className="w-px h-[18px] bg-[#2a2a38] mx-1" />
+                  )}
+
+                  <span className="text-[11px] text-white font-semibold uppercase tracking-[0.08em]">
+
+                    {label}
+
+                  </span>
+
+                  {items.map(
+                    (v) => (
+
+                      <Pill
+                        key={v}
+                        v={v}
+                        active={
+                          active === v
+                        }
+                        onClick={() =>
+                          set(v)
+                        }
+                        count={
+                          counts?.[v]
+                        }
+                      />
+
+                    )
+                  )}
+
+                </div>
+
+              )
+            )}
+
+            {/* SUB CATEGORY */}
+            {catF !== "all" && (
+
+              <div className="flex items-center gap-2 flex-wrap ml-3">
+
+                <div className="w-px h-[18px] bg-[#2a2a38]" />
+
+                <span className="text-[11px] text-white font-semibold uppercase tracking-[0.08em]">
+
+                  Sub
+
+                </span>
+
+                <Pill
+                  v="all"
+                  active={
+                    subF === "all"
+                  }
+                  onClick={() =>
+                    rp(setSubF)(
+                      "all"
+                    )
+                  }
+                />
+
+                {[
+                  ...new Set(
+                    blogs
+                      .filter(
+                        (b) =>
+                          (
+                            b.category ||
+                            ""
+                          ).toLowerCase() ===
+                          catF
+                      )
+                      .map(
+                        (b) =>
+                          b.subCategory
+                      )
+                      .filter(Boolean)
+                  ),
+                ].map(
+                  (s) => (
+
+                    <Pill
+                      key={s}
+                      v={s}
+                      active={
+                        subF === s
+                      }
+                      onClick={() =>
+                        rp(setSubF)(
+                          s
+                        )
+                      }
+                    />
+
+                  )
+                )}
+
               </div>
-            ))}
+
+            )}
+
           </div>
+
         </div>
 
         {/* BULK BAR */}
@@ -951,165 +1207,1284 @@ export default function BlogsPage() {
         )}
 
         {/* TABLE */}
-        <div className="bg-[#16161e] border border-[#2a2a38] rounded-xl overflow-hidden">
-          <div className="sc max-h-[520px] overflow-y-auto">
-            <table className="w-full border-collapse text-[13px]">
-              <thead>
-                <tr className="bg-[#0d0d12] border-b border-[#2a2a38]">
-                  <th className="py-[13px] px-4 w-10">
-                    <input type="checkbox" className="accent-[#6366f1] cursor-pointer"
-                      onChange={toggleAll} checked={paged.length > 0 && sel2.length === paged.length} />
-                  </th>
-                  {["Post", "Category", "subCategory", "Status", "Views", "Date", ""].map((h, i) => (
-                    <th key={i} className={`py-[13px] px-4 text-white text-[11px] font-semibold tracking-[0.08em] uppercase ${i === 0 ? "text-left" : "text-center"}`}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {paged.length === 0 && (
-                  <tr><td colSpan={7} className="py-16 text-center text-[#3a3a54]">
-                    <FileText size={30} className="mx-auto mb-2.5 opacity-25" /><p className="text-[14px]">No posts found</p>
-                  </td></tr>
-                )}
-                {paged.map((b) => (
-                  <tr key={b.slug} className="row rs afu border-b border-[#1a1a24] bg-transparent">
-                    <td className="py-3 px-4">
-                      <input type="checkbox" className="accent-[#6366f1] cursor-pointer" checked={sel2.includes(b.slug)} onChange={() => toggle(b.slug)} />
-                    </td>
-                    <td className="py-3 px-4">
-                      <div className="flex gap-3 items-center">
-                        <div className="tw w-[62px] h-[42px] flex-shrink-0 relative">
-                          <Image src={thumb(b.content)} alt={b.title} fill className="ti object-cover" />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-[#e2e2f0] leading-tight mb-0.5 max-w-[280px]">{b.title}</p>
-                          <p className="text-[11px] text-[#4b4b6a]">{b.author || "Admin"}</p>
-                        </div>
-                      </div>
-                    </td>
+        <div className="relative overflow-hidden rounded-3xl border border-[#262637] bg-[#111118]/95 shadow-[0_20px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl">
 
-                    <td className="py-3 px-4 text-center">
-                      <span className="bg-[#1e1e2a] text-[#6b6b80] rounded-md py-[3px] px-2.5 text-[11px] font-medium capitalize">{b.category || "–"}</span>
-                    </td>   <td className="py-3 px-4 text-center">
-                      <span className="bg-[#1e1e2a] text-[#6b6b80] rounded-md py-[3px] px-2.5 text-[11px] font-medium capitalize">{b.subCategory || "–"}</span>
-                    </td>
-                    <td className="py-3 px-4 text-center">
-                      <select value={b.status} onChange={(e) => updateStatus(b.slug, e.target.value)}
-                        className="sb bg-transparent border-none cursor-pointer"
-                        style={{ color: STATUS_CLR[b.status], background: `${STATUS_CLR[b.status]}20` }}>
-                        {["draft", "published", "scheduled"].map((s) => <option key={s} value={s}>{s}</option>)}
-                      </select>
-                    </td>
-                    <td className="py-3 px-4 text-center text-[#5a5a74]">
-                      <div className="flex items-center justify-center gap-1.5"><Eye size={12} />{(b.views || 0).toLocaleString()}</div>
-                    </td>
-                    <td className="py-3 px-4 text-center text-[#5a5a74] text-[12px]">{fmt(b.createdAt, { month: "short", day: "numeric", year: "numeric" })}</td>
-                    <td className="py-3 px-4">
-                      <div className="flex gap-1.5 justify-end">
-                        {[[Eye, "#6366f1", () => setPreview(b)], [Pencil, "#10b981", () => setEdit(b)], [Trash2, "#ef4444", () => setDelConfirm(b.slug)]].map(([Icon, c, fn], i) => (
-                          <button key={i} onClick={fn} className="ab rounded-md p-1.5 cursor-pointer flex items-center"
-                            style={{ backgroundColor: `${c}14`, border: `1px solid ${c}22`, color: c }}>
-                            <Icon size={13} />
-                          </button>
-                        ))}
-                      </div>
-                    </td>
+          {/* TOP GLOW */}
+          <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-[#6366f1] to-transparent opacity-70" />
+
+          <div className="overflow-x-auto">
+
+            <div className="max-h-[650px] overflow-y-auto">
+
+              <table className="w-full border-collapse min-w-[1100px]">
+
+                {/* HEADER */}
+                <thead className="sticky top-0 z-20">
+
+                  <tr className="bg-[#0b0b11]/95 backdrop-blur-xl border-b border-[#232332]">
+
+                    <th className="py-4 px-5 w-[50px]">
+
+                      <input
+                        type="checkbox"
+                        className="w-4 h-4 accent-[#6366f1] cursor-pointer rounded"
+                        onChange={toggleAll}
+                        checked={
+                          paged.length >
+                          0 &&
+                          sel2.length ===
+                          paged.length
+                        }
+                      />
+
+                    </th>
+
+                    {[
+                      "Post",
+                      "Category",
+                      "Sub Category",
+                      "Status",
+                      "Views",
+                      "Published",
+                      "Actions",
+                    ].map((h, i) => (
+
+                      <th
+                        key={i}
+                        className={`py-4 px-5 text-[11px] font-bold uppercase tracking-[0.12em] text-[#8b8ba7] ${i === 0
+                            ? "text-left"
+                            : i === 6
+                              ? "text-right"
+                              : "text-center"
+                          }`}
+                      >
+
+                        {h}
+
+                      </th>
+
+                    ))}
+
                   </tr>
-                ))}
-              </tbody>
-            </table>
+
+                </thead>
+
+                {/* BODY */}
+                <tbody>
+
+                  {paged.length ===
+                    0 && (
+
+                      <tr>
+
+                        <td
+                          colSpan={7}
+                          className="py-24 text-center"
+                        >
+
+                          <div className="flex flex-col items-center">
+
+                            <div className="w-16 h-16 rounded-2xl bg-[#1a1a28] border border-[#2a2a38] flex items-center justify-center mb-4">
+
+                              <FileText
+                                size={28}
+                                className="text-[#4b4b6a]"
+                              />
+
+                            </div>
+
+                            <h3 className="text-[#d1d1de] font-semibold text-[16px] mb-1">
+
+                              No Posts Found
+
+                            </h3>
+
+                            <p className="text-[#5b5b75] text-[13px]">
+
+                              Try changing filters or create a new blog post
+
+                            </p>
+
+                          </div>
+
+                        </td>
+
+                      </tr>
+
+                    )}
+
+                  {paged.map((b) => (
+
+                    <tr
+                      key={b.slug}
+                      className="group border-b border-[#1a1a24] hover:bg-[#171722]/80 transition-all duration-200"
+                    >
+
+                      {/* CHECKBOX */}
+                      <td className="py-4 px-5">
+
+                        <input
+                          type="checkbox"
+                          className="w-4 h-4 accent-[#6366f1] cursor-pointer rounded"
+                          checked={sel2.includes(
+                            b.slug
+                          )}
+                          onChange={() =>
+                            toggle(
+                              b.slug
+                            )
+                          }
+                        />
+
+                      </td>
+
+                      {/* POST */}
+                      <td className="py-4 px-5">
+
+                        <div className="flex items-center gap-4">
+
+                          {/* IMAGE */}
+                          <div className="relative w-[90px] h-[60px] rounded-2xl overflow-hidden border border-[#2a2a38] bg-[#1a1a28] shadow-md flex-shrink-0">
+
+                            <Image
+                              src={thumb(
+                                b.content
+                              )}
+                              alt={
+                                b.title
+                              }
+                              fill
+                              className="object-cover group-hover:scale-105 transition duration-300"
+                            />
+
+                          </div>
+
+                          {/* CONTENT */}
+                          <div className="min-w-0">
+
+                            <h3 className="text-[#f3f3fa] font-semibold text-[14px] leading-snug line-clamp-2 mb-1 max-w-[320px]">
+
+                              {b.title}
+
+                            </h3>
+
+                            <div className="flex items-center gap-2 text-[11px] text-[#666681]">
+
+                              <span className="font-medium text-[#9c9cb7]">
+
+                                {b.author ||
+                                  "Admin"}
+
+                              </span>
+
+                              <span>
+                                •
+                              </span>
+
+                              <span className="truncate max-w-[180px]">
+
+                                /blog/
+                                {b.slug}
+
+                              </span>
+
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                      </td>
+
+                      {/* CATEGORY */}
+                      <td className="py-4 px-5 text-center">
+
+                        <span className="inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold bg-[#1c1c29] border border-[#2d2d40] text-[#b8b8cc]">
+
+                          {b.category ||
+                            "—"}
+
+                        </span>
+
+                      </td>
+
+                      {/* SUB CATEGORY */}
+                      <td className="py-4 px-5 text-center">
+
+                        <span className="inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold bg-[#151520] border border-[#29293b] text-[#8f8fa8]">
+
+                          {b.subCategory ||
+                            "—"}
+
+                        </span>
+
+                      </td>
+
+                      {/* STATUS */}
+                      <td className="py-4 px-5 text-center">
+
+                        <select
+                          value={
+                            b.status
+                          }
+                          onChange={(
+                            e
+                          ) =>
+                            updateStatus(
+                              b.slug,
+                              e.target
+                                .value
+                            )
+                          }
+                          className="rounded-xl border px-3 py-1.5 text-[12px] font-semibold outline-none cursor-pointer transition"
+                          style={{
+                            color:
+                              STATUS_CLR[
+                              b.status
+                              ],
+
+                            background:
+                              `${STATUS_CLR[
+                              b.status
+                              ]}15`,
+
+                            borderColor:
+                              `${STATUS_CLR[
+                              b.status
+                              ]}35`,
+                          }}
+                        >
+
+                          {[
+                            "draft",
+                            "published",
+                            "scheduled",
+                          ].map((s) => (
+
+                            <option
+                              key={s}
+                              value={s}
+                            >
+                              {s}
+                            </option>
+
+                          ))}
+
+                        </select>
+
+                      </td>
+
+                      {/* VIEWS */}
+                      <td className="py-4 px-5 text-center">
+
+                        <div className="inline-flex items-center gap-1.5 text-[#b8b8cc] text-[13px] font-medium">
+
+                          <Eye
+                            size={14}
+                            className="text-[#6366f1]"
+                          />
+
+                          {(b.views ||
+                            0).toLocaleString()}
+
+                        </div>
+
+                      </td>
+
+                      {/* DATE */}
+                      <td className="py-4 px-5 text-center">
+
+                        <div className="text-[#d1d1de] text-[13px] font-medium">
+
+                          {fmt(
+                            b.createdAt,
+                            {
+                              month:
+                                "short",
+
+                              day:
+                                "numeric",
+
+                              year:
+                                "numeric",
+                            }
+                          )}
+
+                        </div>
+
+                        <div className="text-[#5f5f77] text-[11px] mt-1">
+
+                          {fmt(
+                            b.createdAt,
+                            {
+                              hour:
+                                "numeric",
+
+                              minute:
+                                "2-digit",
+                            }
+                          )}
+
+                        </div>
+
+                      </td>
+
+                      {/* ACTIONS */}
+                      <td className="py-4 px-5">
+
+                        <div className="flex justify-end gap-2">
+
+                          {[
+                            [
+                              Eye,
+                              "#6366f1",
+                              () =>
+                                setPreview(
+                                  b
+                                ),
+                            ],
+
+                            [
+                              Pencil,
+                              "#10b981",
+                              () =>
+                                setEdit(
+                                  b
+                                ),
+                            ],
+
+                            [
+                              Trash2,
+                              "#ef4444",
+                              () =>
+                                setDelConfirm(
+                                  b.slug
+                                ),
+                            ],
+
+                          ].map(
+                            (
+                              [
+                                Icon,
+                                c,
+                                fn,
+                              ],
+                              i
+                            ) => (
+
+                              <button
+                                key={i}
+                                onClick={
+                                  fn
+                                }
+                                className="w-9 h-9 rounded-xl flex items-center justify-center border transition-all duration-200 hover:scale-105"
+                                style={{
+                                  backgroundColor:
+                                    `${c}12`,
+
+                                  borderColor:
+                                    `${c}25`,
+
+                                  color:
+                                    c,
+                                }}
+                              >
+
+                                <Icon
+                                  size={
+                                    15
+                                  }
+                                />
+
+                              </button>
+
+                            )
+                          )}
+
+                        </div>
+
+                      </td>
+
+                    </tr>
+
+                  ))}
+
+                </tbody>
+
+              </table>
+
+            </div>
+
           </div>
 
           {/* PAGINATION */}
-          <div className="flex justify-between items-center py-3.5 px-5 border-t border-[#1a1a24]">
-            <p className="text-[12px] text-[#3a3a54]">
-              {filtered.length === 0 ? "No results" : <>Showing <b className="text-[#6b6b80]">{(page - 1) * perPage + 1}–{Math.min(page * perPage, filtered.length)}</b> of <b className="text-[#6b6b80]">{filtered.length}</b></>}
-            </p>
-            <div className="flex gap-1.5 items-center">
-              {[[ChevronLeft, () => setPage((p) => Math.max(1, p - 1)), page === 1],
-              [ChevronRight, () => setPage((p) => Math.min(totalPages, p + 1)), page === totalPages]].map(([Icon, fn, dis], i) => (
-                <button key={i} onClick={fn} disabled={dis}
-                  className="bg-[#1e1e2a] border border-[#2a2a38] rounded-md py-1.5 px-2.5 cursor-pointer flex items-center disabled:cursor-not-allowed disabled:text-[#2a2a38] text-[#8b8ba8]">
-                  <Icon size={14} />
-                </button>
-              ))}
-              {[...Array(totalPages)].map((_, i) => (
-                <button key={i} onClick={() => setPage(i + 1)}
-                  className={`rounded-md py-1.5 px-3 text-[12px] font-semibold cursor-pointer ${page === i + 1 ? "bg-[#6366f1] text-white border border-[#6366f1]" : "bg-[#1e1e2a] text-[#8b8ba8] border border-[#2a2a38]"}`}>
-                  {i + 1}
-                </button>
-              ))}
+          <div className="flex flex-col md:flex-row gap-4 justify-between items-center px-6 py-5 border-t border-[#1c1c29] bg-[#0c0c12]">
+
+            <div className="text-[13px] text-[#7a7a95]">
+
+              {filtered.length ===
+                0 ? (
+                "No results found"
+              ) : (
+                <>
+                  Showing
+                  {" "}
+                  <span className="font-semibold text-[#d7d7e5]">
+
+                    {(page - 1) *
+                      perPage +
+                      1}
+
+                    –
+                    {Math.min(
+                      page *
+                      perPage,
+                      filtered.length
+                    )}
+
+                  </span>
+                  
+                  of
+                 
+                  <span className="font-semibold text-[#d7d7e5]">
+
+                    {
+                      filtered.length
+                    }
+
+                  </span>
+                  {" "}
+                  posts
+                </>
+              )}
+
             </div>
+
+            <div className="flex items-center gap-2">
+
+              {/* PREV */}
+              <button
+                onClick={() =>
+                  setPage((p) =>
+                    Math.max(
+                      1,
+                      p - 1
+                    )
+                  )
+                }
+                disabled={
+                  page === 1
+                }
+                className="w-10 h-10 rounded-xl border border-[#2a2a38] bg-[#16161e] text-[#8b8ba8] flex items-center justify-center disabled:opacity-40 hover:bg-[#1d1d29] transition"
+              >
+
+                <ChevronLeft
+                  size={16}
+                />
+
+              </button>
+
+              {/* PAGES */}
+              {[...Array(
+                Math.min(
+                  totalPages,
+                  5
+                )
+              )].map((_, i) => (
+
+                <button
+                  key={i}
+                  onClick={() =>
+                    setPage(i + 1)
+                  }
+                  className={`min-w-[40px] h-10 rounded-xl text-[13px] font-semibold transition ${page ===
+                      i + 1
+                      ? "bg-[#6366f1] text-white shadow-lg shadow-[#6366f155]"
+                      : "bg-[#16161e] border border-[#2a2a38] text-[#8b8ba8] hover:bg-[#1d1d29]"
+                    }`}
+                >
+
+                  {i + 1}
+
+                </button>
+
+              ))}
+
+              {/* NEXT */}
+              <button
+                onClick={() =>
+                  setPage((p) =>
+                    Math.min(
+                      totalPages,
+                      p + 1
+                    )
+                  )
+                }
+                disabled={
+                  page ===
+                  totalPages
+                }
+                className="w-10 h-10 rounded-xl border border-[#2a2a38] bg-[#16161e] text-[#8b8ba8] flex items-center justify-center disabled:opacity-40 hover:bg-[#1d1d29] transition"
+              >
+
+                <ChevronRight
+                  size={16}
+                />
+
+              </button>
+
+            </div>
+
           </div>
+
         </div>
 
         {/* PREVIEW MODAL */}
         {preview && (
-          <Modal onClose={() => setPreview(null)}>
-            <MHead label="Live Preview" onClose={() => setPreview(null)} />
-            {thumb(preview.content) !== "/placeholder.jpg" && (
-              <div className="h-[210px] flex-shrink-0 relative overflow-hidden">
-                <img src={thumb(preview.content)} className="w-full h-full object-cover" alt="" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#13131b] via-transparent to-transparent" />
+
+          <Modal
+            onClose={() =>
+              setPreview(null)
+            }
+            maxW="1000px"
+            bg="#ffffff"
+          >
+
+            {/* HEADER */}
+            <div className="sticky top-0 z-20 bg-white border-b border-gray-200 px-7 py-5 flex items-center justify-between">
+
+              <div>
+
+                <h2 className="text-[22px] font-bold text-gray-900">
+
+                  Blog Preview
+
+                </h2>
+
+                <p className="text-[13px] text-gray-500 mt-1">
+
+                  Live article preview before publishing
+
+                </p>
+
               </div>
-            )}
-            <div className="sc overflow-y-auto py-7 px-9">
-              <div className="flex gap-1.5 mb-3.5">
-                {[preview.status, preview.category].filter(Boolean).map((t, i) => (
-                  <span key={i} className={i === 0 ? "sb" : "bg-[#1e1e2a] text-[#6b6b80] rounded-full py-[3px] px-2.5 text-[11px] capitalize"}
-                    style={i === 0 ? { color: STATUS_CLR[preview.status], background: `${STATUS_CLR[preview.status]}20` } : {}}>{t}</span>
-                ))}
-              </div>
-              <h1 className="text-[26px] font-bold text-[#f0f0f5] leading-tight mb-3">{preview.title}</h1>
-              <div className="flex gap-3.5 text-[#4b4b6a] text-[12px] mb-6">
-                <span className="text-[#8b8ba8] font-medium">{preview.author || "Admin"}</span>
-                <span>{fmt(preview.createdAt, { month: "long", day: "numeric", year: "numeric" })}</span>
-                <span className="flex items-center gap-1"><Eye size={12} />{preview.views || 0}</span>
-              </div>
-              <div className="border-t border-[#2a2a38] pt-6 text-[#b8b8cc] leading-relaxed text-[14px]" dangerouslySetInnerHTML={{ __html: preview.content }} />
+
+              <button
+                onClick={() =>
+                  setPreview(null)
+                }
+                className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-100 transition"
+              >
+
+                <X
+                  size={16}
+                  className="text-gray-600"
+                />
+
+              </button>
+
             </div>
+
+            {/* BODY */}
+            <div className="overflow-y-auto max-h-[88vh] bg-[#f8fafc]">
+
+              {/* HERO IMAGE */}
+              {thumb(
+                preview.content
+              ) !==
+                "/placeholder.jpg" && (
+
+                  <div className="relative h-[340px] overflow-hidden">
+
+                    <img
+                      src={thumb(
+                        preview.content
+                      )}
+                      className="w-full h-full object-cover"
+                      alt=""
+                    />
+
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+
+                    {/* OVERLAY CONTENT */}
+                    <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
+
+                      <div className="flex gap-2 flex-wrap mb-4">
+
+                        {preview.status && (
+
+                          <span
+                            className="px-3 py-1 rounded-full text-[12px] font-semibold capitalize backdrop-blur-md"
+                            style={{
+                              background:
+                                `${STATUS_CLR[
+                                preview.status
+                                ]}25`,
+
+                              color:
+                                STATUS_CLR[
+                                preview.status
+                                ],
+
+                              border: `1px solid ${STATUS_CLR[
+                                preview.status
+                              ]}40`,
+                            }}
+                          >
+
+                            {preview.status}
+
+                          </span>
+
+                        )}
+
+                        {preview.category && (
+
+                          <span className="px-3 py-1 rounded-full text-[12px] font-medium bg-white/15 border border-white/20 backdrop-blur-md">
+
+                            {
+                              preview.category
+                            }
+
+                          </span>
+
+                        )}
+
+                        {preview.subCategory && (
+
+                          <span className="px-3 py-1 rounded-full text-[12px] font-medium bg-white/15 border border-white/20 backdrop-blur-md">
+
+                            {
+                              preview.subCategory
+                            }
+
+                          </span>
+
+                        )}
+
+                      </div>
+
+                      <h1 className="text-[38px] font-bold leading-tight max-w-[850px]">
+
+                        {preview.title}
+
+                      </h1>
+
+                    </div>
+
+                  </div>
+
+                )}
+
+              {/* ARTICLE BODY */}
+              <div className="max-w-[850px] mx-auto px-7 py-10">
+
+                {/* ARTICLE META */}
+                <div className="flex flex-wrap items-center gap-5 text-[13px] text-gray-500 border-b border-gray-200 pb-5 mb-8">
+
+                  <div className="flex items-center gap-2">
+
+                    <div className="w-9 h-9 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-[14px]">
+
+                      {(
+                        preview.author ||
+                        "A"
+                      )
+                        .charAt(0)
+                        .toUpperCase()}
+
+                    </div>
+
+                    <div>
+
+                      <div className="font-semibold text-gray-800">
+
+                        {preview.author ||
+                          "Admin"}
+
+                      </div>
+
+                      <div className="text-[12px] text-gray-400">
+
+                        Author
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div>
+
+                    <div className="font-medium text-gray-700">
+
+                      {fmt(
+                        preview.createdAt,
+                        {
+                          month:
+                            "long",
+
+                          day:
+                            "numeric",
+
+                          year:
+                            "numeric",
+                        }
+                      )}
+
+                    </div>
+
+                    <div className="text-[12px] text-gray-400">
+
+                      Published Date
+
+                    </div>
+
+                  </div>
+
+                  <div>
+
+                    <div className="font-medium text-gray-700 flex items-center gap-1.5">
+
+                      <Eye size={14} />
+
+                      {preview.views ||
+                        0}
+
+                    </div>
+
+                    <div className="text-[12px] text-gray-400">
+
+                      Views
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+                {/* SEO URL */}
+                <div className="bg-indigo-50 border border-indigo-100 rounded-2xl px-5 py-4 mb-8">
+
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-indigo-500 mb-1">
+
+                    SEO URL
+
+                  </div>
+
+                  <div className="text-[14px] text-indigo-700 font-medium break-all">
+
+                    /blog/
+                    {preview.slug}
+
+                  </div>
+
+                </div>
+
+                {/* CONTENT */}
+                <div
+                  className={`
+    prose
+    prose-lg
+    max-w-none
+    prose-headings:text-gray-900
+    prose-p:text-gray-700
+    prose-p:leading-8
+    prose-li:text-gray-700
+    prose-strong:text-gray-900
+    prose-img:rounded-2xl
+    prose-img:shadow-md
+    prose-a:text-indigo-600
+  `}
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      preview.content,
+                  }}
+                />
+
+
+              </div>
+
+            </div>
+
+            {/* FOOTER */}
+            <div className="border-t border-gray-200 px-7 py-4 bg-white flex justify-between items-center">
+
+              <div className="text-[12px] text-gray-500">
+
+                Preview Mode
+
+              </div>
+
+              <button
+                onClick={() =>
+                  setPreview(null)
+                }
+                className="px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-[14px] font-semibold hover:bg-indigo-700 transition shadow-lg shadow-indigo-200"
+              >
+
+                Close Preview
+
+              </button>
+
+            </div>
+
           </Modal>
+
         )}
 
         {/* EDIT MODAL */}
         {edit && (
-          <Modal onClose={() => setEdit(null)} maxW="900px" bg="#F8FAFC">
-            <MHead label="Edit Post" icon={Pencil} onClose={() => setEdit(null)} />
-            <div className="sc overflow-y-auto py-6 px-7 flex flex-col gap-5">
-              <div>
-                <p className={lbl}>Title</p>
-                <input value={edit.title} onChange={(e) => setEdit({ ...edit, title: e.target.value })}
-                  className="w-full bg-[#0d0d12] border border-[#2a2a38] rounded-lg py-3 px-4 text-[#e2e2f0] text-[19px] font-bold focus:outline-none focus:border-[#6366f1]" />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className={lbl}>Category</p>
-                  <select value={edit.category} onChange={(e) => setEdit({ ...edit, category: e.target.value })} className={darkInput + " cursor-pointer"}>
-                    <option value="">Select Category</option>
-                    {["Cars", "Bikes", "News", "Market Analysis"].map((c) => <option key={c} value={c}>{c}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <p className={lbl}>Schedule Publish</p>
-                  <input type="datetime-local" className={darkInput}
-                    value={edit.publishAt ? new Date(edit.publishAt).toISOString().slice(0, 16) : ""}
-                    onChange={(e) => setEdit({ ...edit, publishAt: e.target.value })} />
-                </div>
-              </div>
-              <div>
-                <p className={lbl}>Content</p>
-                <div className="border border-[#2a2a38] rounded-lg overflow-hidden">
-                  <Tiptap key={edit.slug} initialContent={edit.content || ""} setContent={setEditorContent} />
-                </div>
-              </div>
-            </div>
-            <div className="py-4 px-7 border-t border-[#2a2a38] flex justify-end gap-2.5 flex-shrink-0">
-              <button onClick={() => setEdit(null)} className="bg-[#1e1e2a] border border-[#2a2a38] rounded-lg py-2.5 px-5 text-[#8b8ba8] text-[13px] cursor-pointer">Cancel</button>
-              <button onClick={saveEdit} className="ib text-white rounded-lg py-2.5 px-6 text-[13px] font-semibold">Save Changes</button>
-            </div>
-          </Modal>
-        )}
 
+          <Modal
+            onClose={() =>
+              setEdit(null)
+            }
+            maxW="980px"
+            bg="#ffffff"
+          >
+
+            {/* HEADER */}
+            <div className="border-b border-gray-200 px-7 py-5 flex items-center justify-between bg-white sticky top-0 z-10">
+
+              <div>
+
+                <h2 className="text-[22px] font-bold text-gray-900">
+
+                  Edit Blog Post
+
+                </h2>
+
+                <p className="text-[13px] text-gray-500 mt-1">
+
+                  Update blog content, SEO slug, category and publishing details
+
+                </p>
+
+              </div>
+
+              <button
+                onClick={() =>
+                  setEdit(null)
+                }
+                className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-100 transition"
+              >
+
+                <X
+                  size={16}
+                  className="text-gray-600"
+                />
+
+              </button>
+
+            </div>
+
+            {/* BODY */}
+            <div className="overflow-y-auto max-h-[78vh] px-7 py-6 bg-[#f8fafc]">
+
+              <div className="space-y-6">
+
+                {/* TITLE */}
+                <div>
+
+                  <label className="block text-[13px] font-semibold text-gray-700 mb-2">
+
+                    Blog Title
+
+                  </label>
+
+                  <input
+                    value={edit.title}
+                    onChange={(e) =>
+                      setEdit({
+                        ...edit,
+                        title:
+                          e.target.value,
+                      })
+                    }
+                    placeholder="Enter blog title..."
+                    className="w-full bg-white border border-gray-300 rounded-xl py-3.5 px-4 text-[18px] font-semibold text-gray-900 focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition"
+                  />
+
+                </div>
+
+                {/* SLUG */}
+                <div>
+
+                  <label className="block text-[13px] font-semibold text-gray-700 mb-2">
+
+                    SEO Slug
+
+                  </label>
+
+                  <input
+                    value={edit.slug || ""}
+                    onChange={(e) =>
+                      setEdit({
+                        ...edit,
+                        slug:
+                          e.target.value
+                            .toLowerCase()
+                            .replaceAll(
+                              " ",
+                              "-"
+                            ),
+                      })
+                    }
+                    placeholder="seo-friendly-url"
+                    className="w-full bg-white border border-gray-300 rounded-xl py-3 px-4 text-[14px] text-gray-700 focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition"
+                  />
+
+                  <p className="text-[12px] text-gray-500 mt-2">
+
+                    Example:
+                    <span className="text-indigo-600 ml-1">
+
+                      /blog/
+                      {edit.slug}
+
+                    </span>
+
+                  </p>
+
+                </div>
+
+                {/* CATEGORY GRID */}
+                <div className="grid md:grid-cols-3 gap-5">
+
+                  {/* CATEGORY */}
+                  <div>
+
+                    <label className="block text-[13px] font-semibold text-gray-700 mb-2">
+
+                      Category
+
+                    </label>
+
+                    <select
+                      value={
+                        edit.category ||
+                        ""
+                      }
+                      onChange={(e) =>
+                        setEdit({
+                          ...edit,
+                          category:
+                            e.target
+                              .value,
+                        })
+                      }
+                      className="w-full bg-white border border-gray-300 rounded-xl py-3 px-4 text-[14px] text-gray-700 focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition"
+                    >
+
+                      <option value="">
+                        Select Category
+                      </option>
+
+                      {[
+                        "Cars",
+                        "Bikes",
+                        "News",
+                        "Market Analysis",
+                      ].map((c) => (
+
+                        <option
+                          key={c}
+                          value={c}
+                        >
+                          {c}
+                        </option>
+
+                      ))}
+
+                    </select>
+
+                  </div>
+
+                  {/* SUB CATEGORY */}
+                  <div>
+
+                    <label className="block text-[13px] font-semibold text-gray-700 mb-2">
+
+                      Sub Category
+
+                    </label>
+
+                    <input
+                      value={
+                        edit.subCategory ||
+                        ""
+                      }
+                      onChange={(e) =>
+                        setEdit({
+                          ...edit,
+                          subCategory:
+                            e.target
+                              .value,
+                        })
+                      }
+                      placeholder="Enter sub category"
+                      className="w-full bg-white border border-gray-300 rounded-xl py-3 px-4 text-[14px] text-gray-700 focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition"
+                    />
+
+                  </div>
+
+                  {/* DATE */}
+                  <div>
+
+                    <label className="block text-[13px] font-semibold text-gray-700 mb-2">
+
+                      Publish Date
+
+                    </label>
+
+                    <input
+                      type="datetime-local"
+                      value={
+                        edit.publishAt
+                          ? new Date(
+                            edit.publishAt
+                          )
+                            .toISOString()
+                            .slice(
+                              0,
+                              16
+                            )
+                          : ""
+                      }
+                      onChange={(e) =>
+                        setEdit({
+                          ...edit,
+                          publishAt:
+                            e.target
+                              .value,
+                        })
+                      }
+                      className="w-full bg-white border border-gray-300 rounded-xl py-3 px-4 text-[14px] text-gray-700 focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition"
+                    />
+
+                  </div>
+
+                </div>
+
+                {/* STATUS */}
+                <div>
+
+                  <label className="block text-[13px] font-semibold text-gray-700 mb-2">
+
+                    Status
+
+                  </label>
+
+                  <select
+                    value={
+                      edit.status ||
+                      "draft"
+                    }
+                    onChange={(e) =>
+                      setEdit({
+                        ...edit,
+                        status:
+                          e.target
+                            .value,
+                      })
+                    }
+                    className="w-full md:w-[240px] bg-white border border-gray-300 rounded-xl py-3 px-4 text-[14px] text-gray-700 focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition"
+                  >
+
+                    <option value="draft">
+                      Draft
+                    </option>
+
+                    <option value="published">
+                      Published
+                    </option>
+
+                    <option value="scheduled">
+                      Scheduled
+                    </option>
+
+                  </select>
+
+                </div>
+
+                {/* CONTENT */}
+                <div>
+
+                  <div className="flex items-center justify-between mb-3">
+
+                    <label className="text-[13px] font-semibold text-gray-700">
+
+                      Blog Content
+
+                    </label>
+
+                    <div className="text-[12px] text-gray-400">
+
+                      Rich Text Editor
+
+                    </div>
+
+                  </div>
+
+                  <div className="border border-gray-300 rounded-2xl overflow-hidden bg-white shadow-sm">
+
+                    <Tiptap
+                      key={edit.slug}
+                      initialContent={
+                        edit.content ||
+                        ""
+                      }
+                      setContent={
+                        setEditorContent
+                      }
+                    />
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+            {/* FOOTER */}
+            <div className="border-t border-gray-200 px-7 py-5 flex items-center justify-between bg-white">
+
+              <div className="text-[12px] text-gray-500">
+
+                Last updated:
+                {" "}
+                {edit.updatedAt
+                  ? new Date(
+                    edit.updatedAt
+                  ).toLocaleString()
+                  : "Now"}
+
+              </div>
+
+              <div className="flex items-center gap-3">
+
+                <button
+                  onClick={() =>
+                    setEdit(null)
+                  }
+                  className="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 text-[14px] font-medium hover:bg-gray-100 transition"
+                >
+
+                  Cancel
+
+                </button>
+
+                <button
+                  onClick={saveEdit}
+                  className="px-6 py-2.5 rounded-xl bg-indigo-600 text-white text-[14px] font-semibold hover:bg-indigo-700 transition shadow-lg shadow-indigo-200"
+                >
+
+                  Save Changes
+
+                </button>
+
+              </div>
+
+            </div>
+
+          </Modal>
+
+        )}
+        {/* TOAST */}
+        {toast && (
+
+          <div className="fixed top-5 right-5 z-[9999] animate-in slide-in-from-top-5 duration-300">
+
+            <div
+              className={`min-w-[300px] rounded-2xl shadow-2xl border px-5 py-4 flex items-start gap-3 backdrop-blur-xl ${toast.type ===
+                "success"
+                ? "bg-emerald-500 text-white border-emerald-400"
+                : "bg-red-500 text-white border-red-400"
+                }`}
+            >
+
+              <div className="mt-0.5">
+
+                {toast.type ===
+                  "success" ? (
+
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-5 h-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5 13l4 4L19 7"
+                    />
+
+                  </svg>
+
+                ) : (
+
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-5 h-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+
+                  </svg>
+
+                )}
+
+              </div>
+
+              <div className="flex-1">
+
+                <p className="font-semibold text-[14px]">
+
+                  {toast.type ===
+                    "success"
+                    ? "Success"
+                    : "Error"}
+
+                </p>
+
+                <p className="text-[13px] opacity-90 mt-0.5">
+
+                  {toast.message}
+
+                </p>
+
+              </div>
+
+              <button
+                onClick={() =>
+                  setToast(null)
+                }
+                className="opacity-80 hover:opacity-100"
+              >
+
+                <X size={16} />
+
+              </button>
+
+            </div>
+
+          </div>
+
+        )}
         {/* DELETE CONFIRM */}
         {delConfirm && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
