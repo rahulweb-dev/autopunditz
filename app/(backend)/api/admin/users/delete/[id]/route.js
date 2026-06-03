@@ -1,11 +1,15 @@
 import { connectDB } from "@/lib/db";
 import Admin from "@/models/Admin";
+import { requireAdmin } from "@/lib/auth";
 import { NextResponse } from "next/server";
 
 export async function DELETE(
   req,
   context
 ) {
+
+  const { error } = await requireAdmin();
+  if (error) return error;
 
   try {
 

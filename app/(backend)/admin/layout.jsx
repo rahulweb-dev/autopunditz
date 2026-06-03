@@ -22,7 +22,6 @@ import {
   Moon,
   LogOut,
   ChevronDown,
-  Settings,
   Contact,
 
 } from "lucide-react";
@@ -51,10 +50,16 @@ export default function AdminLayout({
     useState(false);
 
   // ✅ USER
-  const user = {
-    name: "Rahul",
-    role: "Admin",
-  };
+  const [user, setUser] = useState({ email: "", role: "" });
+
+  useEffect(() => {
+    fetch("/api/admin/me")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.success) setUser(d.user);
+      })
+      .catch(() => {});
+  }, []);
 
   // ✅ LOGOUT
   async function handleLogout() {
@@ -80,54 +85,41 @@ export default function AdminLayout({
 
   }, [dark]);
 
-  // ✅ NAVIGATION
-  const navItems = [
-
+  // ✅ NAVIGATION — writers only see Blogs
+  const allNavItems = [
     {
-      href:
-        "/admin/dashboard",
-      label:
-        "Dashboard",
-      icon:
-        LayoutGrid,
+      href: "/admin/dashboard",
+      label: "Dashboard",
+      icon: LayoutGrid,
+      adminOnly: true,
     },
-
     {
-      href:
-        "/admin/blogs",
-      label:
-        "Blogs",
-      icon:
-        FileText,
+      href: "/admin/blogs",
+      label: "Blogs",
+      icon: FileText,
+      adminOnly: false,
     },
-
     {
-      href:
-        "/admin/contact",
-      label:
-        "Contacts",
-      icon:
-        Contact,
+      href: "/admin/contact",
+      label: "Contacts",
+      icon: Contact,
+      adminOnly: true,
     },
-
     {
-      href:
-        "/admin/users",
-      label:
-        "Users",
-      icon:
-        Users,
+      href: "/admin/users",
+      label: "Users",
+      icon: Users,
+      adminOnly: true,
     },
-
-    // {
-    //   href:
-    //     "/admin/settings",
-    //   label:
-    //     "Settings",
-    //   icon:
-    //     Settings,
-    // },
   ];
+
+  const navItems =
+    user.role === "writer"
+      ? allNavItems.filter((i) => !i.adminOnly)
+      : allNavItems;
+
+  const avatarLetter =
+    user.email ? user.email[0].toUpperCase() : "?";
 
   return (
 
@@ -149,7 +141,7 @@ export default function AdminLayout({
 
         <aside
           className={`
-          fixed md:relative z-50 top-0 left-0 h-screen
+          fixed z-50 top-0 left-0 h-screen overflow-y-auto
           transition-all duration-300
           ${collapsed ? "w-20" : "w-72"}
           ${mobileOpen
@@ -270,19 +262,19 @@ export default function AdminLayout({
 
               <div className="flex items-center gap-3">
 
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-purple-500 to-indigo-500 text-white flex items-center justify-center font-bold text-lg">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-[#2D2D2D] to-[#555] text-white flex items-center justify-center font-bold text-lg">
 
-                  R
+                  {avatarLetter}
 
                 </div>
 
                 <div>
 
-                  <h3 className="font-semibold">
-                    {user.name}
+                  <h3 className="font-semibold truncate max-w-35">
+                    {user.email}
                   </h3>
 
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-gray-500 capitalize">
                     {user.role}
                   </p>
 
@@ -297,7 +289,7 @@ export default function AdminLayout({
       )}
 
       {/* MAIN */}
-      <div className="flex-1 flex flex-col">
+      <div className={`flex-1 flex flex-col transition-all duration-300 ${!isLoginPage ? (collapsed ? "md:ml-20" : "md:ml-72") : ""}`}>
 
         {/* TOPBAR */}
         {!isLoginPage && (
@@ -378,20 +370,20 @@ export default function AdminLayout({
                   className="flex items-center gap-3 bg-black/5 dark:bg-white/5 px-3 py-2 rounded-2xl"
                 >
 
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-500 text-white flex items-center justify-center font-bold">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#2D2D2D] to-[#555] text-white flex items-center justify-center font-bold">
 
-                    R
+                    {avatarLetter}
 
                   </div>
 
                   <div className="hidden md:block text-left">
 
-                    <p className="text-sm font-semibold">
-                      Rahul
+                    <p className="text-sm font-semibold truncate max-w-32">
+                      {user.email}
                     </p>
 
-                    <p className="text-xs text-gray-500">
-                      Admin
+                    <p className="text-xs text-gray-500 capitalize">
+                      {user.role}
                     </p>
 
                   </div>
@@ -407,12 +399,12 @@ export default function AdminLayout({
 
                     <div className="p-4 border-b border-black/5 dark:border-white/10">
 
-                      <h3 className="font-semibold">
-                        Rahul
+                      <h3 className="font-semibold truncate">
+                        {user.email}
                       </h3>
 
-                      <p className="text-sm text-gray-500">
-                        admin@gmail.com
+                      <p className="text-sm text-gray-500 capitalize">
+                        {user.role}
                       </p>
 
                     </div>

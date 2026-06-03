@@ -1,39 +1,33 @@
-"use client";
-
-import { useEffect, useState } from "react";
+import { connectDB } from "@/lib/db";
+import Blog from "@/models/Blog";
 import NewsGrid from "@/app/components/NewsGrid";
 
-export default function BikesPage() {
-  const [bikes, setBikes] = useState([]);
-  const [loading, setLoading] = useState(true);
+export const revalidate = 300;
 
-  useEffect(() => {
-    const fetchBikes = async () => {
-      try {
-        const res = await fetch("/api/blog");
-        const data = await res.json();
+export default async function BikesPage() {
+  let bikes = [];
+  try {
+    await connectDB();
+    const raw = await Blog.find({
+      status: "published",
+      category: { $regex: /^news$/i },
+      subCategory: { $regex: /^bikes$/i },
+    })
+      .sort({ createdAt: -1 })
+      .limit(50)
+      .select("title slug content createdAt ogImage")
+      .lean();
 
-        // ✅ Filter Bikes category
-        const filtered = (data.data || data).filter(
-          (item) =>
-            item.category?.toLowerCase() ===
-            "news" &&
-            item.subCategory?.toLowerCase() ===
-            "bikes" &&
-            item.status === "published"
-        );
-        setBikes(filtered);
-      } catch (err) {
-        console.error(err);
-      }
-      setLoading(false);
-    };
-
-    fetchBikes();
-  }, []);
-
-  if (loading) {
-    return <p className="text-center py-10">Loading Bikes...</p>;
+    bikes = raw.map((b) => ({
+      _id: b._id.toString(),
+      title: b.title,
+      slug: b.slug,
+      content: b.content,
+      createdAt: b.createdAt?.toISOString() ?? null,
+      image: b.ogImage || null,
+    }));
+  } catch {
+    // DB unreachable — render empty grid
   }
 
   return (

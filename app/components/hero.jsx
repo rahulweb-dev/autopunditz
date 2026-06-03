@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight, TrendingUp } from "lucide-react";
 import Image from "next/image";
-import LatestNews from "./LatestNews";
 
 export default function Hero() {
   return (
@@ -42,9 +41,9 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 mt-16 rounded-full bg-blue-600/20 border border-blue-500/30 mb-6">
-              <TrendingUp className="w-4 h-4 text-blue-400" />
-              <span className="text-sm text-blue-300">
+            <div className="inline-flex items-center gap-2 px-4 py-2 mt-16 rounded-full bg-[#E53935]/20 border border-[#E53935]/30 mb-6">
+              <TrendingUp className="w-4 h-4 text-[#E53935]" />
+              <span className="text-sm text-[#E53935]/80">
                 Market Data Updated Daily
               </span>
             </div>

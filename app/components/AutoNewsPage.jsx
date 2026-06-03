@@ -92,7 +92,7 @@ export default function AutoNewsPage() {
               onClick={() => setActive(cat)}
               className={`pb-2 text-sm ${
                 active === cat
-                  ? "border-b-2 border-yellow-400 text-yellow-400"
+                  ? "border-b-2 border-[#E53935] text-[#E53935]"
                   : "text-gray-400"
               }`}
             >

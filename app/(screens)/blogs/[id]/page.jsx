@@ -1,94 +1,99 @@
-'use client'
+import { connectDB } from "@/lib/db";
+import Blog from "@/models/Blog";
+import ContinuousReader from "@/app/components/ContinuousReader";
+import { buildNewsArticleJsonLd, buildBreadcrumbJsonLd } from "@/lib/jsonLd";
 
-import { useEffect, useState } from "react"
-import { useParams } from "next/navigation"
-import Link from "next/link"
+export const revalidate = 3600;
 
-export default function BlogDetail() {
-  const { id } = useParams()
+const SITE_URL = "https://www.autopunditz.com";
 
-  const [blogs, setBlogs] = useState([])
-  const [orderedBlogs, setOrderedBlogs] = useState([])
+async function getBlog(slug) {
+  await connectDB();
+  return Blog.findOne({ slug, status: "published" }).lean();
+}
 
-  useEffect(() => {
-    const fetchBlogs = async () => {
-      try {
-        const res = await fetch('/api/blog')
-        const data = await res.json()
+function serialize(blog) {
+  return {
+    _id: blog._id.toString(),
+    slug: blog.slug,
+    title: blog.title,
+    metaTitle: blog.metaTitle || null,
+    imageAlt: blog.imageAlt || null,
+    ogImage: blog.ogImage || null,
+    content: blog.content || "",
+    category: blog.category || null,
+    subCategory: blog.subCategory || null,
+    createdAt: blog.createdAt?.toISOString?.() ?? null,
+  };
+}
 
-        if (!data || data.length === 0) return
+export async function generateMetadata({ params }) {
+  const { id: slug } = await params;
 
-        // 👉 find clicked blog index
-        const currentIndex = data.findIndex(b => b._id === id)
+  try {
+    const blog = await getBlog(slug);
+    if (!blog) return { title: "Blog Not Found | AutoPunditz" };
 
-        if (currentIndex === -1) return
+    const image = blog.ogImage?.startsWith("http")
+      ? blog.ogImage
+      : blog.ogImage
+      ? `${SITE_URL}${blog.ogImage}`
+      : null;
 
-        // 👉 circular order
-        const reordered = [
-          ...data.slice(currentIndex),
-          ...data.slice(0, currentIndex)
-        ]
+    const canonicalUrl = `${SITE_URL}/blogs/${blog.slug}`;
 
-        setBlogs(data)
-        setOrderedBlogs(reordered)
+    return {
+      title: blog.metaTitle || blog.title,
+      description: blog.metaDescription,
+      keywords: blog.keywords,
+      openGraph: {
+        title: blog.metaTitle || blog.title,
+        description: blog.metaDescription,
+        url: canonicalUrl,
+        type: "article",
+        publishedTime: blog.createdAt?.toISOString(),
+        modifiedTime: blog.updatedAt?.toISOString(),
+        images: image ? [{ url: image, alt: blog.imageAlt || blog.title }] : [],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: blog.metaTitle || blog.title,
+        description: blog.metaDescription,
+        images: image ? [image] : [],
+      },
+      alternates: { canonical: canonicalUrl },
+    };
+  } catch {
+    return { title: "Blog | AutoPunditz" };
+  }
+}
 
-      } catch (err) {
-        console.error(err)
-      }
-    }
+export default async function BlogDetailPage({ params }) {
+  const { id: slug } = await params;
+  const blog = await getBlog(slug);
 
-    if (id) fetchBlogs()
-  }, [id])
-
-  if (orderedBlogs.length === 0) {
-    return <p className="p-6">Loading...</p>
+  if (!blog) {
+    return <div className="text-center py-20 text-xl">Blog Not Found</div>;
   }
 
+  const pageUrl = `${SITE_URL}/blogs/${blog.slug}`;
+  const articleJsonLd = buildNewsArticleJsonLd(blog, pageUrl);
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: "Home", url: SITE_URL },
+    { name: "Blogs", url: `${SITE_URL}/blogs` },
+    { name: blog.title, url: pageUrl },
+  ]);
+
   return (
-    <div className="bg-gray-50 min-h-screen py-10">
-
-      <div className="max-w-3xl mx-auto px-6 space-y-16">
-
-        {/* 🔙 BACK */}
-        <Link href="/blogs" className="text-sm text-gray-500">
-          ← Back to Blogs
-        </Link>
-
-        {/* 🔥 ALL BLOGS IN SEQUENCE */}
-        {orderedBlogs.map((blog, index) => (
-
-          <div
-            key={blog._id}
-            className="bg-white p-6 rounded-lg shadow-sm"
-          >
-
-            {/* TITLE */}
-            <h1 className="text-4xl font-bold mb-3">
-              {blog.title}
-            </h1>
-
-            {/* CATEGORY */}
-            <p className="text-gray-500 mb-6">
-              {blog.category}
-            </p>
-
-            {/* CONTENT */}
-            <div
-              className="prose prose-lg max-w-none"
-              dangerouslySetInnerHTML={{ __html: blog.content }}
-            />
-
-            {/* DIVIDER BETWEEN BLOGS */}
-            {index !== orderedBlogs.length - 1 && (
-              <div className="mt-12 border-t pt-6 text-center text-gray-400 text-sm">
-                Continue Reading ↓
-              </div>
-            )}
-
-          </div>
-        ))}
-
-      </div>
-    </div>
-  )
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <ContinuousReader
+        initialBlog={serialize(blog)}
+        category={blog.category || null}
+        subCategory={blog.subCategory || null}
+        basePath="/blogs"
+      />
+    </>
+  );
 }

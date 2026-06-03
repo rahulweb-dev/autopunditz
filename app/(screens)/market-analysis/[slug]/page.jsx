@@ -1,153 +1,93 @@
-"use client";
+import { connectDB } from "@/lib/db";
+import Blog from "@/models/Blog";
+import ContinuousReader from "@/app/components/ContinuousReader";
+import { buildNewsArticleJsonLd, buildBreadcrumbJsonLd } from "@/lib/jsonLd";
 
-import { useParams } from "next/navigation";
-import useBlogs from "@/hooks/useBlogs";
-import Image from "next/image";
+export const revalidate = 3600;
 
-function extractImage(html) {
+const SITE_URL = "https://www.autopunditz.com";
 
-  if (!html) {
-    return "/placeholder.jpg";
-  }
-
-  const match =
-    html.match(
-      /<img[^>]+src="([^">]+)"/
-    );
-
-  return match
-    ? match[1]
-    : "/placeholder.jpg";
-
+async function getBlog(slug) {
+  await connectDB();
+  return Blog.findOne({ slug, status: "published" }).lean();
 }
 
-export default function AnalysisDetails() {
+function serialize(blog) {
+  return {
+    _id: blog._id.toString(),
+    slug: blog.slug,
+    title: blog.title,
+    metaTitle: blog.metaTitle || null,
+    imageAlt: blog.imageAlt || null,
+    ogImage: blog.ogImage || null,
+    content: blog.content || "",
+    category: blog.category || null,
+    subCategory: blog.subCategory || null,
+    createdAt: blog.createdAt?.toISOString?.() ?? null,
+  };
+}
 
-  const params =
-    useParams();
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const blog = await getBlog(slug);
 
-  // ✅ USE SLUG
-  const slug = Array.isArray(params?.slug)
-    ? params.slug[0]
-    : params?.slug;
-  const {
-    blogs,
-    isLoading,
-  } = useBlogs();
+  if (!blog) return { title: "Market Analysis | AutoPunditz" };
 
-  // ✅ LOADING
-  if (isLoading) {
+  const image = blog.ogImage?.startsWith("http")
+    ? blog.ogImage
+    : blog.ogImage
+    ? `${SITE_URL}${blog.ogImage}`
+    : null;
 
-    return (
-      <p className="text-center py-20">
-        Loading...
-      </p>
-    );
+  return {
+    title: blog.metaTitle || blog.title,
+    description: blog.metaDescription,
+    keywords: blog.keywords,
+    openGraph: {
+      title: blog.metaTitle || blog.title,
+      description: blog.metaDescription,
+      url: `${SITE_URL}/market-analysis/${slug}`,
+      type: "article",
+      publishedTime: blog.createdAt?.toISOString?.() ?? undefined,
+      modifiedTime: blog.updatedAt?.toISOString?.() ?? undefined,
+      images: image ? [{ url: image, alt: blog.imageAlt || blog.title }] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: blog.metaTitle || blog.title,
+      description: blog.metaDescription,
+      images: image ? [image] : [],
+    },
+    alternates: { canonical: `${SITE_URL}/market-analysis/${slug}` },
+  };
+}
 
+export default async function MarketAnalysisDetail({ params }) {
+  const { slug } = await params;
+  const blog = await getBlog(slug);
+
+  if (!blog) {
+    return <div className="text-center py-20 text-xl">Article Not Found</div>;
   }
 
-  // ✅ FIND USING SLUG
-  const article =
-    blogs.find(
-      (item) =>
-        item.slug === slug
-    );
-
-  console.log(
-    "SLUG:",
-    slug
-  );
-
-  console.log(
-    "ARTICLE:",
-    article
-  );
-
-  // ✅ NOT FOUND
-  if (!article) {
-
-    return (
-      <div className="text-center py-20 text-xl">
-        Article Not Found
-      </div>
-    );
-
-  }
+  const pageUrl = `${SITE_URL}/market-analysis/${slug}`;
+  const articleJsonLd = buildNewsArticleJsonLd(blog, pageUrl);
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: "Home", url: SITE_URL },
+    { name: "Market Analysis", url: `${SITE_URL}/market-analysis` },
+    { name: blog.title, url: pageUrl },
+  ]);
 
   return (
-    <section className="max-w-4xl mx-auto px-4 py-10">
-
-      {/* TITLE */}
-      <h1 className="text-3xl md:text-5xl font-bold mb-4 leading-tight">
-
-        {article.title}
-
-      </h1>
-
-      {/* DATE */}
-      <p className="text-gray-500 mb-6">
-
-        {article.createdAt
-          ? new Date(
-            article.createdAt
-          ).toLocaleDateString(
-            "en-IN",
-            {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            }
-          )
-          : ""}
-
-      </p>
-
-      {/* IMAGE */}
-      <div className="relative h-[300px] md:h-[450px] mb-8 rounded-2xl overflow-hidden">
-
-        <Image
-          src={extractImage(
-            article.content
-          )}
-          fill
-          alt={article.title}
-          className="object-cover"
-          sizes="(max-width: 768px) 100vw, 1200px"
-          priority
-        />
-
-      </div>
-
-      {/* CONTENT */}
-      <article
-        className="
-          prose
-          prose-lg
-          max-w-none
-          prose-img:rounded-xl
-          prose-img:w-full
-          prose-img:h-auto
-          prose-img:my-6
-        "
-        dangerouslySetInnerHTML={{
-          __html:
-            article.content
-              ?.replace(
-                /width="[^"]*"/g,
-                ""
-              )
-              ?.replace(
-                /height="[^"]*"/g,
-                ""
-              )
-              ?.replace(
-                /style="[^"]*"/g,
-                ""
-              ),
-        }}
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <ContinuousReader
+        initialBlog={serialize(blog)}
+        category={blog.category || "MarketAnalysis"}
+        subCategory={blog.subCategory || null}
+        basePath="/market-analysis"
       />
-
-    </section>
+    </>
   );
-
 }

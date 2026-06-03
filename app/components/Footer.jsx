@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { BarChart3 } from "lucide-react";
 import Image from 'next/image'
 import {
   FaTwitter,
@@ -43,28 +42,28 @@ export default function Footer() {
 
               <Link
                 href="#"
-                className="w-10 h-10 bg-white/10 hover:bg-blue-500 rounded-lg flex items-center justify-center transition"
+                className="w-10 h-10 bg-white/10 hover:bg-[#E53935] rounded-lg flex items-center justify-center transition"
               >
                 <FaTwitter size={16} />
               </Link>
 
               <Link
                 href="#"
-                className="w-10 h-10 bg-white/10 hover:bg-blue-700 rounded-lg flex items-center justify-center transition"
+                className="w-10 h-10 bg-white/10 hover:bg-[#E53935] rounded-lg flex items-center justify-center transition"
               >
                 <FaLinkedinIn size={16} />
               </Link>
 
               <Link
                 href="#"
-                className="w-10 h-10 bg-white/10 hover:bg-red-600 rounded-lg flex items-center justify-center transition"
+                className="w-10 h-10 bg-white/10 hover:bg-[#E53935] rounded-lg flex items-center justify-center transition"
               >
                 <FaYoutube size={16} />
               </Link>
 
               <Link
                 href="#"
-                className="w-10 h-10 bg-white/10 hover:bg-green-600 rounded-lg flex items-center justify-center transition"
+                className="w-10 h-10 bg-white/10 hover:bg-[#E53935] rounded-lg flex items-center justify-center transition"
               >
                 <FaEnvelope size={16} />
               </Link>

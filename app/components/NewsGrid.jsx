@@ -38,7 +38,7 @@ export default function NewsGrid({ title, subtitle, data, basePath }) {
       {/* GRID */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
-        {data.map((item, index) => {
+        {(data || []).map((item, index) => {
           const cleanText = item.content?.replace(/<[^>]+>/g, "") || "";
           const imageMatch = item.content?.match(/<img.*?src="(.*?)"/);
           const image = item.image || imageMatch?.[1] || "/placeholder.jpg";
@@ -66,8 +66,7 @@ export default function NewsGrid({ title, subtitle, data, basePath }) {
 
                 {/* ✅ META (FIXED) */}
                 <p className="text-xs text-gray-400 mb-2">
-                  {formatDate(item.date || item.createdAt)} 
-                  {getReadingTime(item.content)}
+                  {formatDate(item.date || item.createdAt)} · {getReadingTime(item.content)}
                 </p>
 
                 {/* TITLE */}

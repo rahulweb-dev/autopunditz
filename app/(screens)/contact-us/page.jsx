@@ -310,7 +310,7 @@ export default function ContactPage() {
           {/* SUCCESS */}
           {success && (
 
-            <div className="mb-6 bg-green-100 border border-green-300 text-green-700 px-4 py-3 rounded-xl">
+            <div className="mb-6 bg-[#E53935]/10 border border-[#E53935]/30 text-[#E53935] px-4 py-3 rounded-xl">
 
               {success}
 

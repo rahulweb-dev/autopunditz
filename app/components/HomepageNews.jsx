@@ -302,7 +302,7 @@ export default function HomepageNews() {
                     className="object-cover"
                   />
 
-                  <span className="absolute top-2 left-2 bg-green-500 text-xs px-2 py-1">
+                  <span className="absolute top-2 left-2 bg-[#2D2D2D] text-xs px-2 py-1">
                     EV
                   </span>
 
@@ -337,7 +337,7 @@ export default function HomepageNews() {
                     className="object-cover"
                   />
 
-                  <span className="absolute top-2 left-2 bg-yellow-500 text-xs px-2 py-1">
+                  <span className="absolute top-2 left-2 bg-[#E53935] text-xs px-2 py-1">
                     Upcoming
                   </span>
 

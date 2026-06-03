@@ -1,25 +1,25 @@
 import mongoose from "mongoose";
 
-const AdminSchema =
-  new mongoose.Schema(
-    {
-      email: String,
-
-      password: String,
-
-      role: {
-        type: String,
-        enum: ["admin", "writer"],
-        default: "writer",
-      },
+const AdminSchema = new mongoose.Schema(
+  {
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
     },
-    {
-      timestamps: true,
-    }
-  );
+    password: {
+      type: String,
+      required: true,
+    },
+    role: {
+      type: String,
+      enum: ["admin", "writer"],
+      default: "writer",
+    },
+  },
+  { timestamps: true }
+);
 
-export default mongoose.models.Admin ||
-  mongoose.model(
-    "Admin",
-    AdminSchema
-  );
+export default mongoose.models.Admin || mongoose.model("Admin", AdminSchema);

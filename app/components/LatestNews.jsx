@@ -43,16 +43,16 @@ export default function LatestNews() {
       item.subCategory?.toLowerCase() === active.toLowerCase()
   );
 
-  // ✅ Extract image + desc (same as your old structure)
   const formatData = filtered.map((item) => {
-    const cleanText = item.content?.replace(/<[^>]+>/g, "") || "";
-    const imgMatch = item.content?.match(/<img.*?src="(.*?)"/);
-
+    const image =
+      item.ogImage?.startsWith("http")
+        ? item.ogImage
+        : item.content?.match(/<img[^>]+src="([^"]+)"/)?.[1] || "/placeholder.jpg";
     return {
       ...item,
-      image: item.image || imgMatch?.[1] || "/placeholder.jpg",
-      desc: cleanText.slice(0, 100),
-      slug: item.slug, // replace slug with id
+      image,
+      desc: item.metaDescription || item.content?.replace(/<[^>]+>/g, "").slice(0, 100) || "",
+      slug: item.slug,
       date: new Date(item.createdAt).toLocaleDateString("en-IN"),
     };
   });
@@ -107,7 +107,7 @@ export default function LatestNews() {
           {/* Featured Card */}
           <div className="lg:col-span-2">
 
-            <div className="relative h-48 sm:h-56 md:h-72 lg:h-[360px] rounded-xl overflow-hidden">
+            <div className="relative h-48 sm:h-56 md:h-72 lg:h-90 rounded-xl overflow-hidden">
 
               <Skeleton
                 height="100%"
@@ -154,7 +154,7 @@ export default function LatestNews() {
           {/* Right Side Cards */}
           <div className="flex flex-col h-full">
 
-            <div className="h-[260px] sm:h-[300px] lg:h-[360px] overflow-hidden space-y-3 pr-2">
+            <div className="h-65 sm:h-75 lg:h-90 overflow-hidden space-y-3 pr-2">
 
               {[1, 2, 3, 4].map((i) => (
 
@@ -164,7 +164,7 @@ export default function LatestNews() {
                 >
 
                   {/* Image */}
-                  <div className="w-24 h-20 flex-shrink-0">
+                  <div className="w-24 h-20 shrink-0">
 
                     <Skeleton
                       height={80}
@@ -230,6 +230,26 @@ export default function LatestNews() {
     );
   }
 
+  if (formatData.length === 0) {
+    return (
+      <section id="latest-auto-news" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
+        <div className="mb-6 md:mb-8">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold">Latest News</h2>
+          <p className="text-gray-500 text-xs sm:text-sm md:text-base">Breaking vehicle updates</p>
+        </div>
+        <div className="flex gap-4 sm:gap-6 overflow-x-auto border-b mb-6 pb-1">
+          {tabs.map((tab) => (
+            <button key={tab} onClick={() => setActive(tab)}
+              className={`pb-2 text-xs sm:text-sm md:text-base whitespace-nowrap transition ${active === tab ? "border-b-2 border-red-500 text-red-500 font-medium" : "text-gray-500 hover:text-black"}`}>
+              {tab}
+            </button>
+          ))}
+        </div>
+        <p className="text-gray-400 text-sm py-10 text-center">No {active} news available yet.</p>
+      </section>
+    );
+  }
+
   return (
     <section id="latest-auto-news" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
 
@@ -273,7 +293,9 @@ export default function LatestNews() {
             <Image
               src={formatData[0].image}
               fill
+              priority
               alt={formatData[0].title}
+              sizes="(max-width: 1024px) 100vw, 66vw"
               className="object-cover group-hover:scale-105 transition duration-500"
             />
 
@@ -314,7 +336,8 @@ export default function LatestNews() {
                     <Image
                       src={item.image}
                       fill
-                      alt=""
+                      alt={item.title}
+                      sizes="96px"
                       className="object-cover rounded-lg"
                     />
                   </div>

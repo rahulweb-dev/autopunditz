@@ -1,87 +1,93 @@
-"use client";
+import { connectDB } from "@/lib/db";
+import Blog from "@/models/Blog";
+import ContinuousReader from "@/app/components/ContinuousReader";
+import { buildNewsArticleJsonLd, buildBreadcrumbJsonLd } from "@/lib/jsonLd";
 
-import Image from "next/image";
-import { useParams } from "next/navigation";
-import useBlogs from "@/hooks/useBlogs";
+export const revalidate = 3600;
 
-export default function CarDetails() {
+const SITE_URL = "https://www.autopunditz.com";
 
-  const params = useParams();
+async function getBlog(slug) {
+  await connectDB();
+  return Blog.findOne({ slug, status: "published" }).lean();
+}
 
-  const slug = params.slug;
+function serialize(blog) {
+  return {
+    _id: blog._id.toString(),
+    slug: blog.slug,
+    title: blog.title,
+    metaTitle: blog.metaTitle || null,
+    imageAlt: blog.imageAlt || null,
+    ogImage: blog.ogImage || null,
+    content: blog.content || "",
+    category: blog.category || null,
+    subCategory: blog.subCategory || null,
+    createdAt: blog.createdAt?.toISOString?.() ?? null,
+  };
+}
 
-  const {
-    blogs,
-    isLoading,
-    isError,
-  } = useBlogs();
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const blog = await getBlog(slug);
 
-  if (isLoading) {
-    return (
-      <div className="py-20 text-center">
-        Loading...
-      </div>
-    );
-  }
+  if (!blog) return { title: "Cars News | AutoPunditz" };
 
-  if (isError) {
-    return (
-      <div className="py-20 text-center">
-        Failed to load
-      </div>
-    );
-  }
+  const image = blog.ogImage?.startsWith("http")
+    ? blog.ogImage
+    : blog.ogImage
+    ? `${SITE_URL}${blog.ogImage}`
+    : null;
 
-  const blog = blogs.find(
-    (item) => item.slug === slug
-  );
+  return {
+    title: blog.metaTitle || blog.title,
+    description: blog.metaDescription,
+    keywords: blog.keywords,
+    openGraph: {
+      title: blog.metaTitle || blog.title,
+      description: blog.metaDescription,
+      url: `${SITE_URL}/cars/${slug}`,
+      type: "article",
+      publishedTime: blog.createdAt?.toISOString?.() ?? undefined,
+      modifiedTime: blog.updatedAt?.toISOString?.() ?? undefined,
+      images: image ? [{ url: image, alt: blog.imageAlt || blog.title }] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: blog.metaTitle || blog.title,
+      description: blog.metaDescription,
+      images: image ? [image] : [],
+    },
+    alternates: { canonical: `${SITE_URL}/cars/${slug}` },
+  };
+}
+
+export default async function CarDetail({ params }) {
+  const { slug } = await params;
+  const blog = await getBlog(slug);
 
   if (!blog) {
-    return (
-      <div className="py-20 text-center">
-        Article Not Found
-      </div>
-    );
+    return <div className="text-center py-20 text-xl">Article Not Found</div>;
   }
 
-  const imgMatch =
-    blog.content?.match(
-      /<img.*?src="(.*?)"/
-    );
-
-  let image =
-    blog.image || imgMatch?.[1];
-
-  if (
-    !image ||
-    !image.startsWith("http")
-  ) {
-    image = "/placeholder.jpg";
-  }
+  const pageUrl = `${SITE_URL}/cars/${slug}`;
+  const articleJsonLd = buildNewsArticleJsonLd(blog, pageUrl);
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: "Home", url: SITE_URL },
+    { name: "Cars", url: `${SITE_URL}/cars` },
+    { name: blog.title, url: pageUrl },
+  ]);
 
   return (
-    <section className="max-w-4xl mx-auto px-4 py-10">
-
-      <h1 className="text-4xl font-bold mb-4">
-        {blog.title}
-      </h1>
-
-      <div className="relative h-[400px] rounded-xl overflow-hidden mb-8">
-        <Image
-          src={image}
-          alt={blog.title}
-          fill
-          className="object-cover"
-        />
-      </div>
-
-      <div
-        className="prose max-w-none"
-        dangerouslySetInnerHTML={{
-          __html: blog.content,
-        }}
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <ContinuousReader
+        initialBlog={serialize(blog)}
+        category={blog.category || "News"}
+        subCategory={blog.subCategory || "Cars"}
+        basePath="/cars"
       />
-
-    </section>
+    </>
   );
 }

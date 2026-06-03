@@ -1,5 +1,4 @@
 import Editorials from "./components/Editorials";
-import Footer from "./components/Footer";
 import Hero from "./components/hero";
 // import IndustryInsights from "./components/IndustryInsights";
 import LatestNews from "./components/LatestNews";

@@ -11,9 +11,9 @@
 }
 
 .dropdownLink:hover {
-  color: rgb(236, 79, 79);
+  color: #E53935;
   padding-left: 4px;
-  background-color: rgb(219, 219, 219);
+  background-color: #f5f5f5;
 }
 
 html {

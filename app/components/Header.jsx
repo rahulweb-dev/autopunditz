@@ -38,14 +38,14 @@ export default function Header() {
           <nav className='hidden lg:flex items-center gap-8'>
             <Link
               href='/'
-              className='text-sm font-semibold hover:text-blue-600 transition'
+              className='text-sm font-semibold hover:text-[#E53935] transition'
             >
               HOME
             </Link>
 
             {/* SALES ANALYSIS */}
             <div className='relative group'>
-              <div className='flex items-center gap-1 text-sm font-semibold cursor-pointer hover:text-blue-600'>
+              <div className='flex items-center gap-1 text-sm font-semibold cursor-pointer hover:text-[#E53935]'>
                 SALES ANALYSIS
                 <ChevronDown size={16} />
               </div>
@@ -135,7 +135,7 @@ export default function Header() {
             {/* NEWS */}
 
             <div className='relative group'>
-              <div className='flex items-center gap-1 text-sm font-semibold cursor-pointer hover:text-blue-600'>
+              <div className='flex items-center gap-1 text-sm font-semibold cursor-pointer hover:text-[#E53935]'>
                 NEWS
                 <ChevronDown size={16} />
               </div>
@@ -158,7 +158,7 @@ export default function Header() {
             {/* AUTOPEDIA */}
 
             <div className='relative group'>
-              <div className='flex items-center gap-1 text-sm font-semibold cursor-pointer hover:text-blue-600'>
+              <div className='flex items-center gap-1 text-sm font-semibold cursor-pointer hover:text-[#E53935]'>
                 AUTOPEDIA
                 <ChevronDown size={16} />
               </div>
@@ -192,14 +192,14 @@ export default function Header() {
 
             <Link
               href='/about-us'
-              className='text-sm font-semibold hover:text-blue-600'
+              className='text-sm font-semibold hover:text-[#E53935]'
             >
               ABOUT US
             </Link>
 
             <Link
               href='/contact-us'
-              className='text-sm font-semibold hover:text-blue-600'
+              className='text-sm font-semibold hover:text-[#E53935]'
             >
               CONTACT US
             </Link>
@@ -213,18 +213,7 @@ export default function Header() {
 
               <button
                 onClick={() => setSearchOpen(!searchOpen)}
-                className='
-      hidden md:flex
-      items-center
-      gap-2
-      bg-gray-100
-      hover:bg-gray-200
-      px-4
-      py-2
-      rounded-xl
-      transition-all
-      duration-200
-    '
+                className="hidden md:flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-xl transition-all duration-200"
               >
                 <Search size={18} />
 
@@ -235,8 +224,7 @@ export default function Header() {
 
               <button
                 onClick={() => setSearchOpen(!searchOpen)}
-                className='md:hidden w-10  h-10  flex  items-center  justify-center  rounded-xl  hover:bg-gray-100 transition
- '
+                className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl hover:bg-gray-100 transition"
               >
                 <Search size={20} />
               </button>
@@ -249,21 +237,18 @@ export default function Header() {
 
                   <div
                     onClick={() => setSearchOpen(false)}
-                    className=' fixed  inset-0  bg-black/30 z-9998  md:hidden'
+                    className="fixed inset-0 bg-black/30 z-9998 md:hidden"
                   />
 
                   {/* SEARCH DROPDOWN */}
 
-                  <div
-                    className='  absolute  top-full  right-0  mt-3  z-9999  hidden  md:block  w-105  max-w-105  bg-white  border  border-gray-200  rounded-2xl  shadow-2xl overflow-hidden
-      '
-                  >
+                  <div className="absolute top-full right-0 mt-3 z-[9999] hidden md:block w-105 max-w-105 bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden">
                     <SearchModal setOpen={setSearchOpen} />
                   </div>
 
                   {/* MOBILE SEARCH */}
 
-                  <div className=' fixed  top-17.5  left-1/2 -translate-x-1/2 z-9999  w-[94vw]  max-w-125  md:hidden   bg-white  border  border-gray-200  rounded-2xl   shadow-2xl overflow-hidden'>
+                  <div className="fixed top-17.5 left-1/2 -translate-x-1/2 z-9999 w-[94vw] max-w-125 md:hidden bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden">
                     <SearchModal setOpen={setSearchOpen} />
                   </div>
                 </>

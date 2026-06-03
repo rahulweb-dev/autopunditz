@@ -13,15 +13,6 @@ import Link from "next/link";
 
 import useBlogs from "@/hooks/useBlogs";
 
-function extractImage(html = "") {
-
-  const match = html.match(
-    /<img[^>]+src="([^">]+)"/
-  );
-
-  return match?.[1] || "/placeholder.jpg";
-}
-
 export default function LatestPosts() {
 
   const {
@@ -124,15 +115,7 @@ export default function LatestPosts() {
 
           <Link
             href="/posts"
-            className="
-              flex
-              items-center
-              gap-2
-              text-red-600
-              font-medium
-              hover:gap-3
-              transition-all
-            "
+            className="flex items-center gap-2 text-red-600 font-medium hover:gap-3 transition-all"
           >
 
             View All
@@ -149,21 +132,9 @@ export default function LatestPosts() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
-            {[...Array(3)].map(
-              (_, index) => (
-
-                <div
-                  key={index}
-                  className="
-                    animate-pulse
-                    bg-gray-100
-                    rounded-2xl
-                    h-[420px]
-                  "
-                />
-
-              )
-            )}
+            {[...Array(3)].map((_, index) => (
+              <div key={index} className="animate-pulse bg-gray-100 rounded-2xl h-[420px]" />
+            ))}
 
           </div>
 
@@ -201,22 +172,7 @@ export default function LatestPosts() {
                     duration: 0.3,
                     delay: index * 0.1,
                   }}
-                  className="
-                    bg-white
-                    rounded-2xl
-                    overflow-hidden
-                    shadow-md
-                    hover:shadow-2xl
-                    transition-all
-                    duration-300
-                    border
-                    border-gray-100
-                    cursor-pointer
-                    h-full
-                    flex
-                    flex-col
-                    group
-                  "
+                  className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 border border-gray-100 cursor-pointer h-full flex flex-col group"
                 >
 
                   {/* IMAGE */}
@@ -224,35 +180,22 @@ export default function LatestPosts() {
                   <div className="relative h-52 w-full overflow-hidden">
 
                     <Image
-                      src={extractImage(
-                        post.content
-                      )}
+                      src={
+                        post.ogImage?.startsWith("http")
+                          ? post.ogImage
+                          : post.content?.match(/<img[^>]+src="([^"]+)"/)?.[1] || "/placeholder.jpg"
+                      }
                       alt={post.title}
                       fill
-                      className="
-                        object-cover
-                        group-hover:scale-105
-                        transition-transform
-                        duration-500
-                      "
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
 
                     {/* CATEGORY */}
 
                     <div className="absolute top-3 left-3">
 
-                      <span
-                        className="
-                          bg-red-600
-                          text-white
-                          text-xs
-                          px-3
-                          py-1
-                          rounded-full
-                          font-medium
-                          shadow-md
-                        "
-                      >
+                      <span className="bg-red-600 text-white text-xs px-3 py-1 rounded-full font-medium shadow-md">
 
                         {post.category}
 
@@ -268,18 +211,7 @@ export default function LatestPosts() {
 
                     {/* TITLE */}
 
-                    <h3
-                      className="
-                        font-semibold
-                        text-lg
-                        leading-snug
-                        mb-3
-                        line-clamp-2
-                        min-h-[56px]
-                        group-hover:text-red-600
-                        transition-colors
-                      "
-                    >
+                    <h3 className="font-semibold text-lg leading-snug mb-3 line-clamp-2 min-h-[56px] group-hover:text-red-600 transition-colors">
 
                       {post.title}
 
@@ -287,15 +219,7 @@ export default function LatestPosts() {
 
                     {/* DESCRIPTION */}
 
-                    <p
-                      className="
-                        text-sm
-                        text-gray-600
-                        mb-5
-                        line-clamp-3
-                        min-h-[72px]
-                      "
-                    >
+                    <p className="text-sm text-gray-600 mb-5 line-clamp-3 min-h-[72px]">
 
                       {post.metaDescription ||
                         "Read full article..."}
@@ -306,17 +230,7 @@ export default function LatestPosts() {
 
                     {/* FOOTER */}
 
-                    <div
-                      className="
-                        flex
-                        items-center
-                        justify-between
-                        border-t
-                        pt-3
-                        text-xs
-                        text-gray-500
-                      "
-                    >
+                    <div className="flex items-center justify-between border-t pt-3 text-xs text-gray-500">
 
                       <div className="flex items-center gap-4">
 
@@ -340,15 +254,7 @@ export default function LatestPosts() {
 
                       </div>
 
-                      <ArrowRight
-                        className="
-                          w-4
-                          h-4
-                          text-red-600
-                          group-hover:translate-x-1
-                          transition-transform
-                        "
-                      />
+                      <ArrowRight className="w-4 h-4 text-red-600 group-hover:translate-x-1 transition-transform" />
 
                     </div>
 

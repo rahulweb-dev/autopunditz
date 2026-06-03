@@ -79,7 +79,7 @@ export async function POST(req) {
     {
       httpOnly: true,
 
-      secure: false,
+      secure: process.env.NODE_ENV === "production",
 
       sameSite: "lax",
 

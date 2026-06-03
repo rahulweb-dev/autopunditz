@@ -1,72 +1,93 @@
-import Image from "next/image";
-import { headers } from "next/headers";
+import { connectDB } from "@/lib/db";
+import Blog from "@/models/Blog";
+import ContinuousReader from "@/app/components/ContinuousReader";
+import { buildNewsArticleJsonLd, buildBreadcrumbJsonLd } from "@/lib/jsonLd";
 
-export default async function EditorDetails({ params }) {
+export const revalidate = 3600;
+
+const SITE_URL = "https://www.autopunditz.com";
+
+async function getBlog(slug) {
+  await connectDB();
+  return Blog.findOne({ slug, status: "published" }).lean();
+}
+
+function serialize(blog) {
+  return {
+    _id: blog._id.toString(),
+    slug: blog.slug,
+    title: blog.title,
+    metaTitle: blog.metaTitle || null,
+    imageAlt: blog.imageAlt || null,
+    ogImage: blog.ogImage || null,
+    content: blog.content || "",
+    category: blog.category || null,
+    subCategory: blog.subCategory || null,
+    createdAt: blog.createdAt?.toISOString?.() ?? null,
+  };
+}
+
+export async function generateMetadata({ params }) {
   const { slug } = await params;
+  const blog = await getBlog(slug);
 
-  // ✅ Fix fetch
-  const host = (await headers()).get("host");
-  const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
+  if (!blog) return { title: "Editorials | AutoPunditz" };
 
-  const res = await fetch(`${protocol}://${host}/api/blog`, {
-    cache: "no-store",
-  });
+  const image = blog.ogImage?.startsWith("http")
+    ? blog.ogImage
+    : blog.ogImage
+    ? `${SITE_URL}${blog.ogImage}`
+    : null;
 
-  const data = await res.json();
-  const blogs = Array.isArray(data) ? data : data.data || [];
+  return {
+    title: blog.metaTitle || blog.title,
+    description: blog.metaDescription,
+    keywords: blog.keywords,
+    openGraph: {
+      title: blog.metaTitle || blog.title,
+      description: blog.metaDescription,
+      url: `${SITE_URL}/editorials/${slug}`,
+      type: "article",
+      publishedTime: blog.createdAt?.toISOString?.() ?? undefined,
+      modifiedTime: blog.updatedAt?.toISOString?.() ?? undefined,
+      images: image ? [{ url: image, alt: blog.imageAlt || blog.title }] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: blog.metaTitle || blog.title,
+      description: blog.metaDescription,
+      images: image ? [image] : [],
+    },
+    alternates: { canonical: `${SITE_URL}/editorials/${slug}` },
+  };
+}
 
-  const blog = blogs.find(
-    (item) => item.slug?.toString() === slug
-  );
+export default async function EditorialDetail({ params }) {
+  const { slug } = await params;
+  const blog = await getBlog(slug);
 
   if (!blog) {
-    return (
-      <div className="text-center py-20 text-xl">
-        Editorial Article Not Found
-      </div>
-    );
+    return <div className="text-center py-20 text-xl">Editorial Not Found</div>;
   }
 
-  const imgMatch = blog.content?.match(/<img.*?src="(.*?)"/);
-  let image = blog.image || imgMatch?.[1];
-
-  if (!image || !image.startsWith("http")) {
-    image = "/placeholder.jpg";
-  }
+  const pageUrl = `${SITE_URL}/editorials/${slug}`;
+  const articleJsonLd = buildNewsArticleJsonLd(blog, pageUrl);
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: "Home", url: SITE_URL },
+    { name: "Editorials", url: `${SITE_URL}/editorials` },
+    { name: blog.title, url: pageUrl },
+  ]);
 
   return (
-    <section className="max-w-4xl mx-auto px-4 py-10">
-
-      <h1 className="text-3xl md:text-4xl font-bold mb-4">
-        {blog.title}
-      </h1>
-
-      <p className="text-gray-500 mb-6">
-        {new Date(blog.createdAt).toLocaleDateString("en-IN")}
-      </p>
-
-      <div className="relative h-[300px] md:h-[450px] mb-6 rounded-xl overflow-hidden">
-        {image.startsWith("http") ? (
-          <Image
-            src={image}
-            fill
-            alt={blog.title}
-            className="object-cover"
-          />
-        ) : (
-          <img
-            src={image}
-            alt="placeholder"
-            className="w-full h-full object-cover"
-          />
-        )}
-      </div>
-
-      <div
-        className="prose max-w-none whitespace-pre-wrap"
-        dangerouslySetInnerHTML={{ __html: blog.content }}
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <ContinuousReader
+        initialBlog={serialize(blog)}
+        category={blog.category || "Editorials"}
+        subCategory={blog.subCategory || null}
+        basePath="/editorials"
       />
-
-    </section>
+    </>
   );
 }
